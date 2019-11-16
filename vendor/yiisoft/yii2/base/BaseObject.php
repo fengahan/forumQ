@@ -195,7 +195,7 @@ class BaseObject implements Configurable
      * If the property is read-only, it will throw an exception.
      * @param string $name the property name
      * @throws InvalidCallException if the property is read only.
-     * @see http://php.net/manual/en/function.unset.php
+     * @see https://secure.php.net/manual/en/function.unset.php
      */
     public function __unset($name)
     {

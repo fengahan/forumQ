@@ -1,0 +1,37 @@
+.nav-text{
+    color: white;
+    font-size: 1.2rem;
+    font-family: inherit;
+}
+.nav-text:hover{
+   color: white;
+   background: rgba(139, 139, 139, 0.29);
+   border-radius: 2px;
+}
+
+.hp-30{
+    height: 30px !important;
+
+}
+
+.wp-30{
+    width:30px !important;
+
+}
+
+.good_comment{
+
+    background: #32c787;
+    padding: 20px;
+    border-radius: 2px;
+    color: white;
+}
+
+.badge-success-ext{
+    color:#FFF; !important;
+    background-color:#32c787 !important
+}
+
+.flot-chart-250{
+    height:230px;display:block
+}

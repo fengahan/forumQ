@@ -4,9 +4,6 @@
 /* @var $content string */
 
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
 
@@ -25,14 +22,8 @@ AppAsset::register($this);
 <body data-ma-theme="green">
 <?php $this->beginBody() ?>
 <main class="main">
-    //刷新加载的loading图片
-    <div class="page-loader">
-        <div class="page-loader__spinner">
-            <svg viewBox="25 25 50 50">
-                <circle cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
-            </svg>
-        </div>
-    </div>
+    <!-- 刷新加载的loading图片-->
+    <?php echo $this->render('@app/views/common/loader.php');?>
     <header class="header">
         <div class="header__logo hidden-sm-down">
             <h1><a href="index.html">赵日天实验室</a></h1>
@@ -52,20 +43,23 @@ AppAsset::register($this);
             </li>
         </ul>
         <ul class="top-nav">
+            <!-- 搜索图标-->
             <li class="hidden-xl-up"><a href="" data-ma-action="search-open"><i class="zmdi zmdi-search"></i></a></li>
             <li class="dropdown top-nav__notifications">
+                <!-- 铃铛 红点-->
                 <a href="" data-toggle="dropdown" class="top-nav__notify">
                     <i class="zmdi zmdi-notifications"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu--block">
+                    <!-- 通知栏标题-->
                     <div class="listview listview--hover">
                         <div class="listview__header">
-                            通知消息
+                             通知消息
                             <div class="actions">
                                 <a href="" class="actions__item zmdi zmdi-check-all" data-ma-action="notifications-clear"></a>
                             </div>
                         </div>
-
+                        <!-- 通知列表内容-->
                         <div class="listview__scroll scrollbar-inner">
                             <a href="" class="listview__item">
                                 <img src="mutui/demo/img/profile-pics/1.jpg" class="listview__img" alt="">
@@ -74,7 +68,6 @@ AppAsset::register($this);
                                     <p>付费30元邀请您回答问题</p>
                                 </div>
                             </a>
-
                             <a href="" class="listview__item">
                                 <img src="mutui/demo/img/profile-pics/zhihu.jpg" class="listview__img" alt="">
 
@@ -83,10 +76,8 @@ AppAsset::register($this);
                                     <p>您发布对文章已经通过审核。</p>
                                 </div>
                             </a>
-
                             <a href="" class="listview__item">
                                 <img src="mutui/demo/img/profile-pics/3.jpg" class="listview__img" alt="">
-
                                 <div class="listview__content">
                                     <div class="listview__heading">李四</div>
                                     <p>回答了您的问题 "如何对redis 分区" </p>
@@ -94,7 +85,6 @@ AppAsset::register($this);
                             </a>
                             <a href="" class="listview__item">
                                 <img src="mutui/demo/img/profile-pics/4.jpg" class="listview__img" alt="">
-
                                 <div class="listview__content">
                                     <div class="listview__heading">Glenn Jecobs</div>
                                     <p>Ut vitae lacus sem ellentesque maximus, nunc sit amet varius dignissim, dui est consectetur neque</p>
@@ -115,7 +105,6 @@ AppAsset::register($this);
                                     <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
                                 </div>
                             </a>
-
                             <a href="" class="listview__item">
                                 <img src="mutui/demo/img/profile-pics/2.jpg" class="listview__img" alt="">
 
@@ -124,7 +113,6 @@ AppAsset::register($this);
                                     <p>Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</p>
                                 </div>
                             </a>
-
                             <a href="" class="listview__item">
                                 <img src="mutui/demo/img/profile-pics/3.jpg" class="listview__img" alt="">
 
@@ -134,12 +122,12 @@ AppAsset::register($this);
                                 </div>
                             </a>
                         </div>
-
                         <div class="p-1"></div>
                     </div>
                 </div>
             </li>
             <li class="dropdown hidden-xs-down">
+                <!-- 用户信息-->
                 <div class="user__info" data-toggle="dropdown">
                     <img class="user__img" src="mutui/demo/img/profile-pics/8.jpg" alt="">
                     <div>
@@ -147,6 +135,7 @@ AppAsset::register($this);
                         <div class="user__email" style="color: snow">等级:V1</div>
                     </div>
                 </div>
+                <!-- 用户操作菜单-->
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu--block" role="menu">
                     <div class="row app-shortcuts">
                         <a class="col-4 app-shortcuts__item" href="">
@@ -169,6 +158,7 @@ AppAsset::register($this);
             </li>
         </ul>
     </header>
+    <!-- 错误报告 -->
     <?= Alert::widget() ?>
     <section class="content">
     <?= $content ?>

@@ -1,2 +1,4 @@
-/vendor
 /.idea
+!/vendor
+/vendor/*
+!/vendor/yiisoft/yii2/widgets/LinkPager.php

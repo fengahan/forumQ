@@ -6,8 +6,16 @@
 use yii\helpers\Html;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
+use yii\helpers\Url;
 
 AppAsset::register($this);
+/* 动态添加js */
+if ('/index.php?r=user%2Findex' === Url::current()){
+    AppAsset::addScript($this,'@web/mutui/vendors/flot/jquery.flot.js');
+    AppAsset::addScript($this,'@web/mutui/vendors/flot/jquery.flot.pie.js');
+    AppAsset::addScript($this,'@web/mutui/demo/js/flot-charts/chart-tooltips.js');
+    AppAsset::addScript($this,'@web/mutui/demo/js/flot-charts/pie.js');
+}
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -26,14 +34,14 @@ AppAsset::register($this);
     <?php echo $this->render('@app/views/common/loader.php');?>
     <header class="header">
         <div class="header__logo hidden-sm-down">
-            <h1><a href="index.html">赵日天实验室</a></h1>
+            <h1><a href="<?= Url::to(['index/index']); ?>">赵日天实验室</a></h1>
         </div>
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link nav-text active" href="">问答</a>
+                <a class="nav-link nav-text active" href="<?= Url::to(['article/index']); ?>">文章详情</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link nav-text " href="">技术分享</a>
+                <a class="nav-link nav-text " href="<?= Url::to(['public/login']); ?>">登陆注册</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link nav-text " href="">名人专题</a>
@@ -62,35 +70,6 @@ AppAsset::register($this);
                         <!-- 通知列表内容-->
                         <div class="listview__scroll scrollbar-inner">
                             <a href="" class="listview__item">
-                                <img src="mutui/demo/img/profile-pics/1.jpg" class="listview__img" alt="">
-                                <div class="listview__content">
-                                    <div class="listview__heading">张三</div>
-                                    <p>付费30元邀请您回答问题</p>
-                                </div>
-                            </a>
-                            <a href="" class="listview__item">
-                                <img src="mutui/demo/img/profile-pics/zhihu.jpg" class="listview__img" alt="">
-
-                                <div class="listview__content">
-                                    <div class="listview__heading">系统</div>
-                                    <p>您发布对文章已经通过审核。</p>
-                                </div>
-                            </a>
-                            <a href="" class="listview__item">
-                                <img src="mutui/demo/img/profile-pics/3.jpg" class="listview__img" alt="">
-                                <div class="listview__content">
-                                    <div class="listview__heading">李四</div>
-                                    <p>回答了您的问题 "如何对redis 分区" </p>
-                                </div>
-                            </a>
-                            <a href="" class="listview__item">
-                                <img src="mutui/demo/img/profile-pics/4.jpg" class="listview__img" alt="">
-                                <div class="listview__content">
-                                    <div class="listview__heading">Glenn Jecobs</div>
-                                    <p>Ut vitae lacus sem ellentesque maximus, nunc sit amet varius dignissim, dui est consectetur neque</p>
-                                </div>
-                            </a>
-                            <a href="" class="listview__item">
                                 <img src="mutui/demo/img/profile-pics/5.jpg" class="listview__img" alt="">
                                 <div class="listview__content">
                                     <div class="listview__heading">Bill Phillips</div>
@@ -103,22 +82,6 @@ AppAsset::register($this);
                                 <div class="listview__content">
                                     <div class="listview__heading">David Belle</div>
                                     <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
-                                </div>
-                            </a>
-                            <a href="" class="listview__item">
-                                <img src="mutui/demo/img/profile-pics/2.jpg" class="listview__img" alt="">
-
-                                <div class="listview__content">
-                                    <div class="listview__heading">Jonathan Morris</div>
-                                    <p>Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</p>
-                                </div>
-                            </a>
-                            <a href="" class="listview__item">
-                                <img src="mutui/demo/img/profile-pics/3.jpg" class="listview__img" alt="">
-
-                                <div class="listview__content">
-                                    <div class="listview__heading">Fredric Mitchell Jr.</div>
-                                    <p>Phasellus a ante et est ornare accumsan at vel magnauis blandit turpis at augue ultricies</p>
                                 </div>
                             </a>
                         </div>
@@ -138,7 +101,7 @@ AppAsset::register($this);
                 <!-- 用户操作菜单-->
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu--block" role="menu">
                     <div class="row app-shortcuts">
-                        <a class="col-4 app-shortcuts__item" href="">
+                        <a class="col-4 app-shortcuts__item" href="<?= Url::to(['user/index']); ?>">
                             <i class="zmdi zmdi-account-o"></i>
                             <small class="">个人中心</small>
                             <span class="app-shortcuts__helper bg-red"></span>

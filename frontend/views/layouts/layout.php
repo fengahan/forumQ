@@ -4,11 +4,7 @@
 /* @var $content string */
 
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
-use common\widgets\Alert;
 
 AppAsset::register($this);
 ?>
@@ -17,58 +13,14 @@ AppAsset::register($this);
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body>
+<body data-ma-theme="green">
 <?php $this->beginBody() ?>
-
-<div class="wrap">
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'About', 'url' => ['/site/about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
-    }
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
-    ?>
-
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
-    </div>
-</div>
-
+<?= $content ?>
 <footer class="footer">
     <div class="container">
         <p class="pull-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
@@ -76,7 +28,34 @@ AppAsset::register($this);
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
 </footer>
-
+<!-- Older IE warning message -->
+<!--[if IE]>
+<div class="ie-warning">
+    <h1>Warning!!</h1>
+    <p>You are using an outdated version of Internet Explorer, please upgrade to any of the following web browsers to access this website.</p>
+    <div class="ie-warning__downloads">
+        <a href="http://www.google.com/chrome">
+            <img src="img/browsers/chrome.png" alt="">
+        </a>
+        <a href="https://www.mozilla.org/en-US/firefox/new">
+            <img src="img/browsers/firefox.png" alt="">
+        </a>
+        <a href="http://www.opera.com">
+            <img src="img/browsers/opera.png" alt="">
+        </a>
+        <a href="https://support.apple.com/downloads/safari">
+            <img src="img/browsers/safari.png" alt="">
+        </a>
+        <a href="https://www.microsoft.com/en-us/windows/microsoft-edge">
+            <img src="img/browsers/edge.png" alt="">
+        </a>
+        <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">
+            <img src="img/browsers/ie.png" alt="">
+        </a>
+    </div>
+    <p>Sorry for the inconvenience!</p>
+</div>
+<![endif]-->
 <?php $this->endBody() ?>
 </body>
 </html>

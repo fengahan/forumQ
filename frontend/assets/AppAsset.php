@@ -30,8 +30,19 @@ class AppAsset extends AssetBundle
         //App functions and actions
         'mutui/js/app.min.js',
     ];
-//    public $depends = [
+
+    public $depends = [
 //        'yii\web\YiiAsset',
 //        'yii\bootstrap\BootstrapAsset',
-//    ];
+    ];
+
+    /**
+     * 添加js
+     * @param $view
+     * @param $jsFile
+     */
+    public static function addScript($view, $jsFile)
+    {
+        $view->registerJsFile($jsFile, [AppAsset::className(), 'depends' => 'frontend\assets\AppAsset']);
+    }
 }

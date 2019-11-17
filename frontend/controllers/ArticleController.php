@@ -19,7 +19,7 @@ use frontend\models\ContactForm;
 /**
  * Site controller
  */
-class IndexController extends Controller
+class ArticleController extends Controller
 {
 
     /**

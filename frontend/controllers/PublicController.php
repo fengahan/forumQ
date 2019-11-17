@@ -20,7 +20,7 @@ use frontend\models\ContactForm;
  */
 class PublicController extends Controller
 {
-
+    public $layout = 'layout';
     /**
      * {@inheritdoc}
      */
@@ -84,7 +84,6 @@ class PublicController extends Controller
             return $this->goBack();
         } else {
             $model->password = '';
-
             return $this->render('login', [
                 'model' => $model,
             ]);

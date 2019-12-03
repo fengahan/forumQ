@@ -11,7 +11,7 @@ CREATE TABLE `community_users` (
   `wechat` varchar(20)  NOT NULL DEFAULT '' COMMENT '微信号',
   `qq` bigint(15) unsigned NOT NULL DEFAULT 0 COMMENT 'qq',
   `nickname` varchar(100) NOT NULL DEFAULT '' COMMENT '昵称',
-  `birthday` int(11) NOT NULL DEFAULT '' COMMENT '生日',
+  `birthday` int(11) NOT NULL DEFAULT '0' COMMENT '生日',
   `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像图',
   `gender` tinyint(3) unsigned DEFAULT '0' COMMENT '性别【0 未知 1 男 2 女】',
   `province` varchar(255) NOT NULL DEFAULT '' COMMENT '省份',
@@ -24,7 +24,7 @@ CREATE TABLE `community_users` (
   `type` tinyint(3) unsigned DEFAULT '0' COMMENT '用户类型【0 普通用户 1 邀请码用户】',
   `origin` tinyint(3) unsigned DEFAULT '0' COMMENT '用户来源【0 官网注册 1 GitHub 授权】',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '状态【0：正常用户，1 黑名单，2 用户被删除】',
-  `last_time` int(11) unsigned NOT NULL DEFAULT '' COMMENT '最后登陆时间',
+  `last_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '最后登陆时间',
   `update_time` int(13) unsigned DEFAULT '0' COMMENT '修改时间',
   `add_time` int(13) unsigned DEFAULT '0' COMMENT '注册时间',
   PRIMARY KEY (`id`),
@@ -33,8 +33,7 @@ CREATE TABLE `community_users` (
   KEY `email` (`email`),
   KEY `update_time` (`update_time`),
   KEY `last_time` (`last_time`),
-  KEY `add_time` (`add_time`),
-  KEY `update_time` (`update_time`)
+  KEY `add_time` (`add_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
 ```

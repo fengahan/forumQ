@@ -10,7 +10,7 @@ use yii\helpers\Url;
 
 AppAsset::register($this);
 /* 动态添加js */
-if ('/index.php?r=user%2Findex' === Url::current()){
+if (Url::to("/user/index") === Url::current()){
     AppAsset::addScript($this,'@web/mutui/vendors/flot/jquery.flot.js');
     AppAsset::addScript($this,'@web/mutui/vendors/flot/jquery.flot.pie.js');
     AppAsset::addScript($this,'@web/mutui/demo/js/flot-charts/chart-tooltips.js');

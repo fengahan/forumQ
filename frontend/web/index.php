@@ -13,5 +13,13 @@ $config = yii\helpers\ArrayHelper::merge(
     require __DIR__ . '/../config/main.php',
     require __DIR__ . '/../config/main-local.php'
 );
+$config['bootstrap'][] = 'gii';
+$config['modules']['gii'] = [
+    'class' => 'yii\gii\Module',
+];
+$config['bootstrap'][] = 'debug';
+$config['modules']['debug'] = [
+    'class' => 'yii\debug\Module',
+];
 
 (new yii\web\Application($config))->run();

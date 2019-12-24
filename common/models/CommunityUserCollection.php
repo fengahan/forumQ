@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%community_user_collection}}".
+ * This is the model class for table "{{%user_collection}}".
  *
  * @property int $id
  * @property int $user_id 用户ID
@@ -23,7 +23,7 @@ class CommunityUserCollection extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%community_user_collection}}';
+        return '{{%user_collection}}';
     }
 
     /**

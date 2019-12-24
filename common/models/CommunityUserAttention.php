@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%community_user_attention}}".
+ * This is the model class for table "{{%user_attention}}".
  *
  * @property int $id
  * @property int $user_id 用户ID
@@ -21,7 +21,7 @@ class CommunityUserAttention extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%community_user_attention}}';
+        return '{{%user_attention}}';
     }
 
     /**

@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%community_users}}".
+ * This is the model class for table "{{%users}}".
  *
  * @property int $id 用户id
  * @property string $user_token 用户token
@@ -39,7 +39,7 @@ class CommunityUsers extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%community_users}}';
+        return '{{%users}}';
     }
 
     /**

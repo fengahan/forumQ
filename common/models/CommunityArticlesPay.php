@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%community_articles_pay}}".
+ * This is the model class for table "{{%articles_pay}}".
  *
  * @property int $id
  * @property int $article_id 文章ID
@@ -23,7 +23,7 @@ class CommunityArticlesPay extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%community_articles_pay}}';
+        return '{{%articles_pay}}';
     }
 
     /**

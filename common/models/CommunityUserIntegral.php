@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%community_user_integral}}".
+ * This is the model class for table "{{%user_integral}}".
  *
  * @property int $id
  * @property int $payment_user_id 付款用户id
@@ -26,7 +26,7 @@ class CommunityUserIntegral extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%community_user_integral}}';
+        return '{{%user_integral}}';
     }
 
     /**

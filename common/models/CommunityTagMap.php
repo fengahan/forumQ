@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%community_tag_map}}".
+ * This is the model class for table "{{%tag_map}}".
  *
  * @property int $id id
  * @property int $type 标签类型【1 技能类型标签，2 文章行业类型标签，3 文章属性类型标签】
@@ -22,7 +22,7 @@ class CommunityTagMap extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%community_tag_map}}';
+        return '{{%tag_map}}';
     }
 
     /**

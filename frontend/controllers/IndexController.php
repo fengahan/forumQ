@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\CommunityTag;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -76,8 +77,11 @@ class IndexController extends Controller
      */
     public function actionIndex()
     {
+        $tagModel=new CommunityTag();
+        $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
+        $tag_list=$tagModel->getList($tagWhere);
         $pagination = new Pagination(['totalCount' =>10, 'pageSize' => '2']);
-        return $this->render('index',['pagination' => $pagination]);
+        return $this->render('index',['tag_list'=>$tag_list,'pagination' => $pagination]);
     }
 
 }

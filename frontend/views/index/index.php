@@ -1,7 +1,7 @@
 <?php
 
 /* @var $this yii\web\View */
-
+/* @var $tag_list */
 $this->title = 'My Yii Application';
 ?>
 <div class="content__inner">
@@ -21,11 +21,9 @@ $this->title = 'My Yii Application';
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
                                 <a href="" class="dropdown-item">全部</a>
                                 <!--选择样式 bg-green text-white!-->
-                                <a href="" class="dropdown-item bg-green text-white">Linux</a>
-                                <a href="" class="dropdown-item">PHP</a>
-                                <a href="" class="dropdown-item">Java</a>
-                                <a href="" class="dropdown-item">MySql</a>
-                                <a href="" class="dropdown-item">其他</a>
+                                <?php foreach ($tag_list as $key=>$val):?>
+                                    <a href="" class="dropdown-item"><?=$val['title']?></a>
+                                <?php endforeach;?>
                             </div>
                         </div>
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="筛选" data-original-title="" title="">

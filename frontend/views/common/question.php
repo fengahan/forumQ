@@ -17,11 +17,11 @@ if (isset($listClass)){
             <a class="listview__heading" href="">
                 <?=$value['title']?>
             </a>
-            <p>#李四 回复于 2小时前</p>
+            <p>#<?=$value['last_reply_nickname']?> 回复于<?=Yii::$app->formatter->asRelativeTime($value['last_reply_at']);?></p>
         </div>
         <div class="issue-tracker__item hidden-md-down" >
             <i class="zmdi zmdi-time" ></i>
-            <?=Yii::$app->formatter->asDate($value['created_at']);?>
+            <?=Yii::$app->formatter->asRelativeTime($value['created_at']);?>
         </div>
         <div class="issue-tracker__item hidden-md-down">
             <i class="zmdi zmdi-comments"></i>

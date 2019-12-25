@@ -10,6 +10,8 @@ use yii\base\Arrayable;
  * This is the model class for table "{{%question}}".
  *
  * @property int $id
+ * @property string last_reply_nickname
+ * @property int last_reply_at
  * @property string $title 标题
  * @property string $html_content html内容
  * @property string $markdown_content markdown内容
@@ -50,8 +52,8 @@ class CommunityQuestion extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'tag_id', 'money', 'user_id', 'view_number', 'created_at'], 'required'],
-            [['html_content', 'markdown_content'], 'string'],
-            [['is_public','best_reply_id', 'tag_id', 'money', 'user_id', 'user_identity', 'view_number', 'subscribe_number', 'reply_number', 'is_solve', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['html_content', 'markdown_content','last_reply_nickname'], 'string'],
+            [['is_public','best_reply_id', 'tag_id', 'money', 'user_id', 'user_identity', 'view_number', 'subscribe_number', 'reply_number', 'is_solve', 'status', 'created_at', 'updated_at','last_reply_at'], 'integer'],
             [['title'], 'string', 'max' => 255],
         ];
     }
@@ -95,7 +97,7 @@ class CommunityQuestion extends \yii\db\ActiveRecord
         if (!empty($tag_id)){
             $where['q.tag_id']=$tag_id;
         }
-        return self::find()->select("q.title,q.reply_number,q.view_number,q.money,q.created_at,
+        return self::find()->select("q.title,q.reply_number,q.view_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
         u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(CommunityQuestion::tableName(). "as q")
             ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=q.user_id')
             ->leftJoin(CommunityTag::tableName() . "as t",'t.id=q.tag_id')

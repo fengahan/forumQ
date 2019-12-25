@@ -33,7 +33,7 @@ $this->title = 'My Yii Application';
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="筛选" data-original-title="" title="">
                             <i class="zmdi zmdi-book" data-toggle="dropdown"></i>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
-                                <a href="" class="dropdown-item">付费</a>
+                                <a href="" data-name="" class="dropdown-item">付费</a>
                                 <!--选择样式 bg-green text-white!-->
                                 <a href="" class="dropdown-item bg-green text-white">非付费</a>
                             </div>
@@ -53,7 +53,7 @@ $this->title = 'My Yii Application';
                     </div>
                 </div>
                 <!-- 文章列表-->
-                <?php echo $this->render('@app/views/common/question.php',['question_list'=>$question_list]);?>
+                <?=$this->render('@app/views/common/question.php',['question_list'=>$question_list]);?>
             </div>
         </div>
         <!--  推荐最新解决问答-->
@@ -62,7 +62,7 @@ $this->title = 'My Yii Application';
                 <div class="card-body">
                     <h4 class="card-title">最新解决问答</h4>
                 </div>
-                <?php echo $this->render('@app/views/common/recommend.php');?>
+                <?=$this->render('@app/views/common/recommend.php');?>
             </div>
         </div>
     </div>

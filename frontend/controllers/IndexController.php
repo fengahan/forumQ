@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\CommunityQuestion;
 use common\models\CommunityTag;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
@@ -77,11 +78,25 @@ class IndexController extends Controller
      */
     public function actionIndex()
     {
+        $req=Yii::$app->request->get();
+        $req['tag_id']=$req['tag_id']??0;
+        $req['solve']=$req['solve']??CommunityQuestion::SOLVE_NOT;
         $tagModel=new CommunityTag();
         $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
         $tag_list=$tagModel->getList($tagWhere);
+        $communityQuestionModel=(new CommunityQuestion());
+        $question_list=$communityQuestionModel->getNewBest($req['tag_id'],$req['solve']);
         $pagination = new Pagination(['totalCount' =>10, 'pageSize' => '2']);
-        return $this->render('index',['tag_list'=>$tag_list,'pagination' => $pagination]);
+        $main_count=[];
+        $main_count['solve_yes_count']=$communityQuestionModel->getCountByMap(['is_solve'=>CommunityQuestion::SOLVE_YES]);
+        $main_count['solve_not_count']=$communityQuestionModel->getCountByMap(['is_solve'=>CommunityQuestion::SOLVE_NOT]);
+        return $this->render('index',[
+            'question_list'=>$question_list,
+            'tag_list'=>$tag_list,
+            'pagination' => $pagination,
+            'main_count'=>$main_count,
+            'req'=>$req,
+        ]);
     }
 
 }

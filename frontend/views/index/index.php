@@ -1,7 +1,11 @@
 <?php
-
+use common\models\CommunityQuestion;
+use yii\helpers\Url;
 /* @var $this yii\web\View */
-/* @var $tag_list */
+/* @var $tag_list array*/
+/* @var $main_count array*/
+/* @var $question_list array */
+/* @var $pagination */
 $this->title = 'My Yii Application';
 ?>
 <div class="content__inner">
@@ -10,9 +14,9 @@ $this->title = 'My Yii Application';
             <div class="card issue-tracker">
                 <div class="toolbar toolbar--inner">
                     <div class="toolbar__nav">
-                        <a class="active" href="">未解决 20</a>
-                        <a href="" class="hidden-sm-down">已解决 30</a>
-                        <a href="">无人问津 40</a>
+                        <a  href="<?=Url::to(['/index/index','solve'=>CommunityQuestion::SOLVE_NOT])?>" class="<?php if ($req['solve']==CommunityQuestion::SOLVE_NOT):?>active<?php endif;?>">未解决 <?=$main_count['solve_not_count'];?></a>
+
+                        <a href="<?=Url::to(['/index/index','solve'=>CommunityQuestion::SOLVE_YES])?>" class="<?php if ($req['solve']==CommunityQuestion::SOLVE_YES):?>active<?php endif;?>">已解决 <?=$main_count['solve_yes_count'];?></a>
                     </div>
                     <div class="actions">
                         <i class="actions__item zmdi zmdi-search" data-ma-action="toolbar-search-open" data-toggle="tooltip" data-title="内容搜索" data-original-title="" title=""></i>
@@ -44,12 +48,12 @@ $this->title = 'My Yii Application';
                         </div>
                     </div>
                     <div class="toolbar__search">
-                        <input type="text" placeholder="看!这里有你想要的...">
+                            <input type="text" placeholder="看!这里有你想要的...">
                         <i class="toolbar__search__close zmdi zmdi-long-arrow-left" data-ma-action="toolbar-search-close"></i>
                     </div>
                 </div>
                 <!-- 文章列表-->
-                <?php echo $this->render('@app/views/common/article.php');?>
+                <?php echo $this->render('@app/views/common/question.php',['question_list'=>$question_list]);?>
             </div>
         </div>
         <!--  推荐最新解决问答-->

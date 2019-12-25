@@ -2,7 +2,9 @@
 
 namespace common\models;
 
+use phpDocumentor\Reflection\Types\Self_;
 use Yii;
+use yii\base\Arrayable;
 
 /**
  * This is the model class for table "{{%question}}".
@@ -27,6 +29,12 @@ use Yii;
  */
 class CommunityQuestion extends \yii\db\ActiveRecord
 {
+    const STATUS_NORMAL=10;
+    const STATUS_CLOSE=20;
+    const STATUS_DELETE=30;
+
+    const SOLVE_YES=10;
+    const SOLVE_NOT=20;
     /**
      * {@inheritdoc}
      */
@@ -73,4 +81,31 @@ class CommunityQuestion extends \yii\db\ActiveRecord
             'updated_at' => '查看次数',
         ];
     }
+
+    /**
+     * 获取最新解决的问题
+     * @param int $tag_id
+     * @param $is_solve
+     * @return array
+     */
+    public function getNewBest($tag_id,$is_solve)
+    {
+        $where['q.status']=self::STATUS_NORMAL;
+        $where['q.is_solve']=$is_solve;
+        if (!empty($tag_id)){
+            $where['q.tag_id']=$tag_id;
+        }
+        return self::find()->select("q.title,q.reply_number,q.view_number,q.money,q.created_at,
+        u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(CommunityQuestion::tableName(). "as q")
+            ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=q.user_id')
+            ->leftJoin(CommunityTag::tableName() . "as t",'t.id=q.tag_id')
+            ->where($where)->asArray()->all();
+    }
+
+    public function getCountByMap($where)
+    {
+        $where['status']=self::STATUS_NORMAL;
+        return self::find()->where($where)->asArray()->count();
+    }
+
 }

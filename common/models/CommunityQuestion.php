@@ -5,6 +5,7 @@ namespace common\models;
 use phpDocumentor\Reflection\Types\Self_;
 use Yii;
 use yii\base\Arrayable;
+use yii\data\Pagination;
 
 /**
  * This is the model class for table "{{%question}}".
@@ -88,9 +89,10 @@ class CommunityQuestion extends \yii\db\ActiveRecord
      * 获取最新解决的问题
      * @param int $tag_id
      * @param $is_solve
+     * @param $pagination Pagination
      * @return array
      */
-    public function getNewBest($tag_id,$is_solve)
+    public function getNewBest($tag_id,$is_solve,$pagination)
     {
         $where['q.status']=self::STATUS_NORMAL;
         $where['q.is_solve']=$is_solve;
@@ -101,9 +103,22 @@ class CommunityQuestion extends \yii\db\ActiveRecord
         u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(CommunityQuestion::tableName(). "as q")
             ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=q.user_id')
             ->leftJoin(CommunityTag::tableName() . "as t",'t.id=q.tag_id')
-            ->where($where)->asArray()->all();
+            ->where($where)->asArray()->offset($pagination->offset)
+            ->limit($pagination->limit)->all();
     }
-
+    public function getNewBestCount($tag_id,$is_solve)
+    {
+        $where['q.status']=self::STATUS_NORMAL;
+        $where['q.is_solve']=$is_solve;
+        if (!empty($tag_id)){
+            $where['q.tag_id']=$tag_id;
+        }
+        return self::find()->select("q.title,q.reply_number,q.view_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
+        u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(CommunityQuestion::tableName(). "as q")
+            ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=q.user_id')
+            ->leftJoin(CommunityTag::tableName() . "as t",'t.id=q.tag_id')
+            ->where($where)->asArray()->count();
+    }
     public function getCountByMap($where)
     {
         $where['status']=self::STATUS_NORMAL;

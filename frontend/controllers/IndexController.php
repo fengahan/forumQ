@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\BaseModel;
 use common\models\CommunityQuestion;
 use common\models\CommunityTag;
 use frontend\models\ResendVerificationEmailForm;
@@ -85,8 +86,12 @@ class IndexController extends Controller
         $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
         $tag_list=$tagModel->getList($tagWhere);
         $communityQuestionModel=(new CommunityQuestion());
-        $question_list=$communityQuestionModel->getNewBest($req['tag_id'],$req['solve']);
-        $pagination = new Pagination(['totalCount' =>10, 'pageSize' => '2']);
+        $question_list=[];
+        $question_count=$communityQuestionModel->getNewBestCount($req['tag_id'],$req['solve']);
+        $pagination = new Pagination(['totalCount' =>$question_count, 'pageSize' => BaseModel::PAGE_SIZE]);
+        if ($question_count>0){
+            $question_list=$communityQuestionModel->getNewBest($req['tag_id'],$req['solve'],$pagination);
+        }
         $main_count=[];
         $main_count['solve_yes_count']=$communityQuestionModel->getCountByMap(['is_solve'=>CommunityQuestion::SOLVE_YES]);
         $main_count['solve_not_count']=$communityQuestionModel->getCountByMap(['is_solve'=>CommunityQuestion::SOLVE_NOT]);

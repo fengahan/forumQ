@@ -80,21 +80,31 @@ class IndexController extends Controller
     public function actionIndex()
     {
         $req=Yii::$app->request->get();
-        $req['tag_id']=$req['tag_id']??0;
-        $req['solve']=$req['solve']??CommunityQuestion::SOLVE_NOT;
+        $req['tag_id']=isset($req['tag_id'])?(int)$req['tag_id']:0;
+        $req['solve']=isset($req['solve'])?(int)$req['solve']:CommunityQuestion::SOLVE_NOT;
+        $req['is_public']=isset($req['is_public'])?(int)$req['is_public']:0;
+        $req['sort']=isset($req['is_sort'])?$req['is_sort']:"";//'new_created'
+        $req['search_word']=isset($req['search_word'])?$req['search_word']:"";
+        $list_where['tag_id']=$req['tag_id'];
+        $list_where['solve']=$req['solve'];
+        $list_where['is_public']=$req['is_public'];
+        $list_where["search_word"]=$req['search_word'];
+        $sort=$req['sort'];
         $tagModel=new CommunityTag();
         $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
         $tag_list=$tagModel->getList($tagWhere);
         $communityQuestionModel=(new CommunityQuestion());
         $question_list=[];
-        $question_count=$communityQuestionModel->getNewBestCount($req['tag_id'],$req['solve']);
+        $question_count=$communityQuestionModel->getNewBestCount($list_where);
         $pagination = new Pagination(['totalCount' =>$question_count, 'pageSize' => BaseModel::PAGE_SIZE]);
         if ($question_count>0){
-            $question_list=$communityQuestionModel->getNewBest($req['tag_id'],$req['solve'],$pagination);
+            $question_list=$communityQuestionModel->getNewBest($list_where,$sort,$pagination);
         }
         $main_count=[];
-        $main_count['solve_yes_count']=$communityQuestionModel->getCountByMap(['is_solve'=>CommunityQuestion::SOLVE_YES]);
-        $main_count['solve_not_count']=$communityQuestionModel->getCountByMap(['is_solve'=>CommunityQuestion::SOLVE_NOT]);
+        $where_solve_yes_count=array_merge($list_where,['solve'=>CommunityQuestion::SOLVE_YES]);
+        $where_solve_not_count=array_merge($list_where,['solve'=>CommunityQuestion::SOLVE_NOT]);
+        $main_count['solve_yes_count']=$communityQuestionModel->getCountByMap($where_solve_yes_count);
+        $main_count['solve_not_count']=$communityQuestionModel->getCountByMap($where_solve_not_count);
         return $this->render('index',[
             'question_list'=>$question_list,
             'tag_list'=>$tag_list,

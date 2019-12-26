@@ -38,6 +38,9 @@ class CommunityQuestion extends \yii\db\ActiveRecord
 
     const SOLVE_YES=10;
     const SOLVE_NOT=20;
+
+    const PUBLIC_YES=10;
+    const PUBLIC_NOT=20;
     /**
      * {@inheritdoc}
      */
@@ -87,42 +90,75 @@ class CommunityQuestion extends \yii\db\ActiveRecord
 
     /**
      * 获取最新解决的问题
-     * @param int $tag_id
-     * @param $is_solve
+     * @param $list_where
+     * @param $sort
      * @param $pagination Pagination
      * @return array
      */
-    public function getNewBest($tag_id,$is_solve,$pagination)
+    public function getNewBest($list_where,$sort,$pagination)
     {
+
         $where['q.status']=self::STATUS_NORMAL;
-        $where['q.is_solve']=$is_solve;
+        $where['q.is_solve']=$list_where['solve'];
         if (!empty($tag_id)){
             $where['q.tag_id']=$tag_id;
         }
-        return self::find()->select("q.title,q.reply_number,q.view_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
+        if (!empty($list_where['is_public'])){
+            $where['q.is_public']=$list_where['is_public'];
+        }
+        $order_by='created_at desc';
+        if ($sort!='created_at'){
+            $order_by='last_reply_at desc';
+        }
+        $query=  self::find()->select("q.title,q.reply_number,q.view_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
         u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(CommunityQuestion::tableName(). "as q")
             ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=q.user_id')
             ->leftJoin(CommunityTag::tableName() . "as t",'t.id=q.tag_id')
-            ->where($where)->asArray()->offset($pagination->offset)
-            ->limit($pagination->limit)->all();
+            ->where($where);
+        if (!empty($list_where['search_word'])){
+            $query->andFilterWhere(['like','q.title',$list_where['search_word']]);
+        }
+        return $query->offset($pagination->offset)
+        ->limit($pagination->limit)->orderBy($order_by)->asArray()->all();
     }
-    public function getNewBestCount($tag_id,$is_solve)
+    public function getNewBestCount($list_where)
     {
         $where['q.status']=self::STATUS_NORMAL;
-        $where['q.is_solve']=$is_solve;
-        if (!empty($tag_id)){
-            $where['q.tag_id']=$tag_id;
+        $where['q.is_solve']=$list_where['solve'];
+        if (!empty($list_where['tag_id'])){
+            $where['q.tag_id']=$list_where['tag_id'];
         }
-        return self::find()->select("q.title,q.reply_number,q.view_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
+        if (!empty($list_where['is_public'])){
+            $where['q.is_public']=$list_where['is_public'];
+        }
+
+        $query= self::find()->select("q.title,q.reply_number,q.view_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
         u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(CommunityQuestion::tableName(). "as q")
             ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=q.user_id')
             ->leftJoin(CommunityTag::tableName() . "as t",'t.id=q.tag_id')
-            ->where($where)->asArray()->count();
+            ->where($where);
+        if (!empty($list_where['search_word'])){
+            $query->andFilterWhere(['like','q.title',$list_where['search_word']]);
+        }
+        return $query->asArray()->count();
+
     }
-    public function getCountByMap($where)
+    public function getCountByMap($list_where)
     {
         $where['status']=self::STATUS_NORMAL;
-        return self::find()->where($where)->asArray()->count();
+        $where['is_solve']=$list_where['solve'];
+        if (!empty($list_where['tag_id'])){
+            $where['tag_id']=$list_where['tag_id'];
+        }
+        if (!empty($list_where['is_public'])){
+            $where['is_public']=$list_where['is_public'];
+        }
+        $query=self::find()->where($where);
+        if (!empty($list_where['search_word'])){
+            $query->andFilterWhere(['like','title',$list_where['search_word']]);
+        }
+
+        return $query->asArray()->count();
     }
 
 }

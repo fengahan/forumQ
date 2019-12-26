@@ -33,12 +33,13 @@ $this->title = 'My Yii Application';
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="筛选" data-original-title="" title="">
                             <i class="zmdi zmdi-book" data-toggle="dropdown"></i>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
-                                <a href="" data-name="" class="dropdown-item">付费</a>
+                                <a href="" data-name="" class="dropdown-item">全部</a>
+                                <a href="" data-name="" class="dropdown-item">公开答案</a>
                                 <!--选择样式 bg-green text-white!-->
-                                <a href="" class="dropdown-item bg-green text-white">非付费</a>
+                                <a href="" class="dropdown-item bg-green text-white">不公开答案</a>
                             </div>
                         </div>
-                        <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="Sort by" data-original-title="" title="">
+                        <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="排序" data-original-title="" title="">
                             <i class="zmdi zmdi-sort" data-toggle="dropdown"></i>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
                                 <a href="" class="dropdown-item">最新发布</a>

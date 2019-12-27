@@ -22,29 +22,29 @@ $this->title = 'My Yii Application';
                         <i class="actions__item zmdi zmdi-search" data-ma-action="toolbar-search-open" data-toggle="tooltip" data-title="内容搜索" data-original-title="" title=""></i>
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="标签" data-original-title="" title="">
                             <i class="zmdi zmdi-label-alt-outline" data-toggle="dropdown"></i>
-                            <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
-                                <a href="" class="dropdown-item">全部</a>
+                            <div  id="check_tag" class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
+                                <a href="#" onclick="tag_click_func(0)" class="dropdown-item">全部</a>
                                 <!--选择样式 bg-green text-white!-->
                                 <?php foreach ($tag_list as $key=>$val):?>
-                                    <a href="" class="dropdown-item"><?=$val['title']?></a>
+                                    <a href="#" onclick="tag_click_func(<?=$val['id']?>)" class="dropdown-item"><?=$val['title']?></a>
                                 <?php endforeach;?>
                             </div>
                         </div>
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="筛选" data-original-title="" title="">
                             <i class="zmdi zmdi-book" data-toggle="dropdown"></i>
-                            <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
-                                <a href="" data-name="" class="dropdown-item">全部</a>
-                                <a href="" data-name="" class="dropdown-item">公开答案</a>
+                            <div  id="check_public" class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
+                                <a href="#" onclick="public_click_func(0)"  class="dropdown-item">全部</a>
+                                <a href="#" onclick="public_click_func(<?=CommunityQuestion::PUBLIC_YES?>)"  class="dropdown-item">公开答案</a>
                                 <!--选择样式 bg-green text-white!-->
-                                <a href="" class="dropdown-item bg-green text-white">不公开答案</a>
+                                <a href="#" onclick="public_click_func(<?=CommunityQuestion::PUBLIC_NOT?>)"  class="dropdown-item">不公开答案</a>
                             </div>
                         </div>
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="排序" data-original-title="" title="">
                             <i class="zmdi zmdi-sort" data-toggle="dropdown"></i>
-                            <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
-                                <a href="" class="dropdown-item">最新发布</a>
+                            <div id="check_sort" class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
+                                <a href="#" onclick="sort_click_func(0)" class="dropdown-item">最新发布</a>
                                 <!--选择样式 bg-green text-white!-->
-                                <a href="" class="dropdown-item bg-green text-white">最新回复</a>
+                                <a href="#" onclick="sort_click_func(1)" class="dropdown-item bg-green text-white">最新回复</a>
                             </div>
                         </div>
                     </div>
@@ -70,3 +70,59 @@ $this->title = 'My Yii Application';
     <!-- 页码-->
     <?php echo $this->render('@app/views/common/paginator.php',['pagination'=>$pagination]);?>
 </div>
+
+<script type="text/javascript">
+    /**when click sort element
+     */
+    var search = window.location.search;
+    var SearchParam=getSearchParams(search)
+    var sortEle = document.getElementById("check_sort").getElementsByTagName("a");
+    var sort_click_func=function (i) {
+        if (i===0){
+            sort_filed="created_at"
+        }else {
+            sort_filed="last_reply_at"
+        }
+        SearchParam['sort']=sort_filed
+         window.location.href=createURL(SearchParam)
+    }
+    var publicEle = document.getElementById("check_public").getElementsByTagName("a");
+    var public_click_func=function (i) {
+        SearchParam['is_public']=i
+        window.location.href=createURL(SearchParam)
+    }
+    var tagEle = document.getElementById("check_tag").getElementsByTagName("a");
+    var tag_click_func=function (i) {
+        SearchParam['tag_id']=i
+        window.location.href=createURL(SearchParam)
+    }
+
+    function createURL(param) {
+          let Url;
+          let queryStr = '';
+          for (let key in param) {
+              let link = '&' + key + "=" + param[key];
+              queryStr += link;
+          }
+          Url = window.location.protocol+"//"+window.location.host +window.location.pathname+ "?" + queryStr.substr(1);
+          return Url;
+      }
+
+  function getSearchParams(Url) {
+        var str = Url;
+       var obj = {};
+        str = str.substring(1, str.length);
+        var arr = str.split("&");
+        console.log(arr)
+
+        // 将每一个数组元素以=分隔并赋给obj对象
+        for (var i = 0; i < arr.length; i++) {
+
+            var tmp_arr = arr[i].split("=");
+            if (tmp_arr[0]!==""){
+                obj[decodeURIComponent(tmp_arr[0])] = decodeURIComponent(tmp_arr[1]);
+            }
+        }
+        return obj;
+    }
+</script>

@@ -83,7 +83,7 @@ class IndexController extends Controller
         $req['tag_id']=isset($req['tag_id'])?(int)$req['tag_id']:0;
         $req['solve']=isset($req['solve'])?(int)$req['solve']:CommunityQuestion::SOLVE_NOT;
         $req['is_public']=isset($req['is_public'])?(int)$req['is_public']:0;
-        $req['sort']=isset($req['is_sort'])?$req['is_sort']:"";//'new_created'
+        $req['sort']=isset($req['sort'])?$req['sort']:"";//'new_created'
         $req['search_word']=isset($req['search_word'])?$req['search_word']:"";
         $list_where['tag_id']=$req['tag_id'];
         $list_where['solve']=$req['solve'];

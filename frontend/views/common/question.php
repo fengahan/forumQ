@@ -1,5 +1,6 @@
 <!-- 文章列表-->
 <?php
+use yii\helpers\Url;
 /**
  * @var $question_list array
  */
@@ -14,7 +15,7 @@ if (isset($listClass)){
         <img src="<?=$value['avatar']?>" class="listview__img" alt=""
              title="<?=$value['self_signature']?>"  data-toggle="tooltip" data-placement="left" >
         <div class="listview__content text-truncate">
-            <a class="listview__heading" href="">
+            <a class="listview__heading" href="<?=Url::to(['question/detail','question_id'=>$value['id']])?>">
                 <?=$value['title']?>
             </a>
             <p>#<?=$value['last_reply_nickname']?> 回复于<?=Yii::$app->formatter->asRelativeTime($value['last_reply_at']);?></p>

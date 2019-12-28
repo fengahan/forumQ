@@ -111,7 +111,7 @@ class CommunityQuestion extends \yii\db\ActiveRecord
         if ($sort!='created_at'){
             $order_by='last_reply_at desc';
         }
-        $query=  self::find()->select("q.title,q.reply_number,q.view_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
+        $query=  self::find()->select("q.id,q.title,q.reply_number,q.view_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
         u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(CommunityQuestion::tableName(). "as q")
             ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=q.user_id')
             ->leftJoin(CommunityTag::tableName() . "as t",'t.id=q.tag_id')
@@ -172,5 +172,14 @@ class CommunityQuestion extends \yii\db\ActiveRecord
             ->limit(5)
             ->asArray()
             ->all();
+    }
+
+    public function getQuestionContent($id)
+    {
+        return self::find()->alias("q")
+            ->select("q.*,u.avatar,u.nickname")
+            ->leftJoin(CommunityUsers::tableName()." as u","u.id=q.user_id")
+            ->where(['q.id'=>$id])->asArray()->one();
+
     }
 }

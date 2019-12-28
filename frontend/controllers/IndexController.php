@@ -100,6 +100,8 @@ class IndexController extends Controller
         if ($question_count>0){
             $question_list=$communityQuestionModel->getNewBest($list_where,$sort,$pagination);
         }
+        $new_solve_list=$communityQuestionModel->getNewSolve();
+
         $main_count=[];
         $where_solve_yes_count=array_merge($list_where,['solve'=>CommunityQuestion::SOLVE_YES]);
         $where_solve_not_count=array_merge($list_where,['solve'=>CommunityQuestion::SOLVE_NOT]);
@@ -110,6 +112,7 @@ class IndexController extends Controller
             'tag_list'=>$tag_list,
             'pagination' => $pagination,
             'main_count'=>$main_count,
+            'new_solve_list'=>$new_solve_list,
             'req'=>$req,
         ]);
     }

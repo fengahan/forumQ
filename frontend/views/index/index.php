@@ -63,7 +63,7 @@ $this->title = 'My Yii Application';
                 <div class="card-body">
                     <h4 class="card-title">最新解决问答</h4>
                 </div>
-                <?=$this->render('@app/views/common/recommend.php');?>
+                <?=$this->render('@app/views/common/recommend.php',['new_solve_list'=>$new_solve_list]);?>
             </div>
         </div>
     </div>

@@ -165,12 +165,12 @@ $this->title = 'My Yii Application';
     {
         var search_word;
         if (window.event.keyCode === 13) {
-            search_word = document.getElementById("search_word");
-            if (search_word.value===""){
-
+            search_word= document.getElementById("search_word").value;
+            if (search_word===""){
                 notify("","","","warning","", "");
+                return false
             }
-            // window.location.href = "<?=Url::to(['index/index', 'search_word' =>"A"])?>"
+            window.location.href = "<?=Url::to(['index/index'])?>"+"?search_word="+search_word
             return false;
         }
     }

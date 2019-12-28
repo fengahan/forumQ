@@ -27,6 +27,8 @@ class AppAsset extends AssetBundle
         'mutui/vendors/bootstrap/js/bootstrap.min.js',
         'mutui/vendors/jquery-scrollbar/jquery.scrollbar.min.js',
         'mutui/vendors/jquery-scrollLock/jquery-scrollLock.min.js',
+        "mutui/vendors/bootstrap-notify/bootstrap-notify.min.js",
+        "mutui/vendors/sweetalert2/sweetalert2.min.js",
         //App functions and actions
         'mutui/js/app.min.js',
     ];
@@ -34,6 +36,9 @@ class AppAsset extends AssetBundle
     public $depends = [
 //        'yii\web\YiiAsset',
 //        'yii\bootstrap\BootstrapAsset',
+    ];
+    public $jsOptions = [
+        'position' => \yii\web\View::POS_HEAD,   // 这是设置所有js放置的位置
     ];
 
     /**

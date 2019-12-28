@@ -23,33 +23,33 @@ $this->title = 'My Yii Application';
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="标签" data-original-title="" title="">
                             <i class="zmdi zmdi-label-alt-outline" data-toggle="dropdown"></i>
                             <div  id="check_tag" class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
-                                <a href="#" onclick="tag_click_func(0)" class="dropdown-item">全部</a>
+                                <a href="#" onclick="tag_click_func(0)"  class="dropdown-item <?php if ($req['tag_id']==0):?>bg-green text-white<?php endif;?>>">全部</a>
                                 <!--选择样式 bg-green text-white!-->
                                 <?php foreach ($tag_list as $key=>$val):?>
-                                    <a href="#" onclick="tag_click_func(<?=$val['id']?>)" class="dropdown-item"><?=$val['title']?></a>
+                                    <a href="#" onclick="tag_click_func(<?=$val['id']?>)" class="dropdown-item <?php if ($req['tag_id']==$val['id']):?>bg-green text-white<?php endif;?>"><?=$val['title']?></a>
                                 <?php endforeach;?>
                             </div>
                         </div>
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="筛选" data-original-title="" title="">
                             <i class="zmdi zmdi-book" data-toggle="dropdown"></i>
                             <div  id="check_public" class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
-                                <a href="#" onclick="public_click_func(0)"  class="dropdown-item">全部</a>
-                                <a href="#" onclick="public_click_func(<?=CommunityQuestion::PUBLIC_YES?>)"  class="dropdown-item">公开答案</a>
+                                <a href="#" onclick="public_click_func(0)"  class="dropdown-item <?php if ($req['is_public']==0):?>bg-green text-white<?php endif;?>">全部</a>
+                                <a href="#" onclick="public_click_func(<?=CommunityQuestion::PUBLIC_YES?>)"  class="dropdown-item <?php if ($req['is_public']==CommunityQuestion::PUBLIC_YES):?>bg-green text-white<?php endif;?>">公开答案</a>
                                 <!--选择样式 bg-green text-white!-->
-                                <a href="#" onclick="public_click_func(<?=CommunityQuestion::PUBLIC_NOT?>)"  class="dropdown-item">不公开答案</a>
+                                <a href="#" onclick="public_click_func(<?=CommunityQuestion::PUBLIC_NOT?>)"  class="dropdown-item <?php if ($req['is_public']==CommunityQuestion::PUBLIC_NOT):?>bg-green text-white<?php endif;?>">不公开答案</a>
                             </div>
                         </div>
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="排序" data-original-title="" title="">
                             <i class="zmdi zmdi-sort" data-toggle="dropdown"></i>
                             <div id="check_sort" class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
-                                <a href="#" onclick="sort_click_func(0)" class="dropdown-item">最新发布</a>
+                                <a href="#" onclick="sort_click_func(0)" class="dropdown-item <?php if ($req['sort']=="created_at"):?>bg-green text-white<?php endif;?>">最新发布</a>
                                 <!--选择样式 bg-green text-white!-->
-                                <a href="#" onclick="sort_click_func(1)" class="dropdown-item bg-green text-white">最新回复</a>
+                                <a href="#" onclick="sort_click_func(1)" class="dropdown-item <?php if ($req['sort']!="created_at"):?>bg-green text-white<?php endif;?>">最新回复</a>
                             </div>
                         </div>
                     </div>
-                    <div class="toolbar__search">
-                            <input type="text" placeholder="看!这里有你想要的...">
+                    <div class="toolbar__search"  onkeydown="onkey()">
+                            <input type="text" id="search_word" placeholder="看!这里有你想要的...">
                         <i class="toolbar__search__close zmdi zmdi-long-arrow-left" data-ma-action="toolbar-search-close"></i>
                     </div>
                 </div>
@@ -113,8 +113,6 @@ $this->title = 'My Yii Application';
        var obj = {};
         str = str.substring(1, str.length);
         var arr = str.split("&");
-        console.log(arr)
-
         // 将每一个数组元素以=分隔并赋给obj对象
         for (var i = 0; i < arr.length; i++) {
 
@@ -125,4 +123,56 @@ $this->title = 'My Yii Application';
         }
         return obj;
     }
+    function notify(from, align, icon, type, animIn, animOut){
+        $.notify({
+            icon: icon,
+            title: '错误提示',
+            message: '请输入您想找的文章',
+            url: ''
+        },{
+            element: 'body',
+            type: type,
+            allow_dismiss: true,
+            offset: {
+                x: 15, // Keep this as default
+                y: 15  // Unless there'll be alignment issues as this value is targeted in CSS
+            },
+            spacing: 10,
+            z_index: 1031,
+            delay: 2500,
+            timer: 1000,
+            url_target: '_blank',
+            mouse_over: false,
+            animate: {
+                enter: animIn,
+                exit: animOut
+            },
+            template:   '<div data-notify="container" class="alert alert-dismissible alert-{0} alert--notify" role="alert">' +
+                '<span data-notify="icon"></span> ' +
+                '<span data-notify="title">{1}</span> ' +
+                '<span data-notify="message">{2}</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '<button type="button" aria-hidden="true" data-notify="dismiss" class="alert--notify__close">关闭</button>' +
+                '</div>'
+        });
+    }
+
+    //回车监听
+    function onkey()
+    {
+        var search_word;
+        if (window.event.keyCode === 13) {
+            search_word = document.getElementById("search_word");
+            if (search_word.value===""){
+
+                notify("","","","warning","", "");
+            }
+            // window.location.href = "<?=Url::to(['index/index', 'search_word' =>"A"])?>"
+            return false;
+        }
+    }
+
 </script>

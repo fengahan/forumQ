@@ -29,6 +29,7 @@ use yii\data\Pagination;
  * @property int $status 关闭 开启 删除
  * @property int $created_at
  * @property int $updated_at 查看次数
+ * @property int $best_reply_at 最佳答案采纳时间
  */
 class CommunityQuestion extends \yii\db\ActiveRecord
 {

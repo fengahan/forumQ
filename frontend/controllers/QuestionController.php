@@ -3,7 +3,11 @@
 
 namespace frontend\controllers;
 use common\models\CommunityQuestion;
+use common\models\CommunityTag;
+use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
+use common\models\CommunityUserTag;
+use mysql_xdevapi\Warning;
 use Yii;
 use yii\web\NotFoundHttpException;
 
@@ -27,10 +31,16 @@ class QuestionController extends BaseController
         }
         $userModel=new CommunityUsers();
         $question_user_info=$userModel->getUserInfo($question['user_id']);
+        $userTag =new CommunityUserTag();
+        $question_user_tag=$userTag->getUserTag($question['user_id']);
+        $userLinkModel=new CommunityUserLink();
 
+        $user_link=$userLinkModel->getUserLink(['user_id'=>$question['user_id'],"status"=>[CommunityUserLink::STATUS_NORMAL]]);
         return $this->render("detail",[
             'question'=>$question,
             'question_user_info'=>$question_user_info,
+            'question_user_tag'=>$question_user_tag,
+            'user_link'=>$user_link
         ]);
 
     }

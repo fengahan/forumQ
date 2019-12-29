@@ -1,6 +1,7 @@
 <?php
 use common\models\CommunityUsers;
 use common\models\CommunityQuestion;
+use common\models\CommunityUserTag;
 ?>
 <div class="content__inner">
         <div class="row">
@@ -35,11 +36,6 @@ use common\models\CommunityQuestion;
                             <span class="issue-tracker__tag bg-green"><?=$question['reply_number']?></span>
                             条回复
                         </div>
-                        <nav class="toolbar__nav ml-auto hidden-sm-down">
-                            <a href="" class="active">新发布</a>
-                            <a href="">新活跃</a>
-                            <a href="">之前的</a>
-                        </nav>
                     </div>
 
                     <div class="listview listview--bordered listview--block">
@@ -159,12 +155,12 @@ use common\models\CommunityQuestion;
                 <div class="card">
                     <div class="card-body">
                         <!--非大咖去掉badge-success-ext 这个样式-->
-                        <div class="user badge-success-ext">
+                        <div class="user <?php if (CommunityUsers::TYPE_FROM_CODE==$question_user_info['level']):?> badge-success-ext<?php endif;?>">
                             <div class="user__info">
 
-                                <img class="user__img <?=\common\models\CommunityUsers::GENDER_STYLE[$question_user_info['gender']]?>" src="<?=$question_user_info['avatar']?>" alt="">
+                                <img class="user__img <?=CommunityUsers::GENDER_STYLE[$question_user_info['gender']]?>" src="<?=$question_user_info['avatar']?>" alt="">
                                 <div>
-                                    <div><?=$question_user_info['nickname']?>（<?=\common\models\CommunityUsers::TYPE[$question_user_info['type']]?>）</div>
+                                    <div><?=$question_user_info['nickname']?>（<?=CommunityUsers::TYPE[$question_user_info['type']]?>）</div>
                                     <div>等级:<code><?=$question_user_info['level']?></code></div>
                                     <div><?=$question_user_info['email']?></div>
                                 </div>
@@ -174,76 +170,24 @@ use common\models\CommunityQuestion;
                         <p class="card-text"><?=$question_user_info['self_signature']?></p>
 
                         <div class="tags flot-chart-legends" >
-                            <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:小白">
-                                <div class="legendColorBox" style="display: inline-block">
-                                    <div style="border:1px solid #fff;padding:1px">
-                                        <div style="width:4px;height:0;border:5px solid #f5c942;overflow:hidden">
+                            <?php foreach ($question_user_tag as $key=>$value):?>
+                                <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:<?=CommunityUserTag::LEVEL[$value['level']]?>">
+                                    <div class="legendColorBox" style="display: inline-block">
+                                        <div style="border:1px solid #fff;padding:1px">
+                                            <div style="width:4px;height:0;border:5px solid <?=CommunityUserTag::LEVEL_STYLE_COLOR[$value['level']]?>;overflow:hidden">
 
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                Java
-                            </a>
-                            <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:中级">
-                                <div class="legendColorBox" style="display: inline-block">
-                                    <div style="border:1px solid #fff;padding:1px">
-                                        <div style="width:4px;height:0;border:5px solid #3af51b;overflow:hidden">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                Mysql
-                            </a>
-                            <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:高级">
-                                <div class="legendColorBox" style="display: inline-block">
-                                    <div style="border:1px solid #fff;padding:1px">
-                                        <div style="width:4px;height:0;border:5px solid #f51914;overflow:hidden">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                Redis
-                            </a>
-                            <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:小白">
-                                <div class="legendColorBox" style="display: inline-block">
-                                    <div style="border:1px solid #fff;padding:1px">
-                                        <div style="width:4px;height:0;border:5px solid #f5c942;overflow:hidden">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                RabbitMq
-                            </a>
-                            <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:小白">
-                                <div class="legendColorBox" style="display: inline-block">
-                                    <div style="border:1px solid #fff;padding:1px">
-                                        <div style="width:4px;height:0;border:5px solid #f5c942;overflow:hidden">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                Oracle
-                            </a>
-                            <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:高级">
-                                <div class="legendColorBox" style="display: inline-block">
-                                    <div style="border:1px solid #fff;padding:1px">
-                                        <div style="width:4px;height:0;border:5px solid #f51914;overflow:hidden">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                Docker
-                            </a>
-
+                                   <?=$value['title']?>
+                                </a>
+                            <?php endforeach;?>
                         </div>
 
                         <div class="team__social text-center">
-                            <a href="" class="zmdi zmdi-github bg-indigo"></a>
-                            <a href="" class="zmdi zmdi-stackoverflow bg-cyan"></a>
-                            <a href="" class="zmdi zmdi-home bg-red"></a>
-                            <a href="" class="zmdi zmdi-github bg-indigo"></a>
-                            <a href="" class="zmdi zmdi-stackoverflow bg-cyan"></a>
-
+                            <?php foreach ($user_link as $key=>$value):?>
+                                <a href="" class="zmdi <?=$value['icon']?> <?=$value['color']?>"  data-toggle="tooltip" data-title="<?=$value['name']?>" ></a>
+                            <?php endforeach;?>
                         </div>
                     </div>
                 </div>

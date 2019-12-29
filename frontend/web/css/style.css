@@ -35,3 +35,9 @@
 .flot-chart-250{
     height:230px;display:block
 }
+.sex_img_man{
+    border: 2px solid rgba(38, 213, 255, 0.51);
+}
+.sex_img_woman{
+    border: 1px solid rgba(255, 0, 166, 0.73);
+}

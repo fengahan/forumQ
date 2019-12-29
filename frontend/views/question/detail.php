@@ -2,6 +2,7 @@
         <div class="row">
             <div class="col-lg-9 col-md-9">
                 <div class="q-a__question">
+                    <?php if ($question['is_public']===\common\models\CommunityQuestion::PUBLIC_YES):?>
                     <div class="q-a__vote hidden-sm-down">
                         <div class="q-a__vote__votes">
                             <i><?=$question['subscribe_number']?></i>
@@ -10,6 +11,7 @@
                             <i class="zmdi zmdi-help"  data-toggle="tooltip" data-title="有答案通知我" ></i>
                         </div>
                     </div>
+                    <?php endif;?>
 
                     <h2><?=$question['title']?></h2>
                     <p>
@@ -155,16 +157,17 @@
                         <!--非大咖去掉badge-success-ext 这个样式-->
                         <div class="user badge-success-ext">
                             <div class="user__info">
-                                <img class="user__img" src="static/mutui/demo/img/profile-pics/8.jpg" alt="">
+
+                                <img class="user__img <?=\common\models\CommunityUsers::GENDER_STYLE[$question_user_info['gender']]?>" src="<?=$question_user_info['avatar']?>" alt="">
                                 <div>
-                                    <div>赵桥棉（大咖）</div>
-                                    <div>等级:<code>T1</code></div>
-                                    <div>544976880@qq.com</div>
+                                    <div><?=$question_user_info['nickname']?>（<?=\common\models\CommunityUsers::TYPE[$question_user_info['type']]?>）</div>
+                                    <div>等级:<code><?=$question_user_info['level']?></code></div>
+                                    <div><?=$question_user_info['email']?></div>
                                 </div>
                             </div>
 
                         </div>
-                        <p class="card-text">目前就职于facebook 负责facebook 主要业务</p>
+                        <p class="card-text"><?=$question_user_info['self_signature']?></p>
 
                         <div class="tags flot-chart-legends" >
                             <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:小白">

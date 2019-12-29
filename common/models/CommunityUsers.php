@@ -34,6 +34,16 @@ use Yii;
  */
 class CommunityUsers extends \yii\db\ActiveRecord
 {
+    const TYPE_NORMAL=10;
+    const TYPE_FROM_CODE=20;
+    const TYPE=[self::TYPE_NORMAL=>"普通用户",self::TYPE_FROM_CODE=>"大咖"];
+    const LEVEL_MECHANISM=['T1'=>1000,"T2"=>3000,"T3"=>6000,"T4"=>12000,"T5"=>24000,"T6"=>48000];
+    const LEVEL_COLL=["T1","T2","T3","T4","T5","T6"];
+
+    const GENDER_PRIVATE=0;
+    const GENDER_MAN=1;
+    const GENDER_WOMAN=2;
+    const GENDER_STYLE=[self::GENDER_PRIVATE=>"",self::GENDER_MAN=>"sex_img_man",self::GENDER_WOMAN=>"sex_img_woman"];
     /**
      * {@inheritdoc}
      */
@@ -91,5 +101,14 @@ class CommunityUsers extends \yii\db\ActiveRecord
             'update_time' => '修改时间',
             'add_time' => '注册时间',
         ];
+    }
+
+    /***
+     * @param int $user_id
+     * @return array
+     */
+    public function getUserInfo($user_id)
+    {
+        return self::find()->where(['id'=>$user_id])->asArray()->one();
     }
 }

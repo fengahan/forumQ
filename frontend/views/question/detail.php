@@ -1,8 +1,12 @@
+<?php
+use common\models\CommunityUsers;
+use common\models\CommunityQuestion;
+?>
 <div class="content__inner">
         <div class="row">
             <div class="col-lg-9 col-md-9">
                 <div class="q-a__question">
-                    <?php if ($question['is_public']===\common\models\CommunityQuestion::PUBLIC_YES):?>
+                    <?php if ($question['is_public']==CommunityQuestion::PUBLIC_YES):?>
                     <div class="q-a__vote hidden-sm-down">
                         <div class="q-a__vote__votes">
                             <i><?=$question['subscribe_number']?></i>
@@ -20,7 +24,7 @@
 
                     <div class="q-a__info">
                         <div class="q-a__op">
-                            <a href=""><img src="static/mutui/demo/img/contacts/1.jpg" alt=""></a>
+                            <a href=""><img src="<?=$question['avatar']?>" alt=""></a>
                             <span><?=$question['nickname']?>发布于<?=Yii::$app->formatter->asRelativeTime($question['created_at'])?></span>
                         </div>
                     </div>

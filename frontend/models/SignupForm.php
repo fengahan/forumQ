@@ -13,14 +13,18 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
-
+    public $nickname;
+    public $rememberMe = true;
+    public $verifyCode;
+    private $_user;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function rules()
     {
         return [
+            // username and password are both required
             ['username', 'trim'],
             ['username', 'required'],
             ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
@@ -32,10 +36,21 @@ class SignupForm extends Model
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
 
+            ['nickname', 'trim'],
+            ['nickname', 'required'],
+            ['nickname', 'string', 'max' => 6],
+            ['nickname', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+            ['rememberMe', 'boolean'],
+            // password is validated by validatePassword()
+            ['verifyCode','required'],
+            ['verifyCode','captcha'],
         ];
     }
+
+
 
     /**
      * Signs user up.
@@ -51,6 +66,7 @@ class SignupForm extends Model
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
+        $user->nickname=$this->nickname;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();

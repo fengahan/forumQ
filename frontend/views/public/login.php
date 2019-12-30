@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 /**
  * User: ZRothschild
  * Data: 2019/11/17
@@ -24,6 +25,7 @@ $this->title = 'My Yii Application';
                     </div>
                 </div>
             </div>
+
         </div>
         <div class="login__block__body">
             <div class="form-group form-group--float form-group--centered">
@@ -81,13 +83,14 @@ $this->title = 'My Yii Application';
                 <label>确认密码</label>
                 <i class="form-group__bar"></i>
             </div>
-            <!--            <div class="form-group">-->
-            <!--                <label class="custom-control custom-checkbox">-->
-            <!--                    <input type="checkbox" class="custom-control-input">-->
-            <!--                    <span class="custom-control-indicator"></span>-->
-            <!--                    <span class="custom-control-description">Accept the license agreement</span>-->
-            <!--                </label>-->
-            <!--            </div>-->
+            <div class="form-group form-group--float form-group--centered">
+                <input type="password" class="form-control">
+                <label>验证码</label>
+                <i class="form-group__bar"></i>
+            </div>
+            <div class="form-group form-group--float form-group--centered">
+                <img onclick="changeCatptcha(this)" src="<?=Url::to(["/site/captcha"])?>" data-src="<?=Url::to(["/site/captcha"])?>" id="captcha">
+            </div>
             <button href="index.html" class="btn btn--icon login__block__btn"><i class="zmdi zmdi-check"></i></button>
         </div>
     </div>
@@ -118,3 +121,20 @@ $this->title = 'My Yii Application';
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    /***
+     * 切换验证码
+     */
+    function changeCatptcha(e) {
+        var capt = document.getElementById("captcha");
+        console.log(capt.src)
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            url: capt.getAttribute("data-src") + "?refresh=1",
+            success: function (res) {
+                capt.src= res.url
+            }
+        });
+    }
+</script>

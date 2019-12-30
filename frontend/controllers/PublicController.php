@@ -5,6 +5,7 @@ use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -14,11 +15,12 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\web\NotAcceptableHttpException;
 
 /**
  * Site controller
  */
-class PublicController extends Controller
+class PublicController extends BaseController
 {
     public $layout = 'layout';
     /**
@@ -63,7 +65,14 @@ class PublicController extends Controller
             ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                'backColor'=>0x000000,//背景颜色
+                'maxLength' => 4, //最大显示个数
+                'minLength' => 4,//最少显示个数
+                'padding' => 5,//间距
+                'height'=>45,//高度
+                'width' => 75,  //宽度
+                'foreColor'=>0xffffff,     //字体颜色
+                'offset'=>4,
             ],
         ];
     }
@@ -102,55 +111,26 @@ class PublicController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return mixed
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
-            } else {
-                Yii::$app->session->setFlash('error', 'There was an error sending your message.');
-            }
-
-            return $this->refresh();
-        } else {
-            return $this->render('contact', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return mixed
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
 
     /**
      * Signs user up.
      *
      * @return mixed
+     * @throws NotAcceptableHttpException
      */
     public function actionSignup()
     {
+        if (!Yii::$app->request->isAjax){
+            throw new NotAcceptableHttpException();
+        }
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+        if ($model->load(Yii::$app->request->post(),'') && $model->signup()) {
+            return $this->formatJson("100","注册成功请登录",['url'=>Url::to("public/login")]);
+        }else{
+            return $this->formatJson("400",$model->getErrorSummary(false)[0],['url'=>Url::to("public/login")]);
         }
 
-        return $this->render('signup', [
-            'model' => $model,
-        ]);
+
     }
 
     /**

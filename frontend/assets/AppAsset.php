@@ -30,6 +30,7 @@ class AppAsset extends AssetBundle
         "mutui/vendors/bootstrap-notify/bootstrap-notify.min.js",
         "mutui/vendors/sweetalert2/sweetalert2.min.js",
         //App functions and actions
+        'js/func.js',
         'mutui/js/app.min.js',
     ];
 

@@ -62,36 +62,40 @@ $this->title = 'My Yii Application';
 
         <div class="login__block__body">
             <div class="form-group form-group--float form-group--centered">
-                <input type="text" class="form-control">
+                <input type="text" id="nickname" class="form-control">
                 <label>昵称</label>
                 <i class="form-group__bar"></i>
             </div>
 
             <div class="form-group form-group--float form-group--centered">
-                <input type="text" class="form-control">
+                <input type="text" id="email" class="form-control">
                 <label>邮箱</label>
                 <i class="form-group__bar"></i>
             </div>
 
             <div class="form-group form-group--float form-group--centered">
-                <input type="password" class="form-control">
+                <input type="password" id="password" class="form-control">
                 <label>密码</label>
                 <i class="form-group__bar"></i>
             </div>
+
             <div class="form-group form-group--float form-group--centered">
-                <input type="password" class="form-control">
+                <input type="password" id="confirm_password" class="form-control">
                 <label>确认密码</label>
                 <i class="form-group__bar"></i>
             </div>
+
             <div class="form-group form-group--float form-group--centered">
-                <input type="password" class="form-control">
+                <input type="text" id="verify_code"  class="form-control">
                 <label>验证码</label>
                 <i class="form-group__bar"></i>
             </div>
-            <div class="form-group form-group--float form-group--centered">
+
+            <div >
                 <img onclick="changeCatptcha(this)" src="<?=Url::to(["/site/captcha"])?>" data-src="<?=Url::to(["/site/captcha"])?>" id="captcha">
             </div>
-            <button href="index.html" class="btn btn--icon login__block__btn"><i class="zmdi zmdi-check"></i></button>
+
+            <button onclick="register()"  class="btn btn--icon login__block__btn"><i class="zmdi zmdi-check"></i></button>
         </div>
     </div>
     <!-- Forgot Password -->
@@ -117,7 +121,7 @@ $this->title = 'My Yii Application';
                 <label>邮箱地址</label>
                 <i class="form-group__bar"></i>
             </div>
-            <button href="index.html" class="btn btn--icon login__block__btn"><i class="zmdi zmdi-check"></i></button>
+            <button class="btn btn--icon login__block__btn"><i class="zmdi zmdi-check"></i></button>
         </div>
     </div>
 </div>
@@ -136,5 +140,22 @@ $this->title = 'My Yii Application';
                 capt.src= res.url
             }
         });
+    }
+
+    function register() {
+        var nickname;
+        var password;
+        var confirm_password;
+        var email;
+        var verify_code;
+        nickname=document.getElementById("nickname")
+        password=document.getElementById("password")
+        confirm_password=document.getElementById("confirm_password")
+        email=document.getElementById("email")
+        verify_code=document.getElementById("verify_code")
+        if (password !=confirm_password || password==""){
+            notify("","","","danger","", "","两次密码输入不一致");
+        }
+
     }
 </script>

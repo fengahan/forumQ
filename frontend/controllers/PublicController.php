@@ -127,7 +127,9 @@ class PublicController extends BaseController
         if ($model->load(Yii::$app->request->post(),'') && $model->signup()) {
             return $this->formatJson("100","注册成功请登录",['url'=>Url::to("public/login")]);
         }else{
-            return $this->formatJson("400",$model->getErrorSummary(false)[0],['url'=>Url::to("public/login")]);
+            $error=$model->getErrorSummary(false)[0]??"非法错误";
+            Yii::error($error);
+            return $this->formatJson("400",$error,['url'=>Url::to("public/login")]);
         }
 
 

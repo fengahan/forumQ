@@ -9,10 +9,11 @@ use yii\web\Response;
 class BaseController extends Controller
 {
 
+    public $enableCsrfValidation=false;
 
     public function formatJson($code,$msg,$data)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return ['code'=>$code,'msg'=>$msg,'data'=>$data];
+        $data=['code'=>$code,'msg'=>$msg,'data'=>$data];
+        return $this->asJson($data);
     }
 }

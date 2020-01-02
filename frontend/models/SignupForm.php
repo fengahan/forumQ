@@ -14,8 +14,8 @@ class SignupForm extends Model
     public $email;
     public $password;
     public $nickname;
-    public $rememberMe = true;
-    public $verifyCode;
+    public $rememberMe = false;
+    public $verify_code;
     private $_user;
 
     /**
@@ -25,11 +25,6 @@ class SignupForm extends Model
     {
         return [
             // username and password are both required
-            ['username', 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
@@ -45,8 +40,8 @@ class SignupForm extends Model
             ['password', 'string', 'min' => 6],
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
-            ['verifyCode','required'],
-            ['verifyCode','captcha'],
+            ['verify_code','required'],
+            ['verify_code','captcha'],
         ];
     }
 
@@ -64,13 +59,13 @@ class SignupForm extends Model
         }
         
         $user = new User();
-        $user->username = $this->username;
         $user->email = $this->email;
         $user->nickname=$this->nickname;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
-        return $user->save() && $this->sendEmail($user);
+        return $user->save() ;
+        //&& $this->sendEmail($user);
 
     }
 
@@ -91,5 +86,6 @@ class SignupForm extends Model
             ->setTo($this->email)
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();
+
     }
 }

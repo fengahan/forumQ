@@ -148,14 +148,43 @@ $this->title = 'My Yii Application';
         var confirm_password;
         var email;
         var verify_code;
-        nickname=document.getElementById("nickname")
-        password=document.getElementById("password")
-        confirm_password=document.getElementById("confirm_password")
-        email=document.getElementById("email")
-        verify_code=document.getElementById("verify_code")
-        if (password !=confirm_password || password==""){
-            notify("","","","danger","", "","两次密码输入不一致");
-        }
+        nickname=document.getElementById("nickname").value
+        password=document.getElementById("password").value
+        confirm_password=document.getElementById("confirm_password").value
+        email=document.getElementById("email").value
+        verify_code=document.getElementById("verify_code").value
 
+        if (password !==confirm_password || password===""){
+            notify("","","","danger","", "","两次密码输入不一致");
+            return false;
+        }
+        if (verify_code===""){
+            notify("","","","danger","", "","验证码不能为空");
+            return false;
+        }
+        if (email===""){
+            notify("","","","danger","","","邮箱不能为空");
+            return false;
+        }else {
+            var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+             if(!myreg.test(email))
+             {
+               notify("","","","danger","","","请输入有效的Email");
+               return false;
+             }
+        }
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data:{"email":email,"nickname":nickname,"password":password,"confirm_password":confirm_password,"verify_code":verify_code},
+            url:"<?=Url::to(['public/signup'])?>",
+            success: function (res) {
+                if (res.code===100){
+                    notify("","","","success","","",res.msg);
+                }else {
+                    notify("","","","danger","","",res.msg);
+                }
+            }
+        });
     }
 </script>

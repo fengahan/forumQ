@@ -207,4 +207,12 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+    /***
+     * @param $email
+     * @return mixed
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email ,'status' =>self::STATUS_ACTIVE]);
+    }
 }

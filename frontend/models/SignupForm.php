@@ -14,6 +14,7 @@ class SignupForm extends Model
     public $email;
     public $password;
     public $nickname;
+    public $confirm_password;
     public $rememberMe = false;
     public $verify_code;
     private $_user;
@@ -30,7 +31,7 @@ class SignupForm extends Model
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
-
+            ['confirm_password','required'],
             ['nickname', 'trim'],
             ['nickname', 'required'],
             ['nickname', 'string', 'max' => 6],

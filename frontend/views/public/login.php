@@ -28,19 +28,26 @@ $this->title = 'My Yii Application';
 
         </div>
         <div class="login__block__body">
-            <div class="form-group form-group--float form-group--centered">
-                <input type="text" class="form-control">
-                <label>邮箱</label>
-                <i class="form-group__bar"></i>
-            </div>
 
-            <div class="form-group form-group--float form-group--centered">
-                <input type="password" class="form-control">
-                <label>密码</label>
-                <i class="form-group__bar"></i>
-            </div>
+            <form action="<?=Url::to("/public/login")?>" method="post">
+                <?php if (isset($model->getErrorSummary(false)[0])):?>
+                <div class="alert alert-danger" role="alert">
+                    <?=$model->getErrorSummary(false)[0]?>
+                </div>
+                <?php endif;?>
+                <div class="form-group form-group--float form-group--centered">
+                    <input type="text" name="email" class="form-control">
+                    <label>邮箱</label>
+                    <i class="form-group__bar"></i>
+                </div>
 
-            <button href="index.html" class="btn btn--icon login__block__btn"><i class="zmdi zmdi-long-arrow-right"></i></button>
+                <div class="form-group form-group--float form-group--centered">
+                    <input type="password" name="password" class="form-control">
+                    <label>密码</label>
+                    <i class="form-group__bar"></i>
+                </div>
+                <button type="submit" class="btn btn--icon login__block__btn"><i class="zmdi zmdi-long-arrow-right"></i></button>
+            </form>
         </div>
     </div>
     <!-- Register -->
@@ -142,6 +149,7 @@ $this->title = 'My Yii Application';
         });
     }
 
+
     function register() {
         var nickname;
         var password;
@@ -179,10 +187,11 @@ $this->title = 'My Yii Application';
             data:{"email":email,"nickname":nickname,"password":password,"confirm_password":confirm_password,"verify_code":verify_code},
             url:"<?=Url::to(['public/signup'])?>",
             success: function (res) {
-                if (res.code===100){
+                if (res.code==100){
                     notify("","","","success","","",res.msg);
                 }else {
                     notify("","","","danger","","",res.msg);
+                    window.location.href=res.url
                 }
             }
         });

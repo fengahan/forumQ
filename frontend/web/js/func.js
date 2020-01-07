@@ -1,7 +1,7 @@
 function notify(from, align, icon, type, animIn, animOut,msg){
     $.notify({
         icon: icon,
-        title: '错误提示:',
+        title: '消息提示:',
         message: msg,
         url: ''
     },{

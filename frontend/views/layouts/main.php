@@ -92,10 +92,10 @@ if (Url::to("/user/index") === Url::current()){
             <li class="dropdown hidden-xs-down">
                 <!-- 用户信息-->
                 <div class="user__info" data-toggle="dropdown">
-                    <img class="user__img" src="mutui/demo/img/profile-pics/8.jpg" alt="">
+                    <img class="user__img" src="<?=Yii::$app->user->identity->avatar?>" alt="">
                     <div>
-                        <div class="user__name" style="color: snow">小塞塞</div>
-                        <div class="user__email" style="color: snow">等级:V1</div>
+                        <div class="user__name" style="color: snow"><?=Yii::$app->user->identity->nickname?></div>
+                        <div class="user__email" style="color: snow">等级:<?=Yii::$app->user->identity->level?></div>
                     </div>
                 </div>
                 <!-- 用户操作菜单-->

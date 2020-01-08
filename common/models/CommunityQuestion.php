@@ -182,4 +182,12 @@ class CommunityQuestion extends \yii\db\ActiveRecord
             ->where(['q.id'=>$id])->asArray()->one();
 
     }
+
+    public function getUserQuesCount($user_id)
+    {
+        return self::find()
+            ->where(['user_id'=>$user_id,'status'=>self::STATUS_NORMAL])
+            ->count();
+
+    }
 }

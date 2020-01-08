@@ -52,7 +52,6 @@ if (Url::to("/user/index") === Url::current()){
         </ul>
         <ul class="top-nav">
             <!-- 搜索图标-->
-            <li class="hidden-xl-up"><a href="" data-ma-action="search-open"><i class="zmdi zmdi-search"></i></a></li>
             <li class="dropdown top-nav__notifications">
                 <!-- 铃铛 红点-->
                 <a href="" data-toggle="dropdown" class="top-nav__notify">
@@ -89,6 +88,11 @@ if (Url::to("/user/index") === Url::current()){
                     </div>
                 </div>
             </li>
+            <?php if (Yii::$app->user->isGuest):?>
+                <li>
+                    <a href="<?= Url::to(['public/login']); ?>">登陆注册</a>
+                </li>
+            <?php else:?>
             <li class="dropdown hidden-xs-down">
                 <!-- 用户信息-->
                 <div class="user__info" data-toggle="dropdown">
@@ -111,14 +115,17 @@ if (Url::to("/user/index") === Url::current()){
                             <small class="">待定</small>
                             <span class="app-shortcuts__helper bg-blue"></span>
                         </a>
-                        <a class="col-4 app-shortcuts__item" href="">
+                        <a class="col-4 app-shortcuts__item" onclick="document.getElementById('_form').submit();" >
                             <i class="zmdi zmdi-power"></i>
                             <small class="">退出登陆</small>
                             <span class="app-shortcuts__helper bg-teal"></span>
                         </a>
+                        <form id="_form" method="post" action="<?=Url::to('/public/logout')?>">
+                        </form>
                     </div>
                 </div>
             </li>
+            <?php endif;?>
         </ul>
     </header>
     <!-- 错误报告 -->

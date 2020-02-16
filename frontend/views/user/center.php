@@ -1,4 +1,5 @@
 <?php
+use common\models\CommunityUserTag;
 ?>
 <div class="content__inner">
     <div class="row">
@@ -13,86 +14,34 @@
                                 <div><?=Yii::$app->user->identity->nickname?></div>
                                 <div>等级:<code><?=Yii::$app->user->identity->level;?></code></div>
                                 <div><?=Yii::$app->user->identity->email;?></div>
-                                <div><?=Yii::$app->formatter->asRelativeTime(Yii::$app->user->identity->created_at)?></div>
                             </div>
                         </div>
                     </div>
                     <p class="card-text"><?=Yii::$app->user->identity->self_signature?></p>
                     <div class="flot-chart-legends hidden-sm-down">
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问100次" class="badge badge-secondary">问(100)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count?>次" class="badge badge-secondary">问(100)</a>
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答6次" class="badge badge-success">答(6)</a>
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享50次" class="badge badge-dark">分享(50)</a>
                     </div>
                     <div class="tags flot-chart-legends" >
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:小白">
-                            <div class="legendColorBox" style="display: inline-block">
-                                <div style="border:1px solid #fff;padding:1px">
-                                    <div style="width:4px;height:0;border:5px solid #f5c942;overflow:hidden">
+                        <?php foreach ($question_user_tag as $key=>$value):?>
+                            <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:<?=CommunityUserTag::LEVEL[$value['level']]?>">
+                                <div class="legendColorBox" style="display: inline-block">
+                                    <div style="border:1px solid #fff;padding:1px">
+                                        <div style="width:4px;height:0;border:5px solid <?=CommunityUserTag::LEVEL_STYLE_COLOR[$value['level']]?>;overflow:hidden">
 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            Java
-                        </a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:中级">
-                            <div class="legendColorBox" style="display: inline-block">
-                                <div style="border:1px solid #fff;padding:1px">
-                                    <div style="width:4px;height:0;border:5px solid #3af51b;overflow:hidden">
-
-                                    </div>
-                                </div>
-                            </div>
-                            Mysql
-                        </a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:高级">
-                            <div class="legendColorBox" style="display: inline-block">
-                                <div style="border:1px solid #fff;padding:1px">
-                                    <div style="width:4px;height:0;border:5px solid #f51914;overflow:hidden">
-
-                                    </div>
-                                </div>
-                            </div>
-                            Redis
-                        </a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:小白">
-                            <div class="legendColorBox" style="display: inline-block">
-                                <div style="border:1px solid #fff;padding:1px">
-                                    <div style="width:4px;height:0;border:5px solid #f5c942;overflow:hidden">
-
-                                    </div>
-                                </div>
-                            </div>
-                            RabbitMq
-                        </a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:小白">
-                            <div class="legendColorBox" style="display: inline-block">
-                                <div style="border:1px solid #fff;padding:1px">
-                                    <div style="width:4px;height:0;border:5px solid #f5c942;overflow:hidden">
-
-                                    </div>
-                                </div>
-                            </div>
-                            Oracle
-                        </a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:高级">
-                            <div class="legendColorBox" style="display: inline-block">
-                                <div style="border:1px solid #fff;padding:1px">
-                                    <div style="width:4px;height:0;border:5px solid #f51914;overflow:hidden">
-
-                                    </div>
-                                </div>
-                            </div>
-                            Docker
-                        </a>
-
+                                <?=$value['title']?>
+                            </a>
+                        <?php endforeach;?>
                     </div>
 
                     <div class="team__social text-center">
-                        <a href="" class="zmdi zmdi-github bg-indigo"></a>
-                        <a href="" class="zmdi zmdi-stackoverflow bg-cyan"></a>
-                        <a href="" class="zmdi zmdi-home bg-red"></a>
-                        <a href="" class="zmdi zmdi-github bg-indigo"></a>
-                        <a href="" class="zmdi zmdi-stackoverflow bg-cyan"></a>
+                        <?php foreach ($user_link as $key=>$value):?>
+                            <a href="" class="zmdi <?=$value['icon']?> <?=$value['color']?>"  data-toggle="tooltip" data-title="<?=$value['name']?>" ></a>
+                        <?php endforeach;?>
                     </div>
                 </div>
             </div>
@@ -128,38 +77,38 @@
                                         <h4 class="card-title">个人信息</h4>
                                         <h6 class="card-subtitle">这是您一路来留下的脚印.</h6>
 
-                                        <div class="q-a__stat hidden-sm-down">
-                                                        <span>
-                                                            <strong class="text-red">151</strong>
-                                                            <small>当前积分</small>
-                                                        </span>
+                                        <div class="q-a__stat">
+                                              <span>
+                                                <strong class="text-red"><?=Yii::$app->user->identity->integral?></strong>
+                                                <small>当前积分</small>
+                                              </span>
 
                                             <span>
-                                                            <strong class="text-blue">320</strong>
-                                                            <small>技能点</small>
-                                                        </span>
+                                                <strong class="text-blue">320</strong>
+                                                <small>技能点</small>
+                                            </span>
 
                                             <span class="hidden-md-down">
-                                                            <strong class="text-blue">102</strong>
-                                                            <small>签到次数</small>
-                                                        </span>
+                                                <strong class="text-blue">0</strong>
+                                                <small>签到次数</small>
+                                            </span>
 
                                             <span class="hidden-md-down">
-                                                            <strong class="text-blue">10452</strong>
-                                                            <small>主页访问量</small>
-                                                        </span>
+                                                <strong class="text-blue"><?=Yii::$app->user->identity->center_view_count?></strong>
+                                                <small>主页访问量</small>
+                                            </span>
 
                                             <span class="hidden-md-down">
-                                                            <strong class="text-blue">10452</strong>
-                                                            <small>收到<i class="zmdi zmdi-favorite"></i> 100</small>
+                                                <strong class="text-blue"><?=Yii::$app->user->identity->get_heart_count?> </strong>
+                                                <small>收到<i class="zmdi zmdi-favorite"></i></small>
+                                            </span>
 
-                                                        </span>
                                             <span class="hidden-md-down">
-                                                            <strong class="text-blue">10452</strong>
-                                                            <small>送出<i class="zmdi zmdi-favorite"></i> 100</small>
-
-                                                        </span>
+                                                <strong class="text-blue"><?=Yii::$app->user->identity->given_heart_count?></strong>
+                                                 <small>送出<i class="zmdi zmdi-favorite"></i> </small>
+                                             </span>
                                         </div>
+
                                     </div>
 
                                 </div>
@@ -168,7 +117,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h4 class="card-title">成长历史录</h4>
-                                        <h6 class="card-subtitle">张三成为本站会员已过去258天.</h6>
+                                        <h6 class="card-subtitle">张三<code><?=Yii::$app->formatter->asRelativeTime(Yii::$app->user->identity->created_at)?></code>成为本站会员</h6>
                                         <div class="progress">
 
                                             <div class="progress-bar"

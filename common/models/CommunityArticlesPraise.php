@@ -16,7 +16,7 @@ use Yii;
  * @property int $created_time 点赞时间
  * @property int $updated_time 更新时间
  */
-class CommunityArticlePraise extends \yii\db\ActiveRecord
+class CommunityArticlesPraise extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}

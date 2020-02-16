@@ -34,7 +34,6 @@ class QuestionController extends BaseController
         $userTag =new CommunityUserTag();
         $question_user_tag=$userTag->getUserTag($question['user_id']);
         $userLinkModel=new CommunityUserLink();
-
         $user_link=$userLinkModel->getUserLink(['user_id'=>$question['user_id'],"status"=>[CommunityUserLink::STATUS_NORMAL]]);
         return $this->render("detail",[
             'question'=>$question,

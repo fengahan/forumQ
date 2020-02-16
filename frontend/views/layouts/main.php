@@ -105,7 +105,7 @@ if (Url::to("/user/index") === Url::current()){
                 <!-- 用户操作菜单-->
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu--block" role="menu">
                     <div class="row app-shortcuts">
-                        <a class="col-4 app-shortcuts__item" href="<?= Url::to(['user/index']); ?>">
+                        <a class="col-4 app-shortcuts__item" href="<?= Url::to(['user/center']); ?>">
                             <i class="zmdi zmdi-account-o"></i>
                             <small class="">个人中心</small>
                             <span class="app-shortcuts__helper bg-red"></span>

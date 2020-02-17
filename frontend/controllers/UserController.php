@@ -1,24 +1,13 @@
 <?php
 namespace frontend\controllers;
 
-use common\models\CommunityArticlesPraise;
+use common\models\BaseModel;
 use common\models\CommunityQuestion;
 use common\models\CommunityUserLink;
 use common\models\CommunityUserTag;
-use frontend\models\ResendVerificationEmailForm;
-use frontend\models\VerifyEmailForm;
 use Yii;
-use yii\base\InvalidArgumentException;
 use yii\data\Pagination;
-use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use common\models\LoginForm;
-use frontend\models\PasswordResetRequestForm;
-use frontend\models\ResetPasswordForm;
-use frontend\models\SignupForm;
-use frontend\models\ContactForm;
 
 /**
  * Site controller
@@ -35,9 +24,13 @@ class UserController extends Controller
        $question_user_tag=$userTag->getUserTag($user_id);
        $userLinkModel=new CommunityUserLink();
        $user_link=$userLinkModel->getUserLink(['user_id'=>$user_id,"status"=>[CommunityUserLink::STATUS_NORMAL]]);
+       $question_pagination= new Pagination(['totalCount' =>$question_count,'pageParam'=>'q_page','pageSize' => BaseModel::PAGE_SIZE]);
+       $user_question=$QuestionModel->getUserQues($user_id, $question_pagination);
 
-      return $this->render("center",
+       return $this->render("center",
           [
+              'user_question'=>$user_question,
+              'question_pagination'=> $question_pagination,
               'question_count'=>$question_count,
               'question_user_tag'=>$question_user_tag,
               'user_link'=>$user_link

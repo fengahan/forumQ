@@ -68,7 +68,7 @@ $this->title = 'My Yii Application';
         </div>
     </div>
     <!-- 页码-->
-    <?php echo $this->render('@app/views/common/paginator.php',['pagination'=>$pagination]);?>
+    <?=$this->render('@app/views/common/paginator.php',['pagination'=>$pagination]);?>
 </div>
 
 <script type="text/javascript">

@@ -54,24 +54,24 @@ use yii\helpers\Url;
                     <div class="tab-container">
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link show active" data-toggle="tab" href="#home" role="tab" aria-selected="false">基本信息</a>
+                                <a class="nav-link<?php if ($tab=='home'):?> show active<?php endif;?>" data-toggle="tab" href="#home" role="tab" aria-selected="false">基本信息</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link show" data-toggle="tab" href="#question" role="tab" aria-selected="false">我的问答</a>
+                                <a class="nav-link<?php if ($tab=='question'):?> show active<?php endif;?>"  data-toggle="tab" href="#question" role="tab" aria-selected="false">我的问答</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link show" data-toggle="tab" href="#technology" role="tab" aria-selected="false">技术分享</a>
+                                <a class="nav-link<?php if ($tab=='technology'):?> show active<?php endif;?>" data-toggle="tab" href="#technology" role="tab" aria-selected="false">技术分享</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link show" data-toggle="tab" href="#subject" role="tab" aria-selected="true">专题分享</a>
+                                <a class="nav-link<?php if ($tab=='subject'):?> show active<?php endif;?>" data-toggle="tab" href="#subject" role="tab" aria-selected="true">专题分享</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link show" data-toggle="tab" href="#message" role="tab" aria-selected="true">系统消息</a>
+                                <a class="nav-link<?php if ($tab=='message'):?> show active<?php endif;?>" data-toggle="tab" href="#message" role="tab" aria-selected="true">系统消息</a>
                             </li>
                         </ul>
 
                         <div class="tab-content">
-                            <div class="tab-pane fade active show" id="home" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='home'):?> show active<?php endif;?>" id="home" role="tabpanel">
                                 <div class="card">
 
                                     <div class="card-body">
@@ -118,34 +118,26 @@ use yii\helpers\Url;
                                 <div class="card">
                                     <div class="card-body">
                                         <h4 class="card-title">成长历史录</h4>
-                                        <h6 class="card-subtitle">张三<code><?=Yii::$app->formatter->asRelativeTime(Yii::$app->user->identity->created_at)?></code>成为本站会员</h6>
+                                        <h6 class="card-subtitle"><code><?=Yii::$app->formatter->asRelativeTime(Yii::$app->user->identity->created_at)?></code>成为本站会员</h6>
                                         <div class="progress">
+                                            <?php $color_style=['bg-light-blue','bg-green','bg-amber','bg-orange','bg-red','bg-purple']?>
+                                            <?php foreach ($grade_progress as $key=>$val):?>
+                                                <?php if ((count($grade_progress)<5 && $key!=count($grade_progress)-1) || count($grade_progress)>5) :?>
+                                                    <?php $tip=Yii::$app->formatter->asDate($val['created_at']).'技能点'.$val['technical'].'('.$val['level'].')'?>
+                                                <?php else:?>
 
-                                            <div class="progress-bar"
-                                                 role="progressbar" style="width: 15%"
-                                                 aria-valuenow="15" aria-valuemin="0"
-                                                 aria-valuemax="100" data-toggle="tooltip" data-placement="top"
-                                                 data-original-title="2018-10技能点100(T0)">
+                                                    <?php $blanc=48000-$val['technical']?>
+                                                    <?php $tip=Yii::$app->formatter->asDate($val['created_at']).'技能点'.$val['technical'].'('.$val['level'].')'.'还差'. $blanc.'升级'?>
+                                                <?php endif;?>
 
-                                            </div>
-
-                                            <div class="progress-bar bg-success"
-                                                 role="progressbar" style="width: 30%"
-                                                 aria-valuenow="30" aria-valuemin="0"
-                                                 aria-valuemax="100"
-                                                 data-toggle="tooltip" data-placement="top"
-                                                 data-original-title="2019-10技能点600(T1)">
-
-                                            </div>
-
-                                            <div class="progress-bar bg-warning"
-                                                 role="progressbar" style="width: 20%"
-                                                 aria-valuenow="20" aria-valuemin="0"
-                                                 aria-valuemax="100"
-                                                 data-toggle="tooltip" data-placement="top"
-                                                 data-original-title="技能点3500(还差500升级为T3)">
+                                                <div class="progress-bar <?=$color_style[$key]?>"
+                                                 role="progressbar" style="width:<?=($key+1)*5?>%"
+                                                 aria-valuenow="<?=$val['technical']?>" aria-valuemin="0"
+                                                 aria-valuemax="48000" data-toggle="tooltip" data-placement="top"
+                                                 data-original-title="<?=$tip?>">
 
                                             </div>
+                                            <?php endforeach;?>
                                         </div   >
 
                                     </div>
@@ -165,7 +157,7 @@ use yii\helpers\Url;
                                 </div>
 
                             </div>
-                            <div class="tab-pane fade" id="question" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='question'):?> show active<?php endif;?>" id="question" role="tabpanel">
 
                                 <div class="listview listview--bordered issue-tracker">
 
@@ -208,7 +200,7 @@ use yii\helpers\Url;
                                 </div>
                                  <?= $this->render('@app/views/common/paginator.php',['pagination'=>$question_pagination]);?>
                             </div>
-                            <div class="tab-pane fade" id="technology" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='technology'):?> show active<?php endif;?>" id="technology" role="tabpanel">
                                 <div class="listview listview--bordered issue-tracker">
 
                                     <div class="listview__item">
@@ -543,10 +535,10 @@ use yii\helpers\Url;
                                     </ul>
                                 </nav>
                             </div>
-                            <div class="tab-pane fade" id="subject" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='subject'):?> show active<?php endif;?>" id="subject" role="tabpanel">
 
                             </div>
-                            <div class="tab-pane fade" id="message" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='message'):?> show active<?php endif;?>" id="message" role="tabpanel">
 
                             </div>
                         </div>

@@ -50,4 +50,17 @@ class CommunityGradeLog extends \common\models\BaseModel
             'created_at' => 'Created At',
         ];
     }
+
+    /**
+     * @param int $user_id
+     * @return array
+     */
+    public function getUserProgress($user_id)
+    {
+        $where['user_id']=$user_id;
+        return self::find()->where($where)
+            ->orderBy('technical asc')
+            ->asArray()
+            ->all();
+    }
 }

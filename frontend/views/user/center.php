@@ -1,5 +1,6 @@
 <?php
 use common\models\CommunityUserTag;
+use frontend\assets\AppAsset;
 use yii\helpers\Url;
 ?>
 <div class="content__inner">
@@ -54,24 +55,24 @@ use yii\helpers\Url;
                     <div class="tab-container">
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link<?php if ($tab=='home'):?> show active<?php endif;?>" data-toggle="tab" href="#home" role="tab" aria-selected="false">基本信息</a>
+                                <a class="nav-link<?php if ($tab=='home'):?> show active<?php endif;?>" href="<?=Url::to(['/user/center','tab'=>'home'])?>" aria-selected="false">基本信息</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link<?php if ($tab=='question'):?> show active<?php endif;?>"  data-toggle="tab" href="#question" role="tab" aria-selected="false">我的问答</a>
+                                <a class="nav-link<?php if ($tab=='question'):?> show active<?php endif;?>"   href="<?=Url::to(['/user/center','tab'=>'question'])?>" aria-selected="false">我的问答</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link<?php if ($tab=='technology'):?> show active<?php endif;?>" data-toggle="tab" href="#technology" role="tab" aria-selected="false">技术分享</a>
+                                <a class="nav-link<?php if ($tab=='technology'):?> show active<?php endif;?>"  aria-selected="false">技术分享</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link<?php if ($tab=='subject'):?> show active<?php endif;?>" data-toggle="tab" href="#subject" role="tab" aria-selected="true">专题分享</a>
+                                <a class="nav-link<?php if ($tab=='subject'):?> show active<?php endif;?>" aria-selected="true">专题分享</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link<?php if ($tab=='message'):?> show active<?php endif;?>" data-toggle="tab" href="#message" role="tab" aria-selected="true">系统消息</a>
+                                <a class="nav-link<?php if ($tab=='message'):?> show active<?php endif;?>" data-toggle="tab"role="tab" aria-selected="true">系统消息</a>
                             </li>
                         </ul>
 
                         <div class="tab-content">
-                            <div class="tab-pane fade<?php if ($tab=='home'):?> show active<?php endif;?>" id="home" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='home'):?> show active<?php endif;?>" >
                                 <div class="card">
 
                                     <div class="card-body">
@@ -157,7 +158,7 @@ use yii\helpers\Url;
                                 </div>
 
                             </div>
-                            <div class="tab-pane fade<?php if ($tab=='question'):?> show active<?php endif;?>" id="question" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='question'):?> show active<?php endif;?>" >
 
                                 <div class="listview listview--bordered issue-tracker">
 
@@ -200,7 +201,7 @@ use yii\helpers\Url;
                                 </div>
                                  <?= $this->render('@app/views/common/paginator.php',['pagination'=>$question_pagination]);?>
                             </div>
-                            <div class="tab-pane fade<?php if ($tab=='technology'):?> show active<?php endif;?>" id="technology" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='technology'):?> show active<?php endif;?>" >
                                 <div class="listview listview--bordered issue-tracker">
 
                                     <div class="listview__item">
@@ -535,16 +536,16 @@ use yii\helpers\Url;
                                     </ul>
                                 </nav>
                             </div>
-                            <div class="tab-pane fade<?php if ($tab=='subject'):?> show active<?php endif;?>" id="subject" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='subject'):?> show active<?php endif;?>" >
 
                             </div>
-                            <div class="tab-pane fade<?php if ($tab=='message'):?> show active<?php endif;?>" id="message" role="tabpanel">
+                            <div class="tab-pane fade<?php if ($tab=='message'):?> show active<?php endif;?>" >
 
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div
 
         </div>
 
@@ -552,3 +553,15 @@ use yii\helpers\Url;
     </div>
 
 </div>
+
+
+
+<?php if ($tab=='' || $tab=='home'):?>
+
+
+    <?php AppAsset::addScript($this,'/mutui/vendors/flot/jquery.flot.js')?>
+<?php AppAsset::addScript($this,'/mutui/vendors/flot/jquery.flot.pie.js')?>
+<?php AppAsset::addScript($this,'/mutui/demo/js/flot-charts/chart-tooltips.js')?>
+<?php AppAsset::addScript($this,'/mutui/demo/js/flot-charts/pie.js')?>
+
+<?php endif;?>

@@ -3,6 +3,7 @@
 namespace frontend\assets;
 
 use yii\web\AssetBundle;
+use yii\web\View;
 
 /**
  * Main frontend application asset bundle.
@@ -44,11 +45,12 @@ class AppAsset extends AssetBundle
 
     /**
      * 添加js
-     * @param $view
+     * @param $view View
      * @param $jsFile
+     * @throws \yii\base\InvalidConfigException
      */
     public static function addScript($view, $jsFile)
     {
-        $view->registerJsFile($jsFile, [AppAsset::className(), 'depends' => 'frontend\assets\AppAsset']);
+        $view->registerJsFile($jsFile, [AppAsset::class, 'depends' => 'frontend\assets\AppAsset']);
     }
 }

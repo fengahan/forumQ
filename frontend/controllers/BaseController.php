@@ -11,6 +11,13 @@ class BaseController extends Controller
 
     public $enableCsrfValidation=false;
 
+
+    /**
+     * @param $code
+     * @param $msg
+     * @param $data
+     * @return Response
+     */
     public function formatJson($code,$msg,$data)
     {
         $data=['code'=>$code,'msg'=>$msg,'data'=>$data];

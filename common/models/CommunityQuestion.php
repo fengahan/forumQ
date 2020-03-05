@@ -45,6 +45,10 @@ class CommunityQuestion extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+
+
+    const SCENARIO_USER_CREATE = 'user_create_ques';
+
     public static function tableName()
     {
         return '{{%question}}';
@@ -56,13 +60,15 @@ class CommunityQuestion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'tag_id', 'money', 'user_id', 'view_number', 'created_at'], 'required'],
+            [['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content','created_at'], 'required'],
+            ['is_public', 'default', 'value' => self::PUBLIC_YES],
+            ['status','default','value'=>self::STATUS_CLOSE],
+            ['money', 'integer', 'integerOnly' => true, 'min' => 1,'max' => 20],
             [['html_content', 'markdown_content','last_reply_nickname'], 'string'],
             [['is_public','best_reply_id', 'tag_id', 'money', 'user_id', 'user_identity', 'view_number', 'subscribe_number', 'reply_number', 'is_solve', 'status', 'created_at', 'updated_at','last_reply_at'], 'integer'],
             [['title'], 'string', 'max' => 255],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -73,18 +79,18 @@ class CommunityQuestion extends \yii\db\ActiveRecord
             'title' => '标题',
             'html_content' => 'html内容',
             'markdown_content' => 'markdown内容',
-            'is_public' => '获得最佳答案时是否免费公开',
-            'tag_id' => 'tag',
+            'is_public' => '公开策略',
+            'tag_id' => '表情',
             'money' => '赏金',
-            'user_id' => '用户Id',
-            'best_reply_id'=>"最佳评论ID",
-            'user_identity' => '10  普通 20 大咖',
-            'view_number' => 'View Number',
+            'user_id' => '用户',
+            'best_reply_id'=>"最佳评论",
+            'user_identity' => '身份',
+            'view_number' => '查看人数',
             'subscribe_number' => '订阅人数',
             'reply_number' => '回复人数',
             'is_solve' => '是否解决10 ok 20 not',
-            'status' => '关闭 开启 删除',
-            'created_at' => 'Created At',
+            'status' => '状态',
+            'created_at' => '创建时间',
             'updated_at' => '查看次数',
         ];
     }
@@ -204,4 +210,5 @@ class CommunityQuestion extends \yii\db\ActiveRecord
             ->limit($pagination->limit)->orderBy('q.id desc')->asArray()->all();
 
     }
+
 }

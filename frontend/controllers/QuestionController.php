@@ -1,6 +1,4 @@
 <?php
-
-
 namespace frontend\controllers;
 use common\models\CommunityQuestion;
 use common\models\CommunityTag;
@@ -9,6 +7,9 @@ use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
 use mysql_xdevapi\Warning;
 use Yii;
+use yii\helpers\Html;
+use yii\web\BadRequestHttpException;
+use yii\web\NotAcceptableHttpException;
 use yii\web\NotFoundHttpException;
 
 class QuestionController extends BaseController
@@ -41,6 +42,25 @@ class QuestionController extends BaseController
             'question_user_tag'=>$question_user_tag,
             'user_link'=>$user_link
         ]);
+
+    }
+
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function actionCreate()
+    {
+        $req=Yii::$app->request->post();
+
+        $Question=new CommunityQuestion();
+        $Question->scenario=CommunityQuestion::SCENARIO_USER_CREATE;
+        if ($Question->load($req) && $Question->save()){
+
+        }else{
+          return  $this->render('create',['ques_model'=>$Question]);
+        }
+
+
 
     }
 

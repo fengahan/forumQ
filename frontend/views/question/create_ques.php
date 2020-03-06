@@ -1,6 +1,7 @@
 <div class="content__inner">
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-6 col-md-offset-
+">
             <header class="content__title">
                 <h1><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">表单布局</font></font></h1>
                 <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">由于引导应用</font></font><code>display: block</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">和</font></font><code>width: 100%</code><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">几乎所有的表单控件，表格会默认堆栈垂直。</font><font style="vertical-align: inherit;">可以使用其他类来根据表单更改此布局。</font></font></small>

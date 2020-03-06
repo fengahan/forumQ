@@ -8,6 +8,7 @@ use common\models\CommunityUserTag;
 use mysql_xdevapi\Warning;
 use Yii;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\web\NotFoundHttpException;
@@ -55,9 +56,10 @@ class QuestionController extends BaseController
         $Question=new CommunityQuestion();
         $Question->scenario=CommunityQuestion::SCENARIO_USER_CREATE;
         if ($Question->load($req) && $Question->save()){
-
+            ///user/center?tab=question
+            return $this->redirect(Url::to(['/user/center','tab'=>'question']));
         }else{
-          return  $this->render('create',['ques_model'=>$Question]);
+          return  $this->render('create_ques',['ques_model'=>$Question]);
         }
 
 

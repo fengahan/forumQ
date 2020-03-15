@@ -18,8 +18,10 @@ class AppAsset extends AssetBundle
         'mutui/vendors/animate.css/animate.min.css',
         'mutui/vendors/jquery-scrollbar/jquery.scrollbar.css',
         //App styles
+        'editor/css/editormd.css',
         'css/style.css',
         'mutui/css/app.min.css',
+
     ];
     public $js = [
         //Javascript Vendors

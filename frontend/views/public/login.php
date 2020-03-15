@@ -138,7 +138,7 @@ $this->title = 'My Yii Application';
      */
     function changeCatptcha(e) {
         var capt = document.getElementById("captcha");
-        console.log(capt.src)
+
         $.ajax({
             type: "GET",
             dataType: 'json',

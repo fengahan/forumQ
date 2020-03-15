@@ -59,7 +59,16 @@ class QuestionController extends BaseController
             ///user/center?tab=question
             return $this->redirect(Url::to(['/user/center','tab'=>'question']));
         }else{
-          return  $this->render('create_ques',['ques_model'=>$Question]);
+
+          $Tag=new CommunityTag();
+          $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
+          $tag_list=$Tag->getList($tagWhere);
+          return  $this->render('create_ques',
+              [
+                  'ques_model'=>$Question,
+                  'tag_list'=>$tag_list,
+              ]
+          );
         }
 
 

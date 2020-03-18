@@ -2,9 +2,7 @@
 
 namespace common\models;
 
-use phpDocumentor\Reflection\Types\Self_;
-use Yii;
-use yii\base\Arrayable;
+use yii\behaviors\TimestampBehavior;
 use yii\data\Pagination;
 
 /**
@@ -54,13 +52,22 @@ class CommunityQuestion extends \yii\db\ActiveRecord
         return '{{%question}}';
     }
 
+
+    public function behaviors()
+    {
+        parent::behaviors();
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content','created_at'], 'required'],
+            [['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content'], 'required'],
             ['is_public', 'default', 'value' => self::PUBLIC_YES],
             ['status','default','value'=>self::STATUS_CLOSE],
             ['money', 'integer', 'integerOnly' => true, 'min' => 1,'max' => 20],
@@ -68,6 +75,14 @@ class CommunityQuestion extends \yii\db\ActiveRecord
             [['is_public','best_reply_id', 'tag_id', 'money', 'user_id', 'user_identity', 'view_number', 'subscribe_number', 'reply_number', 'is_solve', 'status', 'created_at', 'updated_at','last_reply_at'], 'integer'],
             [['title'], 'string', 'max' => 255],
         ];
+    }
+
+    public function scenarios()
+    {
+
+        $scenarios= parent::scenarios();
+        $scenarios[self::SCENARIO_USER_CREATE]=['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content'];
+        return $scenarios;
     }
     /**
      * {@inheritdoc}
@@ -189,17 +204,19 @@ class CommunityQuestion extends \yii\db\ActiveRecord
 
     }
 
-    public function getUserQuesCount($user_id)
+    public function getUserQuesCount($user_id,$status)
     {
+        $where['status']=$status;
         return self::find()
-            ->where(['user_id'=>$user_id,'status'=>self::STATUS_NORMAL])
+            ->where(['user_id'=>$user_id])
+            ->andWhere($where)
             ->count();
 
     }
 
-    public function getUserQues($user_id,$pagination)
+    public function getUserQues($user_id,$status,$pagination)
     {
-        $where['q.status']=self::STATUS_NORMAL;
+        $where['q.status']=$status;
         $where['q.user_id']=$user_id;
         $query=  self::find()->select("q.id,q.title,q.reply_number,q.view_number,q.subscribe_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
         u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(CommunityQuestion::tableName(). "as q")

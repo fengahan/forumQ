@@ -25,6 +25,7 @@ use yii\web\IdentityInterface;
  * @property string $level
  * @property string $avatar
  * @property int sign_count 签到次数
+ * @property int $type 大咖
  * @property int technical  技能点
  * @property  int integral  积分
  * @property int center_view_count  主页查看次数

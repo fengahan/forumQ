@@ -24,7 +24,7 @@ class UserController extends BaseController
 
        $user_id=Yii::$app->user->identity->getId();
        $QuestionModel=new CommunityQuestion();
-       $question_count=$QuestionModel->getUserQuesCount($user_id);
+       $question_count=$QuestionModel->getUserQuesCount($user_id,['in',CommunityQuestion::STATUS_NORMAL,CommunityQuestion::STATUS_CLOSE]);
        $userTag =new CommunityUserTag();
        $question_user_tag=$userTag->getUserTag($user_id);
        $userLinkModel=new CommunityUserLink();
@@ -39,7 +39,7 @@ class UserController extends BaseController
                'pageParam'=>'q_page',
                'pageSize' => BaseModel::PAGE_SIZE
            ]);
-       $user_question=$QuestionModel->getUserQues($user_id, $question_pagination);
+       $user_question=$QuestionModel->getUserQues($user_id,['in',CommunityQuestion::STATUS_NORMAL,CommunityQuestion::STATUS_CLOSE], $question_pagination);
 
 
 

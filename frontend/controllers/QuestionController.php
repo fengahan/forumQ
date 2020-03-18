@@ -55,7 +55,9 @@ class QuestionController extends BaseController
 
         $Question=new CommunityQuestion();
         $Question->scenario=CommunityQuestion::SCENARIO_USER_CREATE;
-        if ($Question->load($req) && $Question->save()){
+        $Question->user_id=Yii::$app->user->identity->getId();
+        $Question->user_identity=Yii::$app->user->identity->type;
+        if ($Question->load($req,"") && $Question->save()){
             ///user/center?tab=question
             return $this->redirect(Url::to(['/user/center','tab'=>'question']));
         }else{

@@ -47,6 +47,15 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">发布新内容</h4>
+                    <a href="<?=Url::to(['question/create'])?>" class="badge badge-warning"><i class="zmdi zmdi-help"></i>新问答</a>
+                    <a href="<?=Url::to(['question/create'])?>" class="badge badge-success"><i class="zmdi zmdi-windows"></i>新技术</a>
+                    <a href="<?=Url::to(['question/create'])?>" class="badge badge-info"><i class="zmdi zmdi-share"></i>新专题</a>
+
+                </div>
+            </div>
         </div>
 
         <div class="col-lg-9 col-md-9">
@@ -168,7 +177,9 @@ use yii\helpers\Url;
                                             <a class="listview__heading" href="<?=Url::to(['question/detail','question_id'=>$value['id']])?>">
                                                <?=$value['title']?>
                                             </a>
-                                            <p>#<?=$value['last_reply_nickname']?> 回复于<?=Yii::$app->formatter->asRelativeTime($value['last_reply_at']);?></p>
+                                            <?php if ($value['last_reply_nickname']!=''):?>
+                                                <p>#<?=$value['last_reply_nickname']?> 回复于<?=Yii::$app->formatter->asRelativeTime($value['last_reply_at']);?></p>
+                                            <?php endif;?>
                                         </div>
                                         <div class="issue-tracker__item hidden-md-down">
                                             <i class="zmdi zmdi-time"></i>

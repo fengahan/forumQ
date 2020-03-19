@@ -19,9 +19,12 @@ use common\models\CommunityUserTag;
                     <?php endif;?>
 
                     <h2><?=$question['title']?></h2>
-                    <p>
-                        <?=$question['html_content']?>
-                    </p>
+
+                    <div class="markdown-body editormd-preview-container">
+                        <p>
+                            <?=$question['html_content']?>
+                        </p>
+                    </div>
 
                     <div class="q-a__info">
                         <div class="q-a__op">

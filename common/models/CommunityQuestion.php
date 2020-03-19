@@ -218,7 +218,8 @@ class CommunityQuestion extends \yii\db\ActiveRecord
     {
         $where['q.status']=$status;
         $where['q.user_id']=$user_id;
-        $query=  self::find()->select("q.id,q.title,q.reply_number,q.view_number,q.subscribe_number,q.money,q.created_at,q.last_reply_nickname,q.last_reply_at,
+        $query=  self::find()->select("q.id,q.title,q.reply_number,q.view_number,q.subscribe_number,q.money,q.created_at,q.last_reply_nickname,
+        q.last_reply_at,q.status,q.is_solve,
         u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(CommunityQuestion::tableName(). "as q")
             ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=q.user_id')
             ->leftJoin(CommunityTag::tableName() . "as t",'t.id=q.tag_id')

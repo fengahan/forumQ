@@ -2,6 +2,7 @@
 use common\models\CommunityUserTag;
 use frontend\assets\AppAsset;
 use yii\helpers\Url;
+use common\models\CommunityQuestion;
 ?>
 <div class="content__inner">
     <div class="row">
@@ -180,30 +181,57 @@ use yii\helpers\Url;
                                             <?php if ($value['last_reply_nickname']!=''):?>
                                                 <p>#<?=$value['last_reply_nickname']?> 回复于<?=Yii::$app->formatter->asRelativeTime($value['last_reply_at']);?></p>
                                             <?php endif;?>
+
                                         </div>
-                                        <div class="issue-tracker__item hidden-md-down">
+
+                                        <?php if ($value['is_solve']==CommunityQuestion::SOLVE_YES):?>
+                                            <span class="issue-tracker__tag bg-success">已解决</span>
+                                        <?php elseif ($value['is_solve']==CommunityQuestion::SOLVE_NOT):?>
+                                        <span class="issue-tracker__tag bg-cyan">未解决</span>
+
+                                        <?php endif;?>
+
+                                        <?php if ($value['status']==CommunityQuestion::STATUS_CLOSE):?>
+                                            <span class="issue-tracker__tag bg-warning">已关闭</span>
+                                        <?php elseif ($value['status']==CommunityQuestion::STATUS_DELETE):?>
+                                            <span class="issue-tracker__tag bg-red">已删除/span>
+
+                                        <?php endif;?>
+
+                                        <div class="issue-tracker__item ">
                                             <i class="zmdi zmdi-time"></i>
                                             <?=Yii::$app->formatter->asRelativeTime($value['created_at']);?>
                                         </div>
 
-                                        <div class="issue-tracker__item hidden-md-down">
+                                        <div class="issue-tracker__item">
                                             <i class="zmdi zmdi-comments"></i>
                                             <?=$value['reply_number']?>
                                         </div>
 
-                                        <div class="issue-tracker__item hidden-md-down">
+                                        <div class="issue-tracker__item">
                                             <i class="zmdi zmdi-money-box"></i>
                                             <?=$value['money']?>
                                         </div>
 
-                                        <div class="issue-tracker__item hidden-md-down">
+                                        <div class="issue-tracker__item ">
                                             <i class="zmdi zmdi-help"></i>
                                             <?=$value['subscribe_number']?>
                                         </div>
 
-                                        <div class="issue-tracker__item hidden-md-down">
+                                        <div class="issue-tracker__item">
                                             <i class="zmdi zmdi-eye"></i>
                                             <?=$value['view_number']?>
+                                        </div>
+
+                                        <div class="issue-tracker__item">
+                                            <div class="dropdown actions__item">
+                                                <i class="zmdi zmdi-more-vert" data-toggle="dropdown"></i>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="<?=Url::to(['question/update'])?>"><i class="zmdi zmdi-edit zmdi-hc-fw"></i>编辑</a>
+                                                    <a class="dropdown-item" href="<?=Url::to(['question/close'])?>"><i class="zmdi zmdi-eye-off zmdi-hc-fw"></i>隐藏</a>
+                                                    <a class="dropdown-item" href="<?=Url::to(['question/delete'])?>"><i class="zmdi zmdi-delete zmdi-hc-fw"></i>删除</a>
+                                                </div>
+                                            </div>
                                         </div>
 
                                     </div>

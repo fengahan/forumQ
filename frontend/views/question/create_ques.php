@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Url;
+use common\models\CommunityQuestion;
 ?>
 <div class="content__inner">
     <div class="row ">
@@ -38,9 +39,7 @@ use yii\helpers\Url;
                                         <select  name="tag_id" class="form-control">
                                             <?php foreach ($tag_list as $key=>$value):?>
                                             <option  value="<?=$value['id']?>"> <?=$value['title']?></option>
-                                            <?php endforeach;
-
-                                            use common\models\CommunityQuestion; ?>
+                                            <?php endforeach; ?>
                                         </select>
                                         <i class="form-group__bar"></i>
                                     </div>

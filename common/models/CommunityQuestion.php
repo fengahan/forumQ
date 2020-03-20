@@ -68,11 +68,12 @@ class CommunityQuestion extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content'], 'required'],
+            ['status','in','range'=>[self::STATUS_DELETE,self::STATUS_CLOSE,self::STATUS_NORMAL]],
             ['is_public', 'default', 'value' => self::PUBLIC_YES],
             ['status','default','value'=>self::STATUS_CLOSE],
             ['money', 'integer', 'integerOnly' => true, 'min' => 1,'max' => 20],
             [['html_content', 'markdown_content','last_reply_nickname'], 'string'],
-            [['is_public','best_reply_id', 'tag_id', 'money', 'user_id', 'user_identity', 'view_number', 'subscribe_number', 'reply_number', 'is_solve', 'status', 'created_at', 'updated_at','last_reply_at'], 'integer'],
+            [['id','is_public','best_reply_id', 'tag_id', 'money', 'user_id', 'user_identity', 'view_number', 'subscribe_number', 'reply_number', 'is_solve', 'status', 'created_at', 'updated_at','last_reply_at'], 'integer'],
             [['title'], 'string', 'max' => 255],
         ];
     }
@@ -81,7 +82,7 @@ class CommunityQuestion extends \yii\db\ActiveRecord
     {
 
         $scenarios= parent::scenarios();
-        $scenarios[self::SCENARIO_USER_CREATE]=['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content'];
+        $scenarios[self::SCENARIO_USER_CREATE]=['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content','status','is_public'];
         return $scenarios;
     }
     /**

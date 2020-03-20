@@ -175,8 +175,8 @@ use common\models\CommunityQuestion;
                                     <?php foreach ($user_question as $key=>$value):?>
                                     <div class="listview__item">
                                         <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="<?=Url::to(['question/detail','question_id'=>$value['id']])?>">
-                                               <?=$value['title']?>
+                                            <a class="listview__heading" href="<?=Url::to(['question/detail','question_id'=>$value['id']])?>" title="<?=$value['title']?>">
+                                             <?=\yii\helpers\StringHelper::truncate($value['title'],32)?>
                                             </a>
                                             <?php if ($value['last_reply_nickname']!=''):?>
                                                 <p>#<?=$value['last_reply_nickname']?> 回复于<?=Yii::$app->formatter->asRelativeTime($value['last_reply_at']);?></p>
@@ -227,9 +227,9 @@ use common\models\CommunityQuestion;
                                             <div class="dropdown actions__item">
                                                 <i class="zmdi zmdi-more-vert" data-toggle="dropdown"></i>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="<?=Url::to(['question/update'])?>"><i class="zmdi zmdi-edit zmdi-hc-fw"></i>编辑</a>
-                                                    <a class="dropdown-item" href="<?=Url::to(['question/close'])?>"><i class="zmdi zmdi-eye-off zmdi-hc-fw"></i>隐藏</a>
-                                                    <a class="dropdown-item" href="<?=Url::to(['question/delete'])?>"><i class="zmdi zmdi-delete zmdi-hc-fw"></i>删除</a>
+                                                    <a class="dropdown-item" href="<?=Url::to(['question/update','id'=>$value['id']])?>"><i class="zmdi zmdi-edit zmdi-hc-fw"></i>编辑</a>
+                                                    <a class="dropdown-item" href="<?=Url::to(['question/action'])?>"><i class="zmdi zmdi-eye-off zmdi-hc-fw"></i>隐藏</a>
+                                                    <a class="dropdown-item" href="<?=Url::to(['question/action'])?>"><i class="zmdi zmdi-delete zmdi-hc-fw"></i>删除</a>
                                                 </div>
                                             </div>
                                         </div>

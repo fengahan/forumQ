@@ -57,11 +57,11 @@ use common\models\CommunityQuestion;
                             <div class="col-sm-10">
                                 <div class="form-group">
                                     <div class="btn-group-toggle" data-toggle="buttons">
-                                        <label class="btn active" for="public_yes">
-                                            <input type="radio"  value="<?=CommunityQuestion::PUBLIC_YES?>" name="is_public" id="public_yes" checked autocomplete="off"> 是
+                                        <label class="btn active">
+                                            <input type="radio"  value="<?=CommunityQuestion::PUBLIC_YES?>" name="is_public"  checked autocomplete="off"> 是
                                         </label>
-                                        <label class="btn" for="public_no">
-                                            <input type="radio" value="<?=CommunityQuestion::PUBLIC_NOT?>" name="is_public" autocomplete="off"  id="public_no"> 否
+                                        <label class="btn">
+                                            <input type="radio" value="<?=CommunityQuestion::PUBLIC_NOT?>" name="is_public" autocomplete="off"  > 否
                                         </label>
 
                                     </div>
@@ -80,10 +80,10 @@ use common\models\CommunityQuestion;
                             <div class="col-sm-10">
                                 <div class="form-group">
                                     <div class="btn-group-toggle" data-toggle="buttons">
-                                        <label class="btn active">
+                                        <label class="btn ">
                                             <input type="radio"  value="<?=CommunityQuestion::STATUS_NORMAL?>" name="status" autocomplete="off"> 开启
                                         </label>
-                                        <label class="btn">
+                                        <label class="btn active">
                                             <input type="radio" value="<?=CommunityQuestion::STATUS_CLOSE?>" name="status" autocomplete="off" checked > 隐藏
                                         </label>
 
@@ -128,7 +128,15 @@ use common\models\CommunityQuestion;
              height : 540,
              placeholder :"您想要知道点什么...",
              path   : "/editor/lib/",
-
+             imageUpload : true,
+             imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+             imageUploadURL : "./php/upload.php",
+             onfullscreen         : function() {
+                 document.getElementsByClassName("header")[0].style.display='none';
+            },
+             onfullscreenExit     : function() {
+                document.getElementsByClassName("header")[0].style.display='flex';
+            },
         });
     function createQues() {
         var form=document.getElementById("create_ques");

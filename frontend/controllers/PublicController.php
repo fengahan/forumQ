@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\UploadImgForm;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -16,6 +17,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use yii\web\NotAcceptableHttpException;
+use yii\web\UploadedFile;
 
 /**
  * Site controller
@@ -227,5 +229,22 @@ class PublicController extends BaseController
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    public function actionUpload()
+    {
+
+        $model = new UploadImgForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->imageFile = UploadedFile::getInstance($model, 'editormd-image-file');
+            if ($model->upload()) {
+                // 文件上传成功
+                return;
+            }
+        }
+
+
+
     }
 }

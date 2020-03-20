@@ -18,7 +18,9 @@ if (isset($listClass)){
             <a class="listview__heading" href="<?=Url::to(['question/detail','question_id'=>$value['id']])?>">
                 <?=$value['title']?>
             </a>
-            <p>#<?=$value['last_reply_nickname']?> 回复于<?=Yii::$app->formatter->asRelativeTime($value['last_reply_at']);?></p>
+            <?php if ($value['last_reply_nickname']):?>
+             <p>#<?=$value['last_reply_nickname']?> 回复于<?=Yii::$app->formatter->asRelativeTime($value['last_reply_at']);?></p>
+            <?endif;?>
         </div>
         <div class="issue-tracker__item hidden-md-down" >
             <i class="zmdi zmdi-time" ></i>

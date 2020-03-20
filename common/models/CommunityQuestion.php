@@ -45,8 +45,7 @@ class CommunityQuestion extends \yii\db\ActiveRecord
      */
 
 
-    const SCENARIO_USER_CREATE = 'user_create_ques';
-
+    const SCENARIO_QUES_CREATE = 'user_create_ques';
     public static function tableName()
     {
         return '{{%question}}';
@@ -69,6 +68,7 @@ class CommunityQuestion extends \yii\db\ActiveRecord
         return [
             [['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content'], 'required'],
             ['status','in','range'=>[self::STATUS_DELETE,self::STATUS_CLOSE,self::STATUS_NORMAL]],
+            ['is_public','in','range'=>[self::PUBLIC_NOT,self::PUBLIC_YES]],
             ['is_public', 'default', 'value' => self::PUBLIC_YES],
             ['status','default','value'=>self::STATUS_CLOSE],
             ['money', 'integer', 'integerOnly' => true, 'min' => 1,'max' => 20],
@@ -82,7 +82,7 @@ class CommunityQuestion extends \yii\db\ActiveRecord
     {
 
         $scenarios= parent::scenarios();
-        $scenarios[self::SCENARIO_USER_CREATE]=['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content','status','is_public'];
+        $scenarios[self::SCENARIO_QUES_CREATE]=['title', 'tag_id', 'money', 'user_id','html_content', 'markdown_content','status','is_public'];
         return $scenarios;
     }
     /**
@@ -96,7 +96,7 @@ class CommunityQuestion extends \yii\db\ActiveRecord
             'html_content' => 'html内容',
             'markdown_content' => 'markdown内容',
             'is_public' => '公开策略',
-            'tag_id' => '表情',
+            'tag_id' => '标签',
             'money' => '赏金',
             'user_id' => '用户',
             'best_reply_id'=>"最佳评论",
@@ -104,7 +104,7 @@ class CommunityQuestion extends \yii\db\ActiveRecord
             'view_number' => '查看人数',
             'subscribe_number' => '订阅人数',
             'reply_number' => '回复人数',
-            'is_solve' => '是否解决10 ok 20 not',
+            'is_solve' => '解决状态',
             'status' => '状态',
             'created_at' => '创建时间',
             'updated_at' => '查看次数',

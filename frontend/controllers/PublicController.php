@@ -231,17 +231,20 @@ class PublicController extends BaseController
         ]);
     }
 
-    public function actionUpload()
+    public function actionUploadImg()
     {
 
         $model = new UploadImgForm();
 
         if (Yii::$app->request->isPost) {
-            $model->imageFile = UploadedFile::getInstance($model, 'editormd-image-file');
-            if ($model->upload()) {
-                // 文件上传成功
-                return;
+            $model->imageFile = UploadedFile::getInstanceByName('editormd-image-file');
+            $file=$model->upload();
+            if ($file) {
+                $data=['success'=>1,'message'=>'上传成功','url'=>$file];
+            }else{
+                $data=['success'=>0,'message'=>'上传失败'.$model->getErrorSummary(false)[0]];
             }
+            return $this->asJson($data);
         }
 
 

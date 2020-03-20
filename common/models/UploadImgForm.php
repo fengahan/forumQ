@@ -2,7 +2,9 @@
 
 namespace common\models;
 use yii\base\Model;
+use yii\helpers\StringHelper;
 use yii\web\UploadedFile;
+use Yii;
 
 class UploadImgForm extends Model
 {
@@ -19,13 +21,29 @@ class UploadImgForm extends Model
         ];
     }
 
+    /**
+     * @param $name
+     * @return string
+     * @throws \yii\base\Exception
+     */
+    public function generateFileName($name)
+    {
+       return Yii::$app->security->generateRandomString(12).StringHelper::truncate(md5($name),6,'');
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\Exception
+     */
     public function upload()
     {
         if ($this->validate()) {
-            $this->imageFile->saveAs(\Yii::getAlias('uploadEditor') . $this->imageFile->baseName . '.' . $this->imageFile->extension);
-            return true;
+            $file_name=$this->generateFileName($this->imageFile->baseName) .'.'. $this->imageFile->extension;
+            $file=Yii::getAlias('@uploadEditor') .'/'.$file_name ;
+            $this->imageFile->saveAs($file);
+            return Yii::$app->params['editorUploadPath'].'/'.$file_name;
         } else {
-            return false;
+            return null;
         }
     }
 }

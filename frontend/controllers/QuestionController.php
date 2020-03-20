@@ -5,6 +5,7 @@ use common\models\CommunityTag;
 use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
+use common\models\UploadImgForm;
 use mysql_xdevapi\Warning;
 use Yii;
 use yii\helpers\Html;
@@ -52,6 +53,9 @@ class QuestionController extends BaseController
     public function actionCreate()
     {
         $req=Yii::$app->request->post();
+        $model = new UploadImgForm();
+
+
 
         $Question=new CommunityQuestion();
         $Question->scenario=CommunityQuestion::SCENARIO_USER_CREATE;
@@ -67,6 +71,7 @@ class QuestionController extends BaseController
           $tag_list=$Tag->getList($tagWhere);
           return  $this->render('create_ques',
               [
+                 'model' => $model,
                   'ques_model'=>$Question,
                   'tag_list'=>$tag_list,
               ]

@@ -130,7 +130,7 @@ use common\models\CommunityQuestion;
              path   : "/editor/lib/",
              imageUpload : true,
              imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-             imageUploadURL : "./php/upload.php",
+             imageUploadURL : "<?=Url::to(['/public/upload-img'])?>",
              onfullscreen         : function() {
                  document.getElementsByClassName("header")[0].style.display='none';
             },

@@ -1,5 +1,6 @@
 <?php
 namespace frontend\controllers;
+use common\models\CommunityQuesReply;
 use common\models\CommunityQuestion;
 use common\models\CommunityTag;
 use common\models\CommunityUserLink;
@@ -40,6 +41,9 @@ class QuestionController extends BaseController
                 $is_subscribe=1;
             }
         }
+        $QuestionReply=new CommunityQuesReply();
+        $reply_list=$QuestionReply->getReplyList($question_id);
+
         $userModel=new CommunityUsers();
         $question_user_info=$userModel->getUserInfo($question['user_id']);
         $userTag =new CommunityUserTag();
@@ -47,6 +51,7 @@ class QuestionController extends BaseController
         $userLinkModel=new CommunityUserLink();
         $user_link=$userLinkModel->getUserLink(['user_id'=>$question['user_id'],"status"=>[CommunityUserLink::STATUS_NORMAL]]);
         return $this->render("detail",[
+            'reply_list'=>$reply_list,
             'is_subscribe'=>$is_subscribe,
             'question'=>$question,
             'question_user_info'=>$question_user_info,
@@ -63,8 +68,6 @@ class QuestionController extends BaseController
     {
         $req=Yii::$app->request->post();
         $model = new UploadImgForm();
-
-
 
         $Question=new CommunityQuestion();
         $Question->scenario=CommunityQuestion::SCENARIO_QUES_CREATE;
@@ -210,7 +213,11 @@ class QuestionController extends BaseController
         }
 
 
+    }
 
+    //TODO
+    public function reply()
+    {
 
 
     }

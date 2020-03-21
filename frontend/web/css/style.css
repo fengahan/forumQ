@@ -24,7 +24,6 @@
     background: #32c787;
     padding: 20px;
     border-radius: 2px;
-    color: white;
 }
 
 .badge-success-ext{
@@ -40,4 +39,10 @@
 }
 .sex_img_woman{
     border: 1px solid rgba(255, 0, 166, 0.73);
+}
+.reply_block{
+    padding: 10px 1.25rem;
+    background: #f7f7f7;
+    border-radius: 3px;
+    margin-bottom: 1.25rem;
 }

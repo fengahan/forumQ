@@ -44,43 +44,37 @@ use yii\helpers\Url;
                     </div>
 
                     <div class="listview listview--bordered listview--block">
+                        <?php foreach ( $reply_list as $key=>$value):?>
                         <div class="listview__item">
-                            <p>Aenean eu leo quam.
-                                Pellentesque ornare sem lacinia quam venenatis vestibulum.
-                                Maecenas sed diam eget risus varius blandit sit amet non magna.
-                                Nulla vitae elit libero, a pharetra augue. Donec id elit non mi porta gravida at eget metus.
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-                                Vestibulum id ligula porta felis euismod semper. Cras justo odio, dapibus ac facilisis in,
-                                egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
-                                ut fermentum massa justo sit amet risus. Donec id elit non mi porta gravida at eget metus.
-                            </p>
-
                             <div class="q-a__info">
                                 <div class="q-a__op">
-                                    <a href="" data-toggle="tooltip" data-placement="top" data-original-title="李四"><img src="static/mutui/demo/img/contacts/2.jpg" alt=""></a>
-                                    <span>发布于26小时前</span>
+                                    <a href="" data-toggle="tooltip" data-placement="top" data-original-title="<?=$value['nickname']?>"><img src="<?=$value['avatar']?>" alt=""></a>
+                                    <span>发布于<?=Yii::$app->formatter->asRelativeTime($value['created_at'])?></span>
                                 </div>
                                 <!--em 评论start-->
                                 <div class="team__social text-center mt-0 ml-4 p-1" >
-                                    <a href="" class="zmdi zmdi-face zmdi-hc-fw bg-green wp-30 hp-30"></a>+4
-
-                                    <a href="" class="zmdi zmdi-favorite zmdi-hc-fw bg-red wp-30 hp-30"></a> +6
-
+                                    <?php $emj=\common\models\QuesReplyEmoji::getEmj($value['id']);?>
+                                    <?php foreach ($emj as $k=>$v):?>
+                                        <a href="#" class="<?=$v['emoji_key']?>"></a> <?=$v['count']?>
+                                    <?php endforeach;?>
                                 </div>
                                 <!--em 评论end-->
                                 <div class="q-a__vote-answer hidden-sm-down">
 
                                     <div class="listview__attrs">
 
-                                                <span title="" data-toggle="tooltip"
-                                                      data-placement="top" data-original-title="该用户是本文章的作者">
-                                                   作者
-                                                </span>
-
+                                        <?php if ($value['user_id']==$value['ques_user_id']):?>
+                                            <span title="" data-toggle="tooltip"
+                                                          data-placement="top" data-original-title="该用户是本文章的作者">
+                                                       作者
+                                                    </span>
+                                      <?php endif;?>
+                                        <?php if ($value['type']==CommunityUsers::TYPE_FROM_CODE):?>
                                         <span title="" data-toggle="tooltip"
                                               data-placement="top" data-original-title="该用户是平台邀请来的大咖.">
                                                    专家
                                                 </span>
+                                        <?php endif;?>
 
                                         <div class="icon-toggle">
                                             <i class="zmdi zmdi-mood zmdi-hc-fw"></i>
@@ -90,9 +84,15 @@ use yii\helpers\Url;
                                         <div class="dropdown actions__item">
                                             <i class="zmdi zmdi-more" data-toggle="dropdown"></i>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="">回复</a>
+
+                                               <?php if (Yii::$app->user->isGuest==false && $value['user_id']!=Yii::$app->user->identity->getId()):?>
+                                                <a class="dropdown-item"  onclick="reply(<?=$value['id']?>)">回复</a>
+                                                <?php endif;?>
+
                                                 <a class="dropdown-item" href="">分享</a>
-                                                <a class="dropdown-item" href="">删除</a>
+                                                <?php if (Yii::$app->user->isGuest==false && $value['user_id']==Yii::$app->user->identity->getId()):?>
+                                                    <a class="dropdown-item" href="">编辑</a>
+                                                <?php endif;?>
                                             </div>
                                         </div>
 
@@ -100,58 +100,46 @@ use yii\helpers\Url;
 
                                 </div>
                             </div>
-
-                        </div>
-
-                        <div class="listview__item">
-                            <!--被采纳答案 -->
-                            <p class="good_comment" title="" data-toggle="tooltip"
-                               data-placement="top" data-original-title="该评论被采纳为最佳答案">
-
-                                Cras mattis consectetur purus sit amet fermentum. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                                Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla.
-                                Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Donec sed odio dui.
-                            </p>
-
-                            <div class="q-a__info">
+                            <?php if ($value['parent_id']>0):?>
+                            <?php $parent_reply=\common\models\CommunityQuesReply::getReplyInfo($value['parent_id'])?>
+                                <div class="reply_block" >
                                 <div class="q-a__op">
-                                    <a href=""><img src="static/mutui/demo/img/contacts/5.jpg" alt=""></a>
-                                    <span>Replied by Xena Williams 6 days ago</span>
+                                    对
+                                    <a  data-toggle="collapse" href="#collapseReply<?=$value['id']?>" role="button" aria-expanded="false" aria-controls="collapseReply<?=$value['id']?>">
+                                        <img src="<?=$parent_reply['avatar']?>" alt="">
+                                        <?=$parent_reply['nickname']?>#
+                                    </a>
+                                    回复
                                 </div>
-
-                                <div class="q-a__vote-answer hidden-sm-down">
-
-                                    <div class="listview__attrs">
-
-                                                <span title="" data-toggle="tooltip"
-                                                      data-placement="top" data-original-title="该用户是本文章的作者">
-                                                   作者
-                                                </span>
-
-                                        <span title="" data-toggle="tooltip"
-                                              data-placement="top" data-original-title="该用户是平台邀请来的大咖.">
-                                                   专家
-                                                </span>
-
-                                        <div class="icon-toggle">
-                                            <i class="zmdi zmdi-mood zmdi-hc-fw"></i>
-                                        </div>
-
-                                        <div class="dropdown actions__item">
-                                            <i class="zmdi zmdi-more" data-toggle="dropdown"></i>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="">回复</a>
-                                                <a class="dropdown-item" href="">分享</a>
-                                                <a class="dropdown-item" href="">删除</a>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
+                                <div class="mt-2 collapse markdown-body editormd-preview-container" id="collapseReply<?=$value['id']?>">
+                                    <?=$value['reply_html_content']?>
                                 </div>
                             </div>
+                            <?php endif;?>
+                            <div class= <?php if ($value['is_best']==\common\models\CommunityQuesReply::BEST_YES):?>
+                                 "markdown-body editormd-preview-container good_comment"  title="" data-toggle="tooltip"
+                                data-placement="top" data-original-title="该评论被采纳为最佳答案"
+                            <?php else:?>
+                                "markdown-body editormd-preview-container"
+                            <?php endif;?>
+                            >
+
+
+                                <?=$value['reply_html_content']?>
+                            </div>
                         </div>
+                        <?php endforeach;?>
+                    </div>
+
+                    <div class="listview__item">
+                        <div class="form-group">
+                            <input type="hidden" id="reply_input" name="reply_id" value="">
+                            <div id="ques-editormd">
+                                <textarea name="markdown_content" style="display:none;"></textarea>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary">回复</button>
                     </div>
                 </div>
             </div>
@@ -201,7 +189,39 @@ use yii\helpers\Url;
         </div>
 
     </div>
+
+<script src="/editor/editormd.js"></script>
+
 <script type="text/javascript">
+
+    var editor = editormd("ques-editormd", {
+        width  : "100%",
+        height:240,
+        watch:false,
+        autoFocus:false,
+        //autoHeight:true,
+        placeholder :"您想要知道点什么...",
+        path   : "/editor/lib/",
+        imageUpload : true,
+        imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+        imageUploadURL : "<?=Url::to(['/public/upload-img'])?>",
+        onfullscreen         : function() {
+
+            document.getElementsByClassName("col-lg-3 col-md-3")[0].style.display='none';
+            document.getElementsByClassName("header")[0].style.display='none';
+        },
+        onfullscreenExit     : function() {
+            document.getElementsByClassName("col-lg-3 col-md-3")[0].style.display='block';
+            document.getElementsByClassName("header")[0].style.display='flex';
+        },
+    });
+    function reply(id) {
+       document.getElementById("ques-editormd").scrollIntoView();
+
+        document.getElementById('reply_input').value=id
+        return false;
+
+    }
 
     function subscribe(id) {
        subEle= document.getElementById('subscribe');

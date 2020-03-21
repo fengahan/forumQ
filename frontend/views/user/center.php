@@ -228,8 +228,8 @@ use common\models\CommunityQuestion;
                                                 <i class="zmdi zmdi-more-vert" data-toggle="dropdown"></i>
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <a class="dropdown-item" href="<?=Url::to(['question/update','id'=>$value['id']])?>"><i class="zmdi zmdi-edit zmdi-hc-fw"></i>编辑</a>
-                                                    <a class="dropdown-item" href="<?=Url::to(['question/action'])?>"><i class="zmdi zmdi-eye-off zmdi-hc-fw"></i>隐藏</a>
-                                                    <a class="dropdown-item" href="<?=Url::to(['question/action'])?>"><i class="zmdi zmdi-delete zmdi-hc-fw"></i>删除</a>
+                                                    <a class="dropdown-item"  onclick="ques_action(<?=$value['id']?>,<?=CommunityQuestion::STATUS_CLOSE?>)"><i class="zmdi zmdi-eye-off zmdi-hc-fw"></i>隐藏</a>
+                                                    <a class="dropdown-item"  onclick="ques_action(<?=$value['id']?>,<?=CommunityQuestion::STATUS_DELETE?>)"><i class="zmdi zmdi-delete zmdi-hc-fw"></i>删除</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -593,7 +593,30 @@ use common\models\CommunityQuestion;
 
 </div>
 
+<script type="text/javascript">
+    function ques_action(id,status) {
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data:{"id":id,"status":status},
+            url:"<?=Url::to(['/question/action'])?>",
+            success: function (res) {
+                if (res.code==100){
+                    notify("","","","success","","",res.msg);
+                    window.location.reload();
+                }else {
+                    notify("","","","danger","","",res.msg);
+                }
+            }
 
+        });
+        return  false;
+
+
+    }
+
+
+</script>
 
 <?php if ($tab=='' || $tab=='home'):?>
 

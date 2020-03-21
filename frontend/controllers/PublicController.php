@@ -129,7 +129,6 @@ class PublicController extends BaseController
             return $this->formatJson("100","注册成功请登录",['url'=>Url::to("public/login")]);
         }else{
             $error=$model->getErrorSummary(false)[0]??"非法错误";
-            Yii::error($error);
             return $this->formatJson("400",$error,['url'=>Url::to("public/login")]);
         }
 

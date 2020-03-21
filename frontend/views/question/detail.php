@@ -2,18 +2,20 @@
 use common\models\CommunityUsers;
 use common\models\CommunityQuestion;
 use common\models\CommunityUserTag;
+use yii\helpers\Url;
+
 ?>
 <div class="content__inner">
         <div class="row">
             <div class="col-lg-9 col-md-9">
                 <div class="q-a__question">
-                    <?php if ($question['is_public']==CommunityQuestion::PUBLIC_YES):?>
+                    <?php if ($question['is_public']==CommunityQuestion::PUBLIC_YES && $question['is_solve']!=CommunityQuestion::SOLVE_YES ):?>
                     <div class="q-a__vote hidden-sm-down">
                         <div class="q-a__vote__votes">
-                            <i><?=$question['subscribe_number']?></i>
+                            <i id="subscribe_number"><?=$question['subscribe_number']?></i>
                         </div>
-                        <div class="icon-toggle">
-                            <i class="zmdi zmdi-help"  data-toggle="tooltip" data-title="有答案通知我" ></i>
+                        <div class="team__social text-center" style="margin-top: 0px">
+                            <a id="subscribe" href="#" onclick="subscribe('<?=$question['id']?>')" class="zmdi zmdi-help <?php if ($is_subscribe==1):?>bg-green<?php else:?> bg-dark<?php endif;?>" data-toggle="tooltip" data-title="有答案通知我" data-original-title="" title=""></a>
                         </div>
                     </div>
                     <?php endif;?>
@@ -199,3 +201,37 @@ use common\models\CommunityUserTag;
         </div>
 
     </div>
+<script type="text/javascript">
+
+    function subscribe(id) {
+       subEle= document.getElementById('subscribe');
+       subNumEle=document.getElementById('subscribe_number');
+       subNum=parseInt(subNumEle.innerText);
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data:{"id":id},
+            url:"<?=Url::to(['/question/subscribe'])?>",
+            success: function (res) {
+                if (res.code==100){
+                    if(res.data.action=="cancel"){
+                        subNumEle.innerText=subNum-1;
+                        subEle.classList.replace("bg-green","bg-dark")
+                        notify("","","","warning","","",res.msg);
+                    }else {
+                        subNumEle.innerText=subNum+1;
+                        subEle.classList.replace("bg-dark","bg-green")
+                        notify("","","","success","","",res.msg);
+                    }
+
+                }else {
+                    notify("","","","danger","","",res.msg);
+                }
+            }
+
+        });
+        return  false;
+
+
+    }
+    </script>

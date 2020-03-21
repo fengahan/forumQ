@@ -5,6 +5,7 @@ use common\models\CommunityTag;
 use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
+use common\models\QuesSubscribe;
 use common\models\UploadImgForm;
 use mysql_xdevapi\Warning;
 use Yii;
@@ -32,6 +33,13 @@ class QuestionController extends BaseController
         if (empty($question)){
             throw new NotFoundHttpException("未找到当前答案");
         }
+        $is_subscribe=0;
+        if (!Yii::$app->user->isGuest){
+            $ques_sub= QuesSubscribe::findOne(['ques_id'=>$question_id,'user_id'=>Yii::$app->user->identity->getId()]);
+            if (!empty($ques_sub)){
+                $is_subscribe=1;
+            }
+        }
         $userModel=new CommunityUsers();
         $question_user_info=$userModel->getUserInfo($question['user_id']);
         $userTag =new CommunityUserTag();
@@ -39,6 +47,7 @@ class QuestionController extends BaseController
         $userLinkModel=new CommunityUserLink();
         $user_link=$userLinkModel->getUserLink(['user_id'=>$question['user_id'],"status"=>[CommunityUserLink::STATUS_NORMAL]]);
         return $this->render("detail",[
+            'is_subscribe'=>$is_subscribe,
             'question'=>$question,
             'question_user_info'=>$question_user_info,
             'question_user_tag'=>$question_user_tag,
@@ -58,7 +67,7 @@ class QuestionController extends BaseController
 
 
         $Question=new CommunityQuestion();
-        $Question->scenario=CommunityQuestion::SCENARIO_USER_CREATE;
+        $Question->scenario=CommunityQuestion::SCENARIO_QUES_CREATE;
         $Question->user_id=Yii::$app->user->identity->getId();
         $Question->user_identity=Yii::$app->user->identity->type;
         if ($Question->load($req,"") && $Question->save()){
@@ -128,27 +137,84 @@ class QuestionController extends BaseController
         $id=$req['id']?(int)$req['id']:0;
         $status=$req['status']?(int)$req['status']:0;
         if (empty($id) || empty($status)){
-            return $this->formatJson(100,"操作有误",[]);
+            return $this->formatJson(200,"操作有误",[]);
         }
 
-        $QuestionModel=new CommunityQuestion();
-        $question=$QuestionModel->getQuestionContent($id);
-        if (empty($question) ||$question['user_id']!=Yii::$app->user->identity->getId() || $question['status']==CommunityQuestion::STATUS_DELETE){
-            return $this->formatJson(100,"操作有误",[]);
+        $QuestionModel=CommunityQuestion::findOne($id);
+
+        if ( $QuestionModel->user_id!=Yii::$app->user->identity->getId() || $QuestionModel->status==CommunityQuestion::STATUS_DELETE){
+            return $this->formatJson(200,"操作有误",[]);
         }
-        if ($question['status']==$status){
-            return $this->formatJson(100,"无法重复此操作",[]);
+        if ($QuestionModel->status==$status){
+            return $this->formatJson(200,"无法重复此操作",[]);
         }
         $QuestionModel->status=$status;
         if (!$QuestionModel->save()){
-            return $this->formatJson(100,$QuestionModel->getErrorSummary(false)[0],[]);
+            return $this->formatJson(200,$QuestionModel->getErrorSummary(false)[0],[]);
         }else{
-            return $this->formatJson(200,'更新成功',[]);
+            return $this->formatJson(100,'更新成功',[]);
         }
+
+
+
+    }
+
+    /**
+     * @return \yii\web\Response
+     * @throws BadRequestHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionSubscribe()
+    {
+
+        $req=Yii::$app->request->post();
+        $user_id=Yii::$app->user->identity->getId();
+        $ques_id=$req['id']??0;
+        if (empty($ques_id)){
+            throw new BadRequestHttpException("问答不存在");
+        }
+
+        $QuestionModel=CommunityQuestion::findOne($ques_id);
+        if ($QuestionModel->is_solve==CommunityQuestion::SOLVE_YES){
+            return $this->formatJson(200,"无法订阅该问答",[]);
+        }
+        if ($QuestionModel->is_public==CommunityQuestion::PUBLIC_NOT){
+            return $this->formatJson(200,"无法订阅该问答",[]);
+        }
+        if ( $QuestionModel->user_id==Yii::$app->user->identity->getId() || $QuestionModel->status!=CommunityQuestion::STATUS_NORMAL){
+            return $this->formatJson(200,"无法订阅自己的问答",[]);
+        }
+        $ques_sub= QuesSubscribe::findOne(['ques_id'=>$ques_id,'user_id'=>$user_id]);
+        if (!empty($ques_sub)){
+            $QuestionModel->updateCounters(['subscribe_number'=>-1]);
+
+            $del=$ques_sub->delete();
+            if ($del){
+                $QuestionModel->save();
+              return  $this->formatJson(100,'取消订阅成功',['action'=>"cancel"]);
+            }
+          return  $this->formatJson(200,'取消订阅失败',[]);
+
+        }else{
+            $quesSubModel=new QuesSubscribe();
+            $quesSubModel->user_id=$user_id;
+            $quesSubModel->create_at=time();
+            $quesSubModel->ques_id=$ques_id;
+            if ($quesSubModel->save()){
+                $QuestionModel->updateCounters(['subscribe_number'=>1]);
+                $QuestionModel->save();
+              return  $this->formatJson(100,'订阅成功',['action'=>"create"]);
+            }
+            return   $this->formatJson(200,'订阅失败',[]);
+        }
+
 
 
 
 
     }
+
+
 
 }

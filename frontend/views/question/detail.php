@@ -45,7 +45,16 @@ use yii\helpers\Url;
 
                     <div class="listview listview--bordered listview--block">
                         <?php foreach ( $reply_list as $key=>$value):?>
-                        <div class="listview__item">
+                        <div id="collapseList<?=$value['id']?>" style="display:none; ">
+                            <div class="team__social text-center mt-0 text-white">
+                                <a onclick="replyEmj(<?=$value['id']?>,'thumb-up')" class="zmdi zmdi-thumb-up zmdi-hc-fw bg-info wp-30 hp-30"></a>
+                                <a  onclick="replyEmj(<?=$value['id']?>,'mood')" class="zmdi zmdi-mood zmdi-hc-fw bg-green wp-30 hp-30"></a>
+                                <a onclick="replyEmj(<?=$value['id']?>,'mood-bad')" class="zmdi zmdi-mood-bad zmdi-hc-fw bg-blue wp-30 hp-30"></a>
+                                <a  onclick="replyEmj(<?=$value['id']?>,'favorite')" class="zmdi zmdi-favorite zmdi-hc-fw bg-red wp-30 hp-30"></a>
+                            </div>
+                        </div>
+                        <div class="listview__item" id="<?='reply-content'.$value['id']?>">
+
                             <div class="q-a__info">
                                 <div class="q-a__op">
                                     <a href="" data-toggle="tooltip" data-placement="top" data-original-title="<?=$value['nickname']?>"><img src="<?=$value['avatar']?>" alt=""></a>
@@ -77,22 +86,21 @@ use yii\helpers\Url;
                                         <?php endif;?>
 
                                         <div class="icon-toggle">
-                                            <i class="zmdi zmdi-mood zmdi-hc-fw"></i>
+                                            <i class="zmdi zmdi-mood zmdi-hc-fw collapseList" data-template="collapseList<?=$value['id']?>"></i>
 
                                         </div>
 
+
                                         <div class="dropdown actions__item">
-                                            <i class="zmdi zmdi-more" data-toggle="dropdown"></i>
+
+                                            <i class="zmdi zmdi-more" data-toggle="dropdown" ></i>
                                             <div class="dropdown-menu dropdown-menu-right">
 
                                                <?php if (Yii::$app->user->isGuest==false && $value['user_id']!=Yii::$app->user->identity->getId()):?>
                                                 <a class="dropdown-item"  onclick="reply(<?=$value['id']?>)">回复</a>
                                                 <?php endif;?>
+                                                <a class="dropdown-item" data-toggle="modal" data-target="#modal-share-comment<?=$value['id']?>" >分享</a>
 
-                                                <a class="dropdown-item" href="">分享</a>
-                                                <?php if (Yii::$app->user->isGuest==false && $value['user_id']==Yii::$app->user->identity->getId()):?>
-                                                    <a class="dropdown-item" href="">编辑</a>
-                                                <?php endif;?>
                                             </div>
                                         </div>
 
@@ -100,6 +108,7 @@ use yii\helpers\Url;
 
                                 </div>
                             </div>
+
                             <?php if ($value['parent_id']>0):?>
                             <?php $parent_reply=\common\models\CommunityQuesReply::getReplyInfo($value['parent_id'])?>
                                 <div class="reply_block" >
@@ -112,7 +121,7 @@ use yii\helpers\Url;
                                     回复
                                 </div>
                                 <div class="mt-2 collapse markdown-body editormd-preview-container" id="collapseReply<?=$value['id']?>">
-                                    <?=$value['reply_html_content']?>
+                                    <?=$parent_reply['reply_html_content']?>
                                 </div>
                             </div>
                             <?php endif;?>
@@ -128,6 +137,20 @@ use yii\helpers\Url;
                                 <?=$value['reply_html_content']?>
                             </div>
                         </div>
+                    <div class="modal fade" id="modal-share-comment<?=$value['id']?>" tabindex="-1" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title pull-left">分享评论</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <?=Url::to(['question/detail','question_id'=>$question['id'],'#'=>'reply-content'.$value['id']],true)?>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
                         <?php endforeach;?>
                     </div>
 
@@ -139,7 +162,7 @@ use yii\helpers\Url;
                             </div>
                         </div>
 
-                        <button class="btn btn-primary">回复</button>
+                        <button onclick="replyDo()" class="btn btn-primary">回复</button>
                     </div>
                 </div>
             </div>
@@ -164,7 +187,7 @@ use yii\helpers\Url;
 
                         <div class="tags flot-chart-legends" >
                             <?php foreach ($question_user_tag as $key=>$value):?>
-                                <a href="" data-toggle="tooltip" data-placement="top" data-original-title="级别:<?=CommunityUserTag::LEVEL[$value['level']]?>">
+                                <a href="#" data-toggle="tooltip" data-placement="top" data-original-title="级别:<?=CommunityUserTag::LEVEL[$value['level']]?>">
                                     <div class="legendColorBox" style="display: inline-block">
                                         <div style="border:1px solid #fff;padding:1px">
                                             <div style="width:4px;height:0;border:5px solid <?=CommunityUserTag::LEVEL_STYLE_COLOR[$value['level']]?>;overflow:hidden">
@@ -179,7 +202,7 @@ use yii\helpers\Url;
 
                         <div class="team__social text-center">
                             <?php foreach ($user_link as $key=>$value):?>
-                                <a href="" class="zmdi <?=$value['icon']?> <?=$value['color']?>"  data-toggle="tooltip" data-title="<?=$value['name']?>" ></a>
+                                <a href="<?=$value['href']?>" class="zmdi <?=$value['icon']?> <?=$value['color']?>"  data-toggle="tooltip" data-title="<?=$value['name']?>&nbsp;点击次数：<?=$value['click_number']?>" ></a>
                             <?php endforeach;?>
                         </div>
                     </div>
@@ -191,13 +214,13 @@ use yii\helpers\Url;
     </div>
 
 <script src="/editor/editormd.js"></script>
-
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 <script type="text/javascript">
 
     var editor = editormd("ques-editormd", {
         width  : "100%",
         height:240,
-        watch:false,
         autoFocus:false,
         //autoHeight:true,
         placeholder :"您想要知道点什么...",
@@ -254,4 +277,63 @@ use yii\helpers\Url;
 
 
     }
+    
+    function replyDo() {
+      var  parent_id=document.getElementById('reply_input').value;
+      var ques_id="<?=$question['id']?>";
+      var html_content= editor.getPreviewedHTML();
+      var markdown_content=editor.getMarkdown();
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data:{"parent_id":parent_id,"ques_id":ques_id,"html_content":html_content,"markdown_content":markdown_content},
+            url:"<?=Url::to(['/question/reply'])?>",
+            success: function (res) {
+                if (res.code==100){
+                     notify("","","","success","","",res.msg);
+                     window.location.reload();
+                }else {
+                    notify("","","","danger","","",res.msg);
+                }
+            }
+
+        });
+        return  false;
+
+    }
+    function replyEmj(ques_reply_id,emj_key) {
+        var ques_id="<?=$question['id']?>";
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data:{"ques_id":ques_id,'ques_reply_id':ques_reply_id,"emj_key":emj_key},
+            url:"<?=Url::to(['/question/reply-emj'])?>",
+            success: function (res) {
+                if (res.code==100){
+                    notify("","","","success","","",res.msg);
+                    window.location.reload();
+                }else {
+                    notify("","","","danger","","",res.msg);
+                }
+            }
+
+        });
+        return  false;
+
+    }
+    const template = document.getElementById('collapseEmj');
+
+    tippy('.collapseList', {
+        content(reference) {
+            const id = reference.getAttribute('data-template');
+            const template = document.getElementById(id);
+            return template.innerHTML;
+        },
+        allowHTML: true,
+        theme: 'light-border',
+        trigger:'click',
+        placement:'bottom',
+        interactive:true,
+
+    });
     </script>

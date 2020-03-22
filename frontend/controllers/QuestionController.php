@@ -6,6 +6,7 @@ use common\models\CommunityTag;
 use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
+use common\models\QuesReplyEmoji;
 use common\models\QuesSubscribe;
 use common\models\UploadImgForm;
 use mysql_xdevapi\Warning;
@@ -216,8 +217,91 @@ class QuestionController extends BaseController
     }
 
     //TODO
-    public function reply()
+    public function actionReply()
     {
+        $req=Yii::$app->request->post();
+        $parent_id=$req['parent_id']??0;
+        $html_content=$req['html_content']??'';
+        $markdown_content=$req['markdown_content']??'';
+        $user_id=Yii::$app->user->identity->getId();
+        $ques_id=$req['ques_id']??0;
+        if (empty($ques_id) || !($ques=CommunityQuestion::findOne($ques_id))){
+            return $this->formatJson(200,"问答不存在",'');
+        }
+        $ques_user_id=$ques['user_id'];
+        if ($parent_id>0){
+            $parent_reply=CommunityQuesReply::findOne($parent_id);
+            if (empty($parent_reply)
+                || $parent_reply['status']!=CommunityQuesReply::STATUS_NORMAL
+                || $parent_reply['ques_id']!=$ques_id){
+                return $this->formatJson(200,"无效回复",'');
+            }
+            if ($parent_reply['user_id']==$user_id){
+                return $this->formatJson(200,"无法回复自己",'');
+            }
+        }
+        $replyModel=new CommunityQuesReply();
+        $replyModel->user_id=$user_id;
+        $replyModel->ques_id=$ques_id;
+        $replyModel->parent_id=$parent_id;
+        $replyModel->reply_markdown_content=$markdown_content;
+        $replyModel->reply_html_content=$html_content;
+        $replyModel->status=CommunityQuesReply::STATUS_NORMAL;
+        $replyModel->ques_user_id=$ques_user_id;
+        $replyModel->created_at=time();
+        if ($replyModel->save()){
+            return $this->formatJson(100,"回复成功",'');
+        }
+        return $this->formatJson(200,"系统异常请稍后重试".$replyModel->getErrorSummary(false)[0],'');
+
+    }
+
+    public function actionReplyEmj()
+    {
+
+        $req=Yii::$app->request->post();
+        $ques_id=$req['ques_id'];
+        $ques_reply_id=$req['ques_reply_id'];
+        $user_id=Yii::$app->user->identity->getId();
+        $emj_key=$req['emj_key']??'';
+        if (empty($ques_id) || !($question=CommunityQuestion::findOne($ques_id))){
+            return $this->formatJson(200,"问答不存在",'');
+        }
+        if (empty($ques_reply_id)
+            || !($reply=CommunityQuesReply::findOne($ques_reply_id))
+            || $reply['ques_id']!=$ques_id
+        ){
+            return $this->formatJson(200,"无效回复",'');
+        }
+        $emjReply=QuesReplyEmoji::findOne(['ques_reply_id'=>$ques_reply_id,'key'=>$emj_key]);
+        if ($emjReply['user_id']==$user_id){
+            $emjReply->updateCounters(['count'=>-1]);
+            $emjReply->save();
+            if ($emjReply->count==0){
+                $emjReply->delete();
+            }
+            return $this->formatJson(100,"回复成功",'');
+        }
+
+        if ($emjReply){
+            $emjReply->updateCounters(['count'=>1]);
+            $emjReply->save();
+            return $this->formatJson(100,"回复成功",'');
+        }else{
+            $emjReplyNew=new QuesReplyEmoji();
+            $emjReplyNew->user_id=$user_id;
+            $emjReplyNew->count=1;
+            $emjReplyNew->ques_id=$ques_id;
+            $emjReplyNew->ques_reply_id=$ques_reply_id;
+            $emjReplyNew->emoji_key=QuesReplyEmoji::$kes[$emj_key];
+            $emjReplyNew->key=$emj_key;
+            $emjReplyNew->create_at=time();
+            if( $emjReplyNew->save()){
+                return $this->formatJson(100,"回复成功",'');
+            }else{
+                return $this->formatJson(200,"回复失败",'');
+            }
+        }
 
 
     }

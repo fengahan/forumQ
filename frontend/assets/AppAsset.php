@@ -21,6 +21,7 @@ class AppAsset extends AssetBundle
         'editor/css/editormd.css',
         'css/style.css',
         'mutui/css/app.min.css',
+        'https://unpkg.com/tippy.js@6.1.0/themes/light-border.css'
 
     ];
     public $js = [

@@ -43,6 +43,7 @@ class CommunityQuesReply extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'ques_id', 'ques_user_id', 'reply_html_content', 'reply_markdown_content'], 'required'],
+            ['parent_id','default','value'=>0],
             [['user_id', 'ques_id', 'ques_user_id', 'is_best', 'parent_id', 'status', 'created_at'], 'integer'],
             [['reply_html_content', 'reply_markdown_content'], 'string'],
         ];
@@ -75,6 +76,7 @@ class CommunityQuesReply extends \yii\db\ActiveRecord
             ->from(self::tableName(). ' as qp')
             ->leftJoin(CommunityUsers::tableName(). " as u",'u.id=qp.user_id')
             ->where(['qp.ques_id'=>$question_id,'qp.status'=>self::STATUS_NORMAL])
+            ->orderBy('id desc')
             ->asArray()->all();
     }
 

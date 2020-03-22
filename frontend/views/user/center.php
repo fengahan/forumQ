@@ -22,7 +22,7 @@ use common\models\CommunityQuestion;
                     </div>
                     <p class="card-text"><?=Yii::$app->user->identity->self_signature?></p>
                     <div class="flot-chart-legends hidden-sm-down">
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count?>次" class="badge badge-secondary">问(100)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count?>次" class="badge badge-secondary">问(<?=$question_count?>)</a>
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答6次" class="badge badge-success">答(6)</a>
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享50次" class="badge badge-dark">分享(50)</a>
                     </div>
@@ -43,7 +43,7 @@ use common\models\CommunityQuestion;
 
                     <div class="team__social text-center">
                         <?php foreach ($user_link as $key=>$value):?>
-                            <a href="" class="zmdi <?=$value['icon']?> <?=$value['color']?>"  data-toggle="tooltip" data-title="<?=$value['name']?>" ></a>
+                            <a href="<?=$value['href']?>" class="zmdi <?=$value['icon']?> <?=$value['color']?>"  data-toggle="tooltip" data-title="<?=$value['name']?>&nbsp;点击次数：<?=$value['click_number']?>" ></a>
                         <?php endforeach;?>
                     </div>
                 </div>

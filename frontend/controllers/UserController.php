@@ -12,6 +12,7 @@ use common\models\UploadAvatarForm;
 use common\models\UploadImgForm;
 use Yii;
 use yii\data\Pagination;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 
@@ -105,6 +106,20 @@ class UserController extends BaseController
            'user_link'=>$user_link,
        ]);
 
+   }
+
+   public function actionUpdateProfile()
+   {
+       $user=CommunityUsers::findOne(Yii::$app->user->getId());
+       $user->setScenario(CommunityUsers::SCENARIO_UPDATE_PROFILE);
+       if ($user->load(Yii::$app->request->post(),'') && $user->save()){
+           Yii::$app->session->setFlash("update_status","100");
+       }else{
+
+           Yii::$app->session->setFlash("update_status","200");
+           Yii::$app->session->setFlash("update_error_message",$user->getErrorSummary(false)[0]);
+       }
+       return $this->redirect(Url::to(['user/profile']));
 
 
    }

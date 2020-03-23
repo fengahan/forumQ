@@ -1,8 +1,9 @@
 <?php
 use common\models\CommunityUserTag;
-use frontend\assets\AppAsset;
+
 use yii\helpers\Url;
-use common\models\CommunityQuestion;
+use common\models\CommunityUsers;
+
 ?>
 <div class="content__inner">
     <div class="row">
@@ -67,33 +68,54 @@ use common\models\CommunityQuestion;
                         <?=Yii::$app->name?> 友情提示您:<span class="text-red">请如实完善个人信息,更有助于彼此到成长。</span>
                     </h6>
 
-                    <form class="row">
+                    <form class="row" action="<?=Url::to(['user/update-profile'])?>" method="post">
                         <div class="col-md-6">
+                            <?php if (Yii::$app->session->getFlash("update_status")==='200'):?>
+                                <div class="alert alert-danger alert-dismissible fade show">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <?=  Yii::$app->session->getFlash("update_error_message")?>
+                                </div>
+                            <?php elseif (Yii::$app->session->getFlash("update_status")==='100'):?>
+                                 <div class="alert alert-success" role="alert">
+                                        更新个人信息成功
+                                 </div>
+                            <?php endif;?>
                             <div class="form-group">
                                 <label>昵称</label>
-                                <input type="text" class="form-control" placeholder="给自己一个响亮到名字吧">
+                                <input type="text" class="form-control" name="nickname" value="<?=$user_info['nickname']?>" readonly>
                                 <i class="form-group__bar"></i>
                             </div>
 
                             <div class="form-group">
                                 <label>邮箱地址</label>
-                                <input type="email" class="form-control" placeholder="name@example.com">
+                                <input type="email" class="form-control" name="email" value="<?=$user_info['email']?>" readonly>
                                 <i class="form-group__bar"></i>
                             </div>
                             <div class="form-group">
                                 <label>性别</label>
                                 <div class="select">
-                                    <select class="form-control">
-                                        <option>男</option>
-                                        <option>女</option>
-                                        <option>保密</option>
+                                    <select class="form-control" name="gender">
+                                        <option value="<?=CommunityUsers::GENDER_MAN?>"
+                                            <?php if ($user_info['gender']==CommunityUsers::GENDER_MAN):?>
+                                                selected="selected"
+                                            <?php endif;?>>男</option>
+                                        <option value="<?=CommunityUsers::GENDER_WOMAN?>"
+                                            <?php if ($user_info['gender']==CommunityUsers::GENDER_WOMAN):?>
+                                                selected="selected"
+                                            <?php endif;?>>女</option>
+                                        <option value="<?=CommunityUsers::GENDER_PRIVATE?>"
+                                            <?php if ($user_info['gender']==CommunityUsers::GENDER_PRIVATE):?>
+                                                selected="selected"
+                                            <?php endif;?>>保密</option>
                                     </select>
                                     <i class="form-group__bar"></i>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>个性签名</label>
-                                <input type="email" class="form-control" placeholder="不可以超过30个字符">
+                                <input type="text" class="form-control" name="self_signature" value="<?=$user_info['self_signature']?>" placeholder="不可以超过30个字符">
                                 <i class="form-group__bar"></i>
                             </div>
                             <button type="submit" class="btn btn-primary float-right">更新信息</button>

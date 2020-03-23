@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "{{%users}}".
  *
  * @property int $id 用户id
+ * @property string $self_signature 个性签名
  * @property string $user_token 用户token
  * @property string $email email地址
  * @property string $password 用户密码
@@ -44,6 +45,8 @@ class CommunityUsers extends \yii\db\ActiveRecord
     const GENDER_MAN=1;
     const GENDER_WOMAN=2;
     const GENDER_STYLE=[self::GENDER_PRIVATE=>"",self::GENDER_MAN=>"sex_img_man",self::GENDER_WOMAN=>"sex_img_woman"];
+
+    const SCENARIO_UPDATE_PROFILE= 'update_profile';
     /**
      * {@inheritdoc}
      */
@@ -64,7 +67,7 @@ class CommunityUsers extends \yii\db\ActiveRecord
             [['password'], 'string', 'max' => 65],
             [['phone', 'wechat'], 'string', 'max' => 20],
             [['nickname'], 'string', 'max' => 100],
-            [['avatar', 'province', 'city', 'country', 'company', 'direction_tags'], 'string', 'max' => 255],
+            [['avatar', 'province', 'city','self_signature', 'country', 'company', 'direction_tags'], 'string', 'max' => 255],
         ];
     }
 
@@ -100,7 +103,13 @@ class CommunityUsers extends \yii\db\ActiveRecord
             'created_at' => '注册时间',
         ];
     }
-
+    public function scenarios()
+    {
+        return [
+            //修改个人资料的时候 只允许更新性别和签名
+            self::SCENARIO_UPDATE_PROFILE => ['gender', 'self_signature'],
+        ];
+    }
     /***
      * @param int $user_id
      * @return array

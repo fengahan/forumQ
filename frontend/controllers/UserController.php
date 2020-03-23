@@ -6,10 +6,14 @@ use common\models\CommunityGradeLog;
 use common\models\CommunityQuestion;
 use common\models\CommunityTechnicalLog;
 use common\models\CommunityUserLink;
+use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
+use common\models\UploadAvatarForm;
+use common\models\UploadImgForm;
 use Yii;
 use yii\data\Pagination;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 
 /**
  * Site controller
@@ -40,9 +44,6 @@ class UserController extends BaseController
                'pageSize' => BaseModel::PAGE_SIZE
            ]);
        $user_question=$QuestionModel->getUserQues($user_id,['in',CommunityQuestion::STATUS_NORMAL,CommunityQuestion::STATUS_CLOSE], $question_pagination);
-
-
-
 
        return $this->render("center",
           [
@@ -83,5 +84,47 @@ class UserController extends BaseController
        return $this->formatJson('200','获取成功',$tech_res);
 
 
+   }
+
+
+   public function actionProfile()
+   {
+       $user_id=Yii::$app->user->identity->getId();
+       $user_info=CommunityUsers::findOne($user_id);
+       $QuestionModel=new CommunityQuestion();
+       $question_count=$QuestionModel->getUserQuesCount($user_id,['in',CommunityQuestion::STATUS_NORMAL,CommunityQuestion::STATUS_CLOSE]);
+       $userTag =new CommunityUserTag();
+       $question_user_tag=$userTag->getUserTag($user_id);
+       $userLinkModel=new CommunityUserLink();
+       $user_link=$userLinkModel->getUserLink(['user_id'=>$user_id,"status"=>[CommunityUserLink::STATUS_NORMAL]]);
+
+       return $this->render("profile",[
+           'user_info'=>$user_info,
+           'question_count'=>  $question_count,
+           'question_user_tag'=>$question_user_tag,
+           'user_link'=>$user_link,
+       ]);
+
+
+
+   }
+
+   public function actionUpdateAvatar()
+   {
+       $model = new UploadAvatarForm();
+
+       if (Yii::$app->request->isPost) {
+           $model->imageFile = UploadedFile::getInstanceByName('file');
+           $file=$model->upload();
+           if ($file) {
+               $data=['success'=>1,'message'=>'上传成功','url'=>$file];
+           }else{
+               $data=['success'=>0,'message'=>'上传失败'.$model->getErrorSummary(false)[0]];
+           }
+           $user=CommunityUsers::findOne(Yii::$app->user->identity->getId());
+           $user->avatar=$file;
+           $user->save();
+           return $this->asJson($data);
+       }
    }
 }

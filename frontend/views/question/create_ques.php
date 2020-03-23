@@ -101,7 +101,7 @@ use common\models\CommunityQuestion;
                             </div>
                         </div>
                         <input type="hidden" name="html_content" value="">
-                        <button type="button" onclick="createQues()" class="btn btn-primary"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">创建问答</font></font></button>
+                        <button type="button" onclick="createQues()" class="btn btn-primary  float-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">创建问答</font></font></button>
                     </form>
                     <br>
                     <br>

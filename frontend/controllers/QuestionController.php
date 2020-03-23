@@ -216,7 +216,7 @@ class QuestionController extends BaseController
 
     }
 
-    //TODO
+
     public function actionReply()
     {
         $req=Yii::$app->request->post();
@@ -240,6 +240,10 @@ class QuestionController extends BaseController
                 return $this->formatJson(200,"无法回复自己",'');
             }
         }
+        $ques->updateCounters(['reply_number'=>1]);
+        $ques->last_reply_nickname=Yii::$app->user->identity->nickname;
+        $ques->last_reply_at=time();
+        $ques->save();
         $replyModel=new CommunityQuesReply();
         $replyModel->user_id=$user_id;
         $replyModel->ques_id=$ques_id;
@@ -303,6 +307,58 @@ class QuestionController extends BaseController
             }
         }
 
+
+    }
+
+    /**
+     * @return \yii\web\Response
+     * @throws \Throwable
+     * TODO 加技能点 发送通知操作
+     */
+    public function actionReplyAccept()
+    {
+
+        $req=Yii::$app->request->post();
+        $ques_id=$req['ques_id'];
+        $ques_reply_id=$req['ques_reply_id'];
+        $user_id=Yii::$app->user->identity->getId();
+        if (empty($ques_id) || !($question=CommunityQuestion::findOne(['id'=>$ques_id,'user_id'=>$user_id]))){
+            return $this->formatJson(200,"问答不存在",'');
+        }
+        if (empty($ques_reply_id)
+            || !($reply=CommunityQuesReply::findOne($ques_reply_id))
+            || $reply['ques_id']!=$ques_id
+        ){
+            return $this->formatJson(200,"无效操作",'');
+        }
+        $transaction =Yii::$app->db->beginTransaction();
+        $success=false;
+        try {
+
+            $question->is_solve=CommunityQuestion::SOLVE_YES;
+            $question->best_reply_id=$ques_reply_id;
+            $question->best_reply_at=time();
+            $q_bool=$question->save();
+            $reply->is_best=CommunityQuesReply::BEST_YES;
+            $r_bool=$reply->save();
+            if (!$q_bool || !$r_bool ){
+                $transaction->rollBack();
+            }else{
+                $success=true;
+                $transaction->commit();
+            }
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+
+        if ($success){
+            return $this->formatJson(100,"采纳成功",'');
+        }
+        return $this->formatJson(200,"操作失败",'');
 
     }
 

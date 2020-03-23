@@ -26,6 +26,8 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         //Javascript Vendors
+
+        'https://cdn.bootcss.com/dropzone/5.5.1/min/dropzone.min.js',
         'mutui/vendors/jquery/jquery.min.js',
         'mutui/vendors/popper.js/popper.min.js',
         'mutui/vendors/bootstrap/js/bootstrap.min.js',

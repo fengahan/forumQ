@@ -37,29 +37,14 @@ AppAsset::register($this);
         <ul class="nav">
 
             <li class="nav-item">
-
-                <a class="nav-link nav-text active" href="<?= Url::to(['article/index']); ?>">文章详情</a>
-
+                <a class="nav-link nav-text active" href="<?= Url::to(['index/index']); ?>">问答</a>
             </li>
-
             <li class="nav-item">
-
-                <a class="nav-link nav-text " href="<?= Url::to(['public/login']); ?>">登陆注册</a>
-
+                <a class="nav-link nav-text " href="<?= Url::to(['public/login']); ?>">技术分享</a>
             </li>
-
             <li class="nav-item">
-
                 <a class="nav-link nav-text " href="">名人专题</a>
-
             </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link nav-text" href="">其他</a>
-
-            </li>
-
         </ul>
 
         <ul class="top-nav">
@@ -180,11 +165,11 @@ AppAsset::register($this);
 
                             </a>
 
-                            <a class="col-4 app-shortcuts__item" href="">
+                            <a class="col-4 app-shortcuts__item" href="<?= Url::to(['user/profile']); ?>">
 
                                 <i class="zmdi zmdi-file-text"></i>
 
-                                <small class="">待定</small>
+                                <small class="">个人信息</small>
 
                                 <span class="app-shortcuts__helper bg-blue"></span>
 

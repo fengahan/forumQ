@@ -13,7 +13,7 @@ if (isset($listClass)){
     <?php foreach ($question_list as $key=>$value):?>
     <div class="listview__item">
         <img src="<?=$value['avatar']?>" class="listview__img" alt=""
-             title="<?=$value['self_signature']?>"  data-toggle="tooltip" data-placement="left" >
+             title="<?=$value['nickname']?> <?php if ($value['self_signature']):?><?=':'.$value['self_signature']?><?endif;?>"  data-toggle="tooltip" data-placement="top" >
         <div class="listview__content text-truncate">
             <a class="listview__heading" href="<?=Url::to(['question/detail','question_id'=>$value['id']])?>">
                 <?=$value['title']?>

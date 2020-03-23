@@ -58,15 +58,13 @@ class CommunityUsers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['qq', 'birthday', 'gender', 'integral', 'type', 'origin', 'status', 'last_time', 'update_time', 'add_time'], 'integer'],
+            [['qq', 'birthday', 'gender', 'integral', 'type', 'origin', 'status', 'last_time', 'updated_at', 'created_at'], 'integer'],
             [['balance'], 'number'],
-            [['user_token'], 'string', 'max' => 120],
             [['email'], 'string', 'max' => 40],
             [['password'], 'string', 'max' => 65],
             [['phone', 'wechat'], 'string', 'max' => 20],
             [['nickname'], 'string', 'max' => 100],
             [['avatar', 'province', 'city', 'country', 'company', 'direction_tags'], 'string', 'max' => 255],
-            [['user_token'], 'unique'],
         ];
     }
 
@@ -98,8 +96,8 @@ class CommunityUsers extends \yii\db\ActiveRecord
             'origin' => '用户来源【0 官网注册 1 GitHub 授权】',
             'status' => '状态【0：正常用户，1 黑名单，2 用户被删除】',
             'last_time' => '最后登陆时间',
-            'update_time' => '修改时间',
-            'add_time' => '注册时间',
+            'updated_at' => '修改时间',
+            'created_at' => '注册时间',
         ];
     }
 

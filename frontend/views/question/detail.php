@@ -3,7 +3,7 @@ use common\models\CommunityUsers;
 use common\models\CommunityQuestion;
 use common\models\CommunityUserTag;
 use yii\helpers\Url;
-
+use common\models\CommunityQuesReply;
 ?>
 <div class="content__inner">
         <div class="row">
@@ -99,6 +99,12 @@ use yii\helpers\Url;
                                                <?php if (Yii::$app->user->isGuest==false && $value['user_id']!=Yii::$app->user->identity->getId()):?>
                                                 <a class="dropdown-item"  onclick="reply(<?=$value['id']?>)">回复</a>
                                                 <?php endif;?>
+                                                <?php if (Yii::$app->user->isGuest==false
+                                                    && $question['user_id']==Yii::$app->user->identity->getId()
+                                                    && empty($question['best_reply_id'])):?>
+
+                                                    <a class="dropdown-item"  onclick="reply_accept(<?=$value['id']?>)">采纳</a>
+                                                <?php endif;?>
                                                 <a class="dropdown-item" data-toggle="modal" data-target="#modal-share-comment<?=$value['id']?>" >分享</a>
 
                                             </div>
@@ -110,7 +116,7 @@ use yii\helpers\Url;
                             </div>
 
                             <?php if ($value['parent_id']>0):?>
-                            <?php $parent_reply=\common\models\CommunityQuesReply::getReplyInfo($value['parent_id'])?>
+                            <?php $parent_reply=CommunityQuesReply::getReplyInfo($value['parent_id'])?>
                                 <div class="reply_block" >
                                 <div class="q-a__op">
                                     对
@@ -125,7 +131,7 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                             <?php endif;?>
-                            <div class= <?php if ($value['is_best']==\common\models\CommunityQuesReply::BEST_YES):?>
+                            <div class= <?php if ($value['is_best']==CommunityQuesReply::BEST_YES):?>
                                  "markdown-body editormd-preview-container good_comment"  title="" data-toggle="tooltip"
                                 data-placement="top" data-original-title="该评论被采纳为最佳答案"
                             <?php else:?>
@@ -321,6 +327,28 @@ use yii\helpers\Url;
         return  false;
 
     }
+
+    function reply_accept(reply_id) {
+        var ques_id="<?=$question['id']?>";
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data:{"ques_id":ques_id,'ques_reply_id':reply_id},
+            url:"<?=Url::to(['/question/reply-accept'])?>",
+            success: function (res) {
+                if (res.code==100){
+                    notify("","","","success","","",res.msg);
+                    window.location.reload();
+                }else {
+                    notify("","","","danger","","",res.msg);
+                }
+            }
+
+        });
+        return  false;
+
+    }
+
     const template = document.getElementById('collapseEmj');
 
     tippy('.collapseList', {

@@ -188,7 +188,7 @@ class CommunityQuestion extends \yii\db\ActiveRecord
     {
         $where['q.is_solve']=self::SOLVE_YES;
         $where['q.status']=self::STATUS_NORMAL;
-        return self::find()->alias("q")->select("q.title,q.created_at,u.nickname,u.avatar")
+        return self::find()->alias("q")->select(" q.id,q.title,q.created_at,u.nickname,u.avatar")
             ->leftJoin(CommunityUsers::tableName() ."as u","q.user_id=u.id")
             ->where($where)->orderBy("best_reply_at desc")
             ->limit(5)

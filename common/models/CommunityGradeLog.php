@@ -63,4 +63,37 @@ class CommunityGradeLog extends \common\models\BaseModel
             ->asArray()
             ->all();
     }
+
+    /**
+     *
+     * @param $incr 此次加的点数
+     * @param $user_technical
+     */
+    public function UpUserGrade($user_technical,$user_id)
+    {
+
+        //最大等级
+        $max_grade=self::find()->where(['user_id'=>$user_id])->orderBy('technical desc')->asArray()->one();
+        $grade=CommunityUsers::LEVEL_MECHANISM;
+        $n="";
+        foreach ($grade as $key=>$value){
+            if ($user_technical<$value){
+                return $n;
+            }
+        }
+        if (empty($n)){
+            Yii::error("严重错误".json_encode(func_get_args()));
+        }
+        $this->user_id=$user_id;
+        $this->created_at=time();
+        if (empty($max_grade)){
+            $this->technical=0;
+            $this->level=CommunityUsers::LEVEL_COLL[0];
+            $this->save();
+        }else if (!empty($max_grade) && $n!=$grade['level']){
+            $this->technical=$user_technical;
+            $this->level=$n;
+            $this->save();
+        }
+    }
 }

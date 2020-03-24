@@ -38,7 +38,7 @@ class CommunityUsers extends \yii\db\ActiveRecord
     const TYPE_NORMAL=10;
     const TYPE_FROM_CODE=20;
     const TYPE=[self::TYPE_NORMAL=>"普通用户",self::TYPE_FROM_CODE=>"大咖"];
-    const LEVEL_MECHANISM=['T1'=>1000,"T2"=>3000,"T3"=>6000,"T4"=>12000,"T5"=>24000,"T6"=>48000];
+    const LEVEL_MECHANISM=['T1'=>0,"T2"=>3000,"T3"=>6000,"T4"=>12000,"T5"=>24000,"T6"=>48000];
     const LEVEL_COLL=["T1","T2","T3","T4","T5","T6"];
 
     const GENDER_PRIVATE=0;

@@ -1,8 +1,10 @@
 <?php
 namespace frontend\controllers;
+use common\models\CommunityGradeLog;
 use common\models\CommunityQuesReply;
 use common\models\CommunityQuestion;
 use common\models\CommunityTag;
+use common\models\CommunityTechnicalLog;
 use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
@@ -313,7 +315,6 @@ class QuestionController extends BaseController
     /**
      * @return \yii\web\Response
      * @throws \Throwable
-     * TODO 加技能点 发送通知操作
      */
     public function actionReplyAccept()
     {
@@ -327,7 +328,7 @@ class QuestionController extends BaseController
         }
         if (empty($ques_reply_id)
             || !($reply=CommunityQuesReply::findOne($ques_reply_id))
-            || $reply['ques_id']!=$ques_id
+            || $reply['ques_id']!=$ques_id || $question['best_reply_id']>0
         ){
             return $this->formatJson(200,"无效操作",'');
         }
@@ -341,6 +342,34 @@ class QuestionController extends BaseController
             $q_bool=$question->save();
             $reply->is_best=CommunityQuesReply::BEST_YES;
             $r_bool=$reply->save();
+
+            if ($question['user_id']!=$reply['user_id']){
+                $tag_integral=CommunityUserTag::findOne(['user_id'=>$reply['user_id'],'tag_id'=>$question['tag_id']]);
+                if (!empty($tag_integral)){
+                    $tag_integral->updateCounters(['integral'=>$question['money']*6]);
+                    $tag_integral->save();
+                }
+                $technical=$question['money']*4;
+               $reply_user= CommunityUsers::findOne($reply['user_id']);
+               if ($question['money']>0){
+                   $reply_user->updateCounters(['integral'=>$question['money'],'technical'=>$technical]);
+                   $reply_user->save();
+               }
+               //技能点log
+
+               $user_tech_log=new CommunityTechnicalLog();
+               $user_tech_log->user_id=$reply_user['id'];
+               $user_tech_log->created_at=time();
+               $user_tech_log->from=CommunityTechnicalLog::FROM_BEST_QES;
+               $user_tech_log->technical=$technical;
+               $user_tech_log->save();
+                //更改等级
+               $user_grade=new CommunityGradeLog();
+               $user_grade->UpUserGrade($technical+$reply_user['technical'],$user_id);
+
+
+               //TODO 消息
+            }
             if (!$q_bool || !$r_bool ){
                 $transaction->rollBack();
             }else{

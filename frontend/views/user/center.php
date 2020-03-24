@@ -43,7 +43,7 @@ use common\models\CommunityQuestion;
 
                     <div class="team__social text-center">
                         <?php foreach ($user_link as $key=>$value):?>
-                            <a href="<?=$value['href']?>" class="zmdi <?=$value['icon']?> <?=$value['color']?>"  data-toggle="tooltip" data-title="<?=$value['name']?>&nbsp;点击次数：<?=$value['click_number']?>" ></a>
+                            <a target="_blank" href="<?=Url::to(['public/user-link-jump','id'=>$value['id']])?>" class="zmdi <?=$value['icon']?> <?=$value['color']?>"  data-toggle="tooltip" data-title="<?=$value['name']?>&nbsp;点击次数：<?=$value['click_number']?>" ></a>
                         <?php endforeach;?>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\CommunityUserLink;
 use common\models\UploadImgForm;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
@@ -250,8 +251,23 @@ class PublicController extends BaseController
     }
 
 
-    public function showIcons()
+    public function actionShowIcons()
     {
       return  $this->render('icons');
+    }
+
+    public function actionUserLinkJump()
+    {
+        $link_id=(int)Yii::$app->request->get("id");
+        if (!empty($link_id)){
+            $link=CommunityUserLink::findOne($link_id);
+            if (!empty($link)){
+                $link->updateCounters(['click_number'=>1]);
+                $link->save();
+               return $this->redirect($link->href);
+            }
+        }
+        throw new BadRequestHttpException("链接找不到了");
+
     }
 }

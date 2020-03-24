@@ -178,7 +178,7 @@ use common\models\CommunityUsers;
                                                         <?php endforeach;?>
                                                     </select>
                                                 </div>
-                                                <a class="btn btn-primary text-white float-right" data-toggle="modal" data-target="#modal-centered">更新信息</a>
+                                                <a class="btn btn-primary text-white float-right" data-toggle="modal" data-target="#tag_confirm">更新信息</a>
                                             </div>
 
                                         </form>
@@ -320,7 +320,7 @@ use common\models\CommunityUsers;
     </div>
 </div>
 
-<div class="modal fade" id="modal-centered" tabindex="-1" style="display: none;" aria-hidden="true">
+<div class="modal fade" id="tag_confirm" tabindex="-1" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -386,6 +386,7 @@ use common\models\CommunityUsers;
             url:"<?=Url::to(['user/update-user-tag'])?>",
             success: function (res) {
                 if (res.code==100){
+                    $('#tag_confirm').modal('hide')
                     notify("","","","success","","",res.msg);
                 }else {
                     notify("","","","danger","","",res.msg);

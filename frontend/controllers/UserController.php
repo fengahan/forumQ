@@ -149,7 +149,7 @@ class UserController extends BaseController
         $remove=array_diff($user_tag_id,$tags);//需要移除标签
         $add=array_diff($tags,$user_tag_id);//新增的标签
         if (!empty($remove)){
-            $userTag->deleteAll(['tag_id'=>$remove]);
+            $userTag->deleteAll(['tag_id'=>$remove,'user_id'=>$user_id]);
         }
         $record=[];
         foreach ($add as $key=>$value){
@@ -199,9 +199,45 @@ class UserController extends BaseController
        if ($model->load(Yii::$app->request->post(),'') && $model->save()){
            return $this->formatJson(100,"添加成功",[]);
        }else{
-           Yii::error($model->parseIcon());
            return $this->formatJson(200,"添加失败".$model->getErrorSummary(false)[0],[]);
        }
+
+   }
+
+    public function actionUserLinkUpdate()
+    {
+        $id=(int)Yii::$app->request->post('id');
+
+        $model=CommunityUserLink::findOne($id);
+        if (empty($model)){
+            return $this->formatJson(200,"更新失败",[]);
+        }
+        $model->isNewRecord;
+        if ($model->load(Yii::$app->request->post(),'') && $model->save()){
+            return $this->formatJson(100,"更新成功",[]);
+        }else{
+            Yii::error($model->parseIcon());
+            return $this->formatJson(200,"更新失败".$model->getErrorSummary(false)[0],[]);
+        }
+
+    }
+
+
+   public function actionUserLinkDelete()
+   {
+
+       $id=(int)Yii::$app->request->post('id');
+       $user_id=Yii::$app->user->identity->getId();
+       if ($id){
+          $link= CommunityUserLink::findOne(['id'=>$id,'user_id'=>$user_id]);
+          if (!empty($link)){
+              $link->status=CommunityUserLink::STATUS_DELETE;
+              $link->icon=ltrim($link->icon,'zmdi-');
+              $link->save();
+              return $this->formatJson(100,"删除成功",[]);
+          }
+       }
+       return $this->formatJson(200,"删除失败",[]);
 
    }
 }

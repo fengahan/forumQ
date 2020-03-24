@@ -68,6 +68,7 @@ class CommunityUserLink extends \common\models\BaseModel
 
     public function handlerIcon($value)
     {
+
         return 'zmdi-'.trim($value);
     }
     public function getUserLink($where)

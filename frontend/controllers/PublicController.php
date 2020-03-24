@@ -247,6 +247,11 @@ class PublicController extends BaseController
         }
 
 
+    }
 
+
+    public function showIcons()
+    {
+      return  $this->render('icons');
     }
 }

@@ -18,6 +18,7 @@ class AppAsset extends AssetBundle
         'mutui/vendors/animate.css/animate.min.css',
         'mutui/vendors/jquery-scrollbar/jquery.scrollbar.css',
         //App styles
+        'mutui/vendors/select2/css/select2.min.css',
         'editor/css/editormd.css',
         'css/style.css',
         'mutui/css/app.min.css',
@@ -26,7 +27,6 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         //Javascript Vendors
-
         'https://cdn.bootcss.com/dropzone/5.5.1/min/dropzone.min.js',
         'mutui/vendors/jquery/jquery.min.js',
         'mutui/vendors/popper.js/popper.min.js',
@@ -38,6 +38,8 @@ class AppAsset extends AssetBundle
         //App functions and actions
         'js/func.js',
         'mutui/js/app.min.js',
+        'mutui/vendors/select2/js/select2.full.min.js',
+
     ];
 
     public $depends = [

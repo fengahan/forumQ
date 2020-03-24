@@ -4,6 +4,7 @@ namespace frontend\controllers;
 use common\models\BaseModel;
 use common\models\CommunityGradeLog;
 use common\models\CommunityQuestion;
+use common\models\CommunityTag;
 use common\models\CommunityTechnicalLog;
 use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
@@ -90,6 +91,9 @@ class UserController extends BaseController
 
    public function actionProfile()
    {
+
+       $req=Yii::$app->request->get();
+       $tab=$req['tab']??'profile';
        $user_id=Yii::$app->user->identity->getId();
        $user_info=CommunityUsers::findOne($user_id);
        $QuestionModel=new CommunityQuestion();
@@ -99,7 +103,13 @@ class UserController extends BaseController
        $userLinkModel=new CommunityUserLink();
        $user_link=$userLinkModel->getUserLink(['user_id'=>$user_id,"status"=>[CommunityUserLink::STATUS_NORMAL]]);
 
+       $tagModel=new CommunityTag();
+       $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
+       $tag_list=$tagModel->getList($tagWhere);
+
        return $this->render("profile",[
+           'tab'=>$tab,
+           'tag_list'=>$tag_list,
            'user_info'=>$user_info,
            'question_count'=>  $question_count,
            'question_user_tag'=>$question_user_tag,
@@ -124,6 +134,45 @@ class UserController extends BaseController
 
    }
 
+
+    public function actionUpdateUserTag()
+    {
+        $req=Yii::$app->request->post();
+
+        $user_id=Yii::$app->user->identity->getId();
+        $tags=$req['tag_vals']??[];
+
+        $userTag =new CommunityUserTag();
+        $user_tag=$userTag->getUserTag($user_id);
+        $user_tag_id=array_column($user_tag,'tag_id');
+
+        $remove=array_diff($user_tag_id,$tags);//需要移除标签
+        $add=array_diff($tags,$user_tag_id);//新增的标签
+        if (!empty($remove)){
+            $userTag->deleteAll(['tag_id'=>$remove]);
+        }
+        $record=[];
+        foreach ($add as $key=>$value){
+            $record[] =[
+                'tag_id'=>$value,
+                'user_id'=>$user_id,
+                'level'=>CommunityUserTag::DEFAULT_LEVEL,
+                'status'=>CommunityUserTag::STATUS_NORMAL,
+                'created_time'=>time(),
+                'updated_time'=>time(),
+            ];
+        }
+        if (count($record)>0){
+            Yii::$app->db->createCommand()
+                ->batchInsert(CommunityUserTag::tableName(),array_keys($record[0]),$record)
+                ->execute();
+
+        }
+        return $this->formatJson('100','更新成功','');
+
+
+
+    }
    public function actionUpdateAvatar()
    {
        $model = new UploadAvatarForm();
@@ -141,5 +190,18 @@ class UserController extends BaseController
            $user->save();
            return $this->asJson($data);
        }
+   }
+
+   public function actionUserLinkCreate()
+   {
+       $model=new  CommunityUserLink();
+       $model->user_id=Yii::$app->user->identity->getId();
+       if ($model->load(Yii::$app->request->post(),'') && $model->save()){
+           return $this->formatJson(100,"添加成功",[]);
+       }else{
+           Yii::error($model->parseIcon());
+           return $this->formatJson(200,"添加失败".$model->getErrorSummary(false)[0],[]);
+       }
+
    }
 }

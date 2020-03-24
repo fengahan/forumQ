@@ -37,10 +37,13 @@ class CommunityUserLink extends \common\models\BaseModel
     public function rules()
     {
         return [
-            [['id', 'name', 'icon', 'color', 'href'], 'required'],
+            [[ 'name', 'icon', 'color', 'href'], 'required'],
+            ['icon', 'in', 'range' =>$this->parseIcon()],
+            ['icon', 'filter', 'filter' => [$this, 'handlerIcon']],
+            ['href', 'url', 'defaultScheme' => 'http'],
             [['id', 'user_id', 'status', 'click_number', 'created_at', 'updated_at'], 'integer'],
             [['name', 'icon', 'color', 'href'], 'string', 'max' => 255],
-            [['id'], 'unique'],
+
         ];
     }
 
@@ -63,11 +66,36 @@ class CommunityUserLink extends \common\models\BaseModel
         ];
     }
 
+    public function handlerIcon($value)
+    {
+        return 'zmdi-'.trim($value);
+    }
     public function getUserLink($where)
     {
         return self::find()->where(['user_id'=>$where['user_id']])
             ->where(['in','status',$where['status']])->all();
 
 
+    }
+
+
+    public function parseIcon(){
+       $icon= Yii::$app->cache->get("icon_list");
+       if (!empty($icon)){
+           return $icon;
+       }
+        $file = fopen("icon_content", "r");
+        $icon=array();
+        $i=0;
+        while(! feof($file))
+        {
+            $icon[$i]= trim(fgets($file));
+            $i++;
+        }
+        fclose($file);
+        $icon=array_filter($icon);
+        Yii::$app->cache->set("icon_list",$icon);
+
+        return $icon;
     }
 }

@@ -21,6 +21,7 @@ class CommunityUserTag extends \common\models\BaseModel
     const STATUS_DELETE=20;
     const STATUS_CLOSE=30;
 
+    const DEFAULT_LEVEL=10;
     const LEVEL=[10=>"小白",20=>"初级",30=>"中级",40=>"高级"];
     const LEVEL_ING=[10=>0,20=>400,30=>8000,40=>24000];
     const LEVEL_STYLE_COLOR=[10=>'#747a80',20=>'#f5c942',30=>'#3af51b',40=>'#f51914'];

@@ -142,7 +142,7 @@ use common\models\CommunityQuestion;
         var form=document.getElementById("create_ques");
         var title=document.getElementsByName("title")[0].value;
         var money=document.getElementsByName("money")[0].value;
-        var is_public=$("input[name='is_public']:checked").val();;
+        var is_public=$("input[name='is_public']:checked").val();
 
         document.getElementsByName("html_content")[0].value=editor.getPreviewedHTML();
 

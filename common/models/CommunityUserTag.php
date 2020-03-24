@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "{{%user_tag}}".
  *
  * @property int $id id
+ * @property int $level
  * @property int $user_id 用户id
  * @property int $integral
  * @property int $tag_id 标签id
@@ -66,5 +67,25 @@ class CommunityUserTag extends \common\models\BaseModel
             ->where(['ut.status'=>self::STATUS_NORMAL,'ut.user_id'=>$user_id])
             ->asArray()->all();
 
+    }
+
+    public function upTagLevel($tag_integral,$id)
+    {
+        $tag=CommunityUserTag::find()->where(['id'=>$id])->one();
+
+        $grade=self::LEVEL_ING;
+        $n="";
+        foreach ($grade as $key=>$value){
+            if ($tag_integral<$value){
+                return $n;
+            }
+        }
+        if (empty($n)){
+            Yii::error("严重错误".json_encode(func_get_args()));
+        }
+        if (empty($n!=$grade['level'])){
+            $tag->level=$n;
+            $tag->save();
+        }
     }
 }

@@ -344,12 +344,14 @@ class QuestionController extends BaseController
             $r_bool=$reply->save();
 
             if ($question['user_id']!=$reply['user_id']){
+                $tag_integral_num=$question['money']*8;
                 $tag_integral=CommunityUserTag::findOne(['user_id'=>$reply['user_id'],'tag_id'=>$question['tag_id']]);
                 if (!empty($tag_integral)){
-                    $tag_integral->updateCounters(['integral'=>$question['money']*6]);
+                    $tag_integral->updateCounters(['integral'=>$tag_integral_num]);
+                    $tag_integral->upTagLevel($tag_integral_num,$tag_integral['id']);
                     $tag_integral->save();
                 }
-                $technical=$question['money']*4;
+                $technical=$question['money']*40;
                $reply_user= CommunityUsers::findOne($reply['user_id']);
                if ($question['money']>0){
                    $reply_user->updateCounters(['integral'=>$question['money'],'technical'=>$technical]);

@@ -24,7 +24,7 @@ use common\models\CommunityQuestion;
                     <div class="flot-chart-legends hidden-sm-down">
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count?>次" class="badge badge-secondary">问(<?=$question_count?>)</a>
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答6次" class="badge badge-success">答(6)</a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享50次" class="badge badge-dark">分享(50)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享<?=$article_count?>次" class="badge badge-dark"><?=$article_count?></a>
                     </div>
                     <div class="tags flot-chart-legends" >
                         <?php foreach ($question_user_tag as $key=>$value):?>
@@ -52,7 +52,7 @@ use common\models\CommunityQuestion;
                 <div class="card-body">
                     <h4 class="card-title">发布新内容</h4>
                     <a href="<?=Url::to(['question/create'])?>" class="badge badge-warning"><i class="zmdi zmdi-help"></i>新问答</a>
-                    <a href="<?=Url::to(['question/create'])?>" class="badge badge-success"><i class="zmdi zmdi-windows"></i>新技术</a>
+                    <a href="<?=Url::to(['article/create'])?>" class="badge badge-success"><i class="zmdi zmdi-windows"></i>新技术</a>
                     <a href="<?=Url::to(['question/create'])?>" class="badge badge-info"><i class="zmdi zmdi-share"></i>新专题</a>
 
                 </div>
@@ -71,7 +71,7 @@ use common\models\CommunityQuestion;
                                 <a class="nav-link<?php if ($tab=='question'):?> show active<?php endif;?>"   href="<?=Url::to(['/user/center','tab'=>'question'])?>" aria-selected="false">我的问答</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link<?php if ($tab=='technology'):?> show active<?php endif;?>"  aria-selected="false">技术分享</a>
+                                <a class="nav-link<?php if ($tab=='technology'):?> show active<?php endif;?>"   href="<?=Url::to(['/user/center','tab'=>'technology'])?>" aria-selected="false">技术分享</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link<?php if ($tab=='subject'):?> show active<?php endif;?>" aria-selected="true">专题分享</a>
@@ -192,9 +192,9 @@ use common\models\CommunityQuestion;
                                         <?php endif;?>
 
                                         <?php if ($value['status']==CommunityQuestion::STATUS_CLOSE):?>
-                                            <span class="issue-tracker__tag bg-warning">已关闭</span>
+                                            <span class="issue-tracker__tag bg-warning">已隐藏</span>
                                         <?php elseif ($value['status']==CommunityQuestion::STATUS_DELETE):?>
-                                            <span class="issue-tracker__tag bg-red">已删除/span>
+                                            <span class="issue-tracker__tag bg-red">已删除</span>
 
                                         <?php endif;?>
 
@@ -241,339 +241,59 @@ use common\models\CommunityQuestion;
                                  <?= $this->render('@app/views/common/paginator.php',['pagination'=>$question_pagination]);?>
                             </div>
                             <div class="tab-pane fade<?php if ($tab=='technology'):?> show active<?php endif;?>" >
+                                <?php foreach ($user_article as $key=>$value):?>
+
+
                                 <div class="listview listview--bordered issue-tracker">
 
                                     <div class="listview__item">
-                                        <img src="static/mutui/demo/img/contacts/2.jpg" class="listview__img" alt=""
-                                             title="张式娜"  data-toggle="tooltip" data-placement="left" >
-
                                         <div class="listview__content text-truncate text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公软件
+                                            <a class="listview__heading" href="<?=Url::to(['article/detail','article_id'=>$value['id']])?>">
+                                                <?=\yii\helpers\StringHelper::truncate($value['title'],32)?>
                                             </a>
-                                            <p>#张三 最后评论于 4小时前</p>
+                                        </div>
+
+                                        <?php if ($value['status']==\common\models\Articles::STATUS_CLOSE):?>
+                                            <span class="issue-tracker__tag bg-warning">已关闭</span>
+                                        <?php endif;?>
+                                        <div class="issue-tracker__item hidden-md-down">
+                                            <i class="zmdi zmdi-time"></i>
+                                            <?=Yii::$app->formatter->asRelativeTime($value['created_at']);?>
                                         </div>
 
                                         <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-time"></i>17/11/2017
+                                            <i class="zmdi zmdi-comments"></i>
+                                            <?=$value['reply_number']?>
                                         </div>
 
                                         <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 04
+                                            <i class="zmdi zmdi-favorite"></i>
+                                            <?=$value['get_heart']?>
                                         </div>
 
                                         <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 25
+                                            <i class="zmdi zmdi-eye"></i>
+                                            <?=$value['view_number']?>
                                         </div>
 
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>5
-                                        </div>
-
-                                        <div class="issue-tracker__item actions">
+                                        <div class="issue-tracker__item">
                                             <div class="dropdown actions__item">
-                                                <i class="zmdi zmdi-more-vert" data-toggle="dropdown" aria-expanded="false"></i>
-
-                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--icon" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(30px, 26px, 0px);">
-                                                    <a href="" class="dropdown-item"><i class="zmdi zmdi-edit"></i>编辑</a>
-                                                    <a href="" class="dropdown-item"><i class="zmdi zmdi-delete"></i>删除</a>
+                                                <i class="zmdi zmdi-more-vert" data-toggle="dropdown"></i>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="<?=Url::to(['article/update','id'=>$value['id']])?>"><i class="zmdi zmdi-edit zmdi-hc-fw"></i>编辑</a>
+                                                    <a class="dropdown-item"  onclick="article_action(<?=$value['id']?>,<?=CommunityQuestion::STATUS_CLOSE?>)"><i class="zmdi zmdi-eye-off zmdi-hc-fw"></i>隐藏</a>
+                                                    <a class="dropdown-item"  onclick="article_action(<?=$value['id']?>,<?=CommunityQuestion::STATUS_DELETE?>)"><i class="zmdi zmdi-delete zmdi-hc-fw"></i>删除</a>
                                                 </div>
                                             </div>
                                         </div>
 
                                     </div>
 
-                                    <div class="listview__item">
-                                        <img src="static/mutui/demo/img/contacts/3.jpg" class="listview__img" alt=""
-                                             title="完美如初."  data-toggle="tooltip" data-placement="left" >
-
-                                        <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公软件
-                                            </a>
-                                            <p>#李四 最后回复于 2小时前</p>
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down" >
-
-                                            <i class="zmdi zmdi-time" ></i>19/11/2017
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 23
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 17
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>5
-                                        </div>
-                                        <div class="issue-tracker__item actions">
-                                            <div class="dropdown actions__item">
-                                                <i class="zmdi zmdi-more-vert" data-toggle="dropdown" aria-expanded="false"></i>
-
-                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--icon" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(30px, 26px, 0px);">
-                                                    <a href="" class="dropdown-item"><i class="zmdi zmdi-edit"></i>编辑</a>
-                                                    <a href="" class="dropdown-item"><i class="zmdi zmdi-delete"></i>删除</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="listview__item">
-                                        <i class="avatar-char bg-amber">K</i>
-
-                                        <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公
-                                            </a>
-                                            <p>#王五 最后回复于 1 小时前</p>
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-time"></i>10/11/2017
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 01
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 14
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>5
-                                        </div>
-
-                                        <div class="issue-tracker__item actions">
-                                            <div class="dropdown actions__item">
-                                                <i class="zmdi zmdi-more-vert" data-toggle="dropdown" aria-expanded="false"></i>
-
-                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--icon" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(30px, 26px, 0px);">
-                                                    <a href="" class="dropdown-item"><i class="zmdi zmdi-edit"></i>编辑</a>
-                                                    <a href="" class="dropdown-item"><i class="zmdi zmdi-delete"></i>删除</a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="listview__item">
-                                        <i class="avatar-char bg-light-blue">T</i>
-
-                                        <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公
-                                            </a>
-                                            <p>#王五 最后回复于 1 小时前</p>
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-time"></i>05/11/2017
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 04
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 16
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>28
-                                        </div>
-
-
-                                    </div>
-
-                                    <div class="listview__item">
-                                        <img src="static/mutui/demo/img/contacts/1.jpg" class="listview__img" alt="">
-
-                                        <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公软件
-                                            </a>
-                                            <p>#张三 最后回复于 4小时前</p>
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-time"></i>22/10/2017
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 00
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 14
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>13
-                                        </div>
-
-                                    </div>
-
-                                    <div class="listview__item">
-                                        <i class="avatar-char bg-light-green">J</i>
-
-                                        <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公软件
-                                            </a>
-                                            <p>#张三 最后回复于 4小时前</p>
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-time"></i>12/09/2017
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 18
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 16
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>22
-                                        </div>
-
-                                    </div>
-
-                                    <div class="listview__item">
-                                        <img src="static/mutui/demo/img/contacts/5.jpg" class="listview__img" alt="">
-
-                                        <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公
-                                            </a>
-                                            <p>#张三 最后回复于 4小时前</p>
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-time"></i>12/09/2017
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 02
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 23
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>19
-                                        </div>
-
-                                    </div>
-
-                                    <div class="listview__item">
-                                        <img src="static/mutui/demo/img/contacts/6.jpg" class="listview__img" alt="">
-
-                                        <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公
-                                            </a>
-                                            <p>#张三 最后回复于 4小时前</p>
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-time"></i>30/08/2017
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 10
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 26
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>15
-                                        </div>
-
-                                    </div>
-
-                                    <div class="listview__item">
-                                        <img src="static/mutui/demo/img/contacts/7.jpg" class="listview__img" alt="">
-
-                                        <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公
-                                            </a>
-                                            <p>#张三 最后回复于 4小时前</p>
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-time"></i>10/07/2017
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 14
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 49
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>51
-                                        </div>
-
-                                    </div>
-
-                                    <div class="listview__item">
-                                        <i class="avatar-char bg-pink">L</i>
-
-                                        <div class="listview__content text-truncate">
-                                            <a class="listview__heading" href="">
-                                                如何激活永久windows10 和office办公
-                                            </a>
-                                            <p>#张三 最后回复于 4小时前</p>
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-time"></i>10/07/2017
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-comments"></i> 10
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-favorite"></i> 26
-                                        </div>
-
-                                        <div class="issue-tracker__item hidden-md-down">
-                                            <i class="zmdi zmdi-eye"></i>5
-                                        </div>
-
-                                    </div>
 
                                     <div class="clearfix m-4"></div>
                                 </div>
-                                <nav>
-                                    <ul class="pagination justify-content-center">
-                                        <li class="page-item pagination-first"><a class="page-link" href="#"></a></li>
-                                        <li class="page-item pagination-prev"><a class="page-link" href="#"></a></li>
-                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">6</a></li>
-                                        <li class="page-item pagination-next"><a class="page-link" href="#"></a></li>
-                                        <li class="page-item pagination-last"><a class="page-link" href="#"></a></li>
-                                    </ul>
-                                </nav>
+                                <?php endforeach;?>
+                                <?= $this->render('@app/views/common/paginator.php',['pagination'=>$article_pagination]);?>
                             </div>
                             <div class="tab-pane fade<?php if ($tab=='subject'):?> show active<?php endif;?>" >
 
@@ -600,6 +320,26 @@ use common\models\CommunityQuestion;
             dataType: 'json',
             data:{"id":id,"status":status},
             url:"<?=Url::to(['/question/action'])?>",
+            success: function (res) {
+                if (res.code==100){
+                    notify("","","","success","","",res.msg);
+                    window.location.reload();
+                }else {
+                    notify("","","","danger","","",res.msg);
+                }
+            }
+
+        });
+        return  false;
+
+
+    }
+    function article_action(id,status) {
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data:{"id":id,"status":status},
+            url:"<?=Url::to(['/article/action'])?>",
             success: function (res) {
                 if (res.code==100){
                     notify("","","","success","","",res.msg);

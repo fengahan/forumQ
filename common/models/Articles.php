@@ -49,7 +49,7 @@ class Articles extends \yii\db\ActiveRecord
         return [
             [['title', 'html_content', 'markdown_content', 'tag_id', 'user_id'], 'required'],
             [['html_content', 'markdown_content'], 'string'],
-            [['tag_id', 'user_id', 'view_number', 'reply_number', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['tag_id', 'user_id', 'view_number', 'reply_number', 'status','get_heart', 'created_at', 'updated_at'], 'integer'],
             [['title'], 'string', 'max' => 255],
         ];
     }
@@ -73,4 +73,30 @@ class Articles extends \yii\db\ActiveRecord
             'updated_at' => '查看次数',
         ];
     }
+
+
+    public function getUserArticle($user_id,$status,$pagination)
+    {
+        $where['a.status']=$status;
+        $where['a.user_id']=$user_id;
+        $query=  self::find()->select("a.id,a.title,a.reply_number,a.view_number,a.get_heart,a.created_at,a.status,
+        u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(self::tableName(). "as a")
+            ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=a.user_id')
+            ->leftJoin(CommunityTag::tableName() . "as t",'t.id=a.tag_id')
+            ->where($where);
+        return $query->offset($pagination->offset)
+            ->limit($pagination->limit)->orderBy('a.id desc')->asArray()->all();
+
+    }
+
+    public function getUserArtCount($user_id,$status)
+    {
+        $where['status']=$status;
+        return self::find()
+            ->where(['user_id'=>$user_id])
+            ->andWhere($where)
+            ->count();
+
+    }
+
 }

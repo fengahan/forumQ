@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\Articles;
 use common\models\BaseModel;
 use common\models\CommunityGradeLog;
 use common\models\CommunityQuestion;
@@ -36,6 +37,18 @@ class UserController extends BaseController
        $userLinkModel=new CommunityUserLink();
        $user_link=$userLinkModel->getUserLink(['user_id'=>$user_id,"status"=>[CommunityUserLink::STATUS_NORMAL]]);
 
+       $ArticleModel=new Articles();
+       $article_count=$ArticleModel->getUserArtCount($user_id,['in',Articles::STATUS_NORMAL,Articles::STATUS_CLOSE]);
+       $article_pagination= new Pagination(
+           [
+               'params'=>array_merge($req,['tab'=>'technology']),
+               'totalCount' =>$article_count,
+               'pageParam'=>'t_page',
+               'pageSize' => BaseModel::PAGE_SIZE
+           ]);
+
+       $user_article=$ArticleModel->getUserArticle($user_id,['in',Articles::STATUS_NORMAL,Articles::STATUS_CLOSE], $article_pagination);
+
        $userGradeLog=new CommunityGradeLog();
        $user_grade_progress=$userGradeLog->getUserProgress($user_id);
        $question_pagination= new Pagination(
@@ -50,6 +63,10 @@ class UserController extends BaseController
        return $this->render("center",
           [
               'tab'=>$tab,
+              'user_article'=>$user_article,
+              'article_count'=>$article_count,
+              'article_pagination'=> $article_pagination,
+
               'grade_progress'=>$user_grade_progress,
               'user_question'=>$user_question,
               'question_pagination'=> $question_pagination,

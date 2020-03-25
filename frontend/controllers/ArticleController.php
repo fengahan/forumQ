@@ -2,11 +2,11 @@
 namespace frontend\controllers;
 
 use common\models\Articles;
+use common\models\CommunityQuestion;
 use common\models\CommunityTag;
 use common\models\UploadImgForm;
 use Yii;
 use yii\helpers\Url;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 
@@ -89,8 +89,32 @@ class ArticleController extends BaseController
     }
 
 
+
     public function actionAction()
     {
+
+        $req=Yii::$app->request->post();
+        $id=$req['id']?(int)$req['id']:0;
+        $status=$req['status']?(int)$req['status']:0;
+        if (empty($id) || empty($status)){
+            return $this->formatJson(200,"操作有误",[]);
+        }
+
+        $ArticleModel=Articles::findOne($id);
+
+        if (  $ArticleModel->user_id!=Yii::$app->user->identity->getId() ||  $ArticleModel->status==Articles::STATUS_DELETE){
+            return $this->formatJson(200,"操作有误",[]);
+        }
+        if ( $ArticleModel->status==$status){
+            return $this->formatJson(200,"无法重复此操作",[]);
+        }
+        $ArticleModel->status=$status;
+        if (! $ArticleModel->save()){
+            return $this->formatJson(200, $ArticleModel->getErrorSummary(false)[0],[]);
+        }else{
+            return $this->formatJson(100,'更新成功',[]);
+        }
+
 
     }
 

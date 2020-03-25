@@ -24,7 +24,7 @@ use common\models\CommunityQuestion;
                     <div class="flot-chart-legends hidden-sm-down">
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count?>次" class="badge badge-secondary">问(<?=$question_count?>)</a>
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答6次" class="badge badge-success">答(6)</a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享<?=$article_count?>次" class="badge badge-dark"><?=$article_count?></a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享<?=$article_count?>次" class="badge badge-dark">技术分享(<?=$article_count?>)</a>
                     </div>
                     <div class="tags flot-chart-legends" >
                         <?php foreach ($question_user_tag as $key=>$value):?>

@@ -233,7 +233,11 @@ use common\models\CommunityUsers;
 
                                                         </div>
                                                     </div>
-
+                                                    <div class="note-view__field">
+                                                        <div class="alert alert-success" role="alert">
+                                                            <a  target="_blank" href="<?=Url::to(['public/show-icons'])?>" class="alert-link">  点击此处显示所有图标. </a>
+                                                        </div>
+                                                    </div>
 
                                                     <div class="modal-footer modal-footer--bordered">
                                                         <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
@@ -308,6 +312,11 @@ use common\models\CommunityUsers;
                     <label class="btn bg-cyan"><input type="radio" name="link_color"  value="bg-cyan" autocomplete="off"></label>
                     <label class="btn bg-indigo"><input type="radio" name="link_color"  value="bg-indigo" autocomplete="off"></label>
 
+                </div>
+            </div>
+            <div class="note-view__field">
+                <div class="alert alert-success" role="alert">
+                    <a href="<?=Url::to(['public/show-icons'])?>" class="alert-link">  点击此处显示所有图标. </a>
                 </div>
             </div>
 

@@ -223,7 +223,7 @@ ____________________________________________________
 
 
 
-		// Creates an array of splines, one for each segment of the original curve. Algorithm based on the wikipedia articles: 
+		// Creates an array of splines, one for each segment of the original curve. Algorithm based on the wikipedia article:
 		//
 		// http://de.wikipedia.org/w/index.php?title=Kubisch_Hermitescher_Spline&oldid=130168003 and 
 		// http://en.wikipedia.org/w/index.php?title=Monotone_cubic_interpolation&oldid=622341725 and the description of Fritsch-Carlson from

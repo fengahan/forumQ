@@ -1,83 +1,112 @@
 <?php
 namespace frontend\controllers;
 
-use frontend\models\ResendVerificationEmailForm;
-use frontend\models\VerifyEmailForm;
+use common\models\Articles;
+use common\models\CommunityTag;
+use common\models\UploadImgForm;
 use Yii;
-use yii\base\InvalidArgumentException;
-use yii\data\Pagination;
-use yii\web\BadRequestHttpException;
+use yii\helpers\Url;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use common\models\LoginForm;
-use frontend\models\PasswordResetRequestForm;
-use frontend\models\ResetPasswordForm;
-use frontend\models\SignupForm;
-use frontend\models\ContactForm;
+use yii\web\NotFoundHttpException;
+
 
 /**
  * Site controller
  */
-class ArticleController extends Controller
+class ArticleController extends BaseController
 {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
+
+
+    public function actionCreate()
     {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
-                'rules' => [
-                    [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
+        $req=Yii::$app->request->post();
+        $model = new UploadImgForm();
+
+        $Article=new Articles();
+        $Article->user_id=Yii::$app->user->identity->getId();
+        if ( $Article->load($req,"") && $Article->save()){
+            ///user/center?tab=question
+            return $this->redirect(Url::to(['/user/center','tab'=>'technology']));
+        }else{
+
+            $Tag=new CommunityTag();
+            $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
+            $tag_list=$Tag->getList($tagWhere);
+            return  $this->render('create_article',
+                [
+                    'model' => $model,
+                    'article_model'=>$Article,
+                    'tag_list'=>$tag_list,
+                ]
+            );
+        }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
-    }
 
     /**
-     * Displays homepage.
-     *
-     * @return mixed
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
      */
-    public function actionIndex()
+    public function actionUpdate()
     {
-        $pagination = new Pagination(['totalCount' =>10, 'pageSize' => '2']);
-        return $this->render('index',['pagination' => $pagination]);
+        $req=Yii::$app->request->post();
+        $article_id=(int) $req['id']??'0';
+        if (empty($article_id)){
+            $article_id=(int)Yii::$app->request->get("id");
+        }
+
+
+        $Article=Articles::findOne($article_id);
+        if (empty($Article) || $Article->user_id!=Yii::$app->user->identity->getId() || $Article->status==Articles::STATUS_DELETE)
+        {
+            throw new NotFoundHttpException("文章不存在了");
+        }
+        if ( $Article->load($req,"") && $Article->save()){
+            ///user/center?tab=question
+            return $this->redirect(Url::to(['/user/center','tab'=>'technology']));
+        }else{
+
+            $Tag=new CommunityTag();
+            $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
+            $tag_list=$Tag->getList($tagWhere);
+            return  $this->render('update_article',
+                [
+                    'Article'=>$Article,
+                    'tag_list'=>$tag_list,
+                ]
+            );
+        }
+
     }
+
+    public function actionDetail()
+    {
+
+
+
+
+    }
+
+
+    public function actionAction()
+    {
+
+    }
+
+
+    public function actionHeart()
+    {
+
+    }
+
+
+    public function actionReply()
+    {
+
+    }
+
+
+
 
 }

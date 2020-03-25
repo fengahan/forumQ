@@ -253,6 +253,7 @@ class PublicController extends BaseController
 
     public function actionShowIcons()
     {
+        $this->layout='main';
       return  $this->render('icons');
     }
 

@@ -105,10 +105,9 @@ class CommunityUsers extends \yii\db\ActiveRecord
     }
     public function scenarios()
     {
-        return [
-            //修改个人资料的时候 只允许更新性别和签名
-            self::SCENARIO_UPDATE_PROFILE => ['gender', 'self_signature'],
-        ];
+        $scenarios=parent::scenarios();
+        $scenarios[self::SCENARIO_UPDATE_PROFILE]=['gender', 'self_signature'];
+        return $scenarios;
     }
     /***
      * @param int $user_id

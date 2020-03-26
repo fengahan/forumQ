@@ -99,4 +99,15 @@ class Articles extends \yii\db\ActiveRecord
 
     }
 
+
+    public function getArtContent($id)
+    {
+        return self::find()->alias("a")
+            ->select("a.*,u.avatar,u.nickname")
+            ->leftJoin(CommunityUsers::tableName()." as u","u.id=a.user_id")
+            ->where(['a.id'=>$id])->asArray()->one();
+
+    }
+
+
 }

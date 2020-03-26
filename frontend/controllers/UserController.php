@@ -11,11 +11,9 @@ use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
 use common\models\UploadAvatarForm;
-use common\models\UploadImgForm;
 use Yii;
 use yii\data\Pagination;
 use yii\helpers\Url;
-use yii\web\Controller;
 use yii\web\UploadedFile;
 
 /**

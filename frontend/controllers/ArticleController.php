@@ -1,12 +1,21 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\ArticleReplyPraise;
 use common\models\Articles;
+use common\models\ArticlesPraise;
+use common\models\ArticlesReply;
+use common\models\CommunityQuesReply;
 use common\models\CommunityQuestion;
 use common\models\CommunityTag;
+use common\models\CommunityUserLink;
+use common\models\CommunityUsers;
+use common\models\CommunityUserTag;
+use common\models\QuesSubscribe;
 use common\models\UploadImgForm;
 use Yii;
 use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 
 
@@ -82,7 +91,40 @@ class ArticleController extends BaseController
 
     public function actionDetail()
     {
+        $req=Yii::$app->request->get();
+        $article_id=(int)$req['article_id'];
+        if (empty($article_id)){
+            throw new NotFoundHttpException("未找到当前文章");
+        }
+        $ArtModel=new Articles();
+        $article=$ArtModel->getArtContent($article_id);
+        if (empty($article) || $article['status']!=Articles::STATUS_NORMAL){
+            throw new NotFoundHttpException("未找到当前文章");
+        }
+        $is_heart=0;
+        if (!Yii::$app->user->isGuest){
+            $_heart= ArticlesPraise::findOne(['article_id'=>$article_id,'user_id'=>Yii::$app->user->identity->getId()]);
+            if (!empty($_heart)){
+                $is_heart=1;
+            }
+        }
+        $ArticleReply=new ArticlesReply();
+        $reply_list=$ArticleReply->getReplyList($article_id);
 
+        $userModel=new CommunityUsers();
+        $article_user_info=$userModel->getUserInfo($article['user_id']);
+        $userTag =new CommunityUserTag();
+        $article_user_tag=$userTag->getUserTag($article['user_id']);
+        $userLinkModel=new CommunityUserLink();
+        $user_link=$userLinkModel->getUserLink(['user_id'=>$article['user_id'],"status"=>[CommunityUserLink::STATUS_NORMAL]]);
+        return $this->render("detail",[
+            'reply_list'=>$reply_list,
+            'is_heart'=>$is_heart,
+            'article'=>$article,
+            'article_user_info'=>$article_user_info,
+            'article_user_tag'=>$article_user_tag,
+            'user_link'=>$user_link
+        ]);
 
 
 
@@ -121,16 +163,142 @@ class ArticleController extends BaseController
 
     public function actionHeart()
     {
+        $req=Yii::$app->request->post();
+        $user_id=Yii::$app->user->identity->getId();
+        $article_id=$req['id']??0;
+        if (empty($article_id)){
+            throw new BadRequestHttpException("文章不存在");
+        }
 
+        $artModel=Articles::findOne($article_id);
+
+        if ( $artModel->user_id==Yii::$app->user->identity->getId() || $artModel->status!=Articles::STATUS_NORMAL){
+            return $this->formatJson(200,"无法给自己点赞",[]);
+        }
+
+        $user=CommunityUsers::findOne($user_id);
+        $artUser=CommunityUsers::findOne($artModel->user_id);
+        $art_sub= ArticlesPraise::findOne(['article_id'=>$article_id,'user_id'=>$user_id]);
+        if (!empty($art_sub)){
+            $artModel->updateCounters(['get_heart'=>-1]);
+
+            $del=$art_sub->delete();
+            if ($del){
+                $artModel->save();
+                $user->updateCounters(['given_heart_count'=>-1]);
+                $user->save();
+                $artUser->updateCounters(['get_heart_count'=>-1]);
+                $artUser->save();
+                return  $this->formatJson(100,'取消点赞成功',['action'=>"cancel"]);
+            }
+            return  $this->formatJson(200,'取消点赞失败',[]);
+
+        }else{
+            $artSubModel=new ArticlesPraise();
+            $artSubModel->user_id=$user_id;
+            $artSubModel->created_at=time();
+            $artSubModel->article_id=$article_id;
+            $artSubModel->praise_user_id=$artModel->user_id;
+            if ( $artSubModel->save()){
+                $artModel->updateCounters(['get_heart'=>1]);
+                $artModel->save();
+
+                $user->updateCounters(['given_heart_count'=>1]);
+                $user->save();
+                $artUser->updateCounters(['get_heart_count'=>1]);
+                $artUser->save();
+
+                return  $this->formatJson(100,'点赞成功',['action'=>"create"]);
+            }
+            return   $this->formatJson(200,'点赞失败',[]);
+        }
     }
 
 
     public function actionReply()
     {
+        $req=Yii::$app->request->post();
+        $parent_id=$req['parent_id']??0;
+        $html_content=$req['html_content']??'';
+        $markdown_content=$req['markdown_content']??'';
+        $user_id=Yii::$app->user->identity->getId();
+        $article_id=$req['article_id']??0;
+        if (empty( $article_id) || !($article=Articles::findOne($article_id))){
+            return $this->formatJson(200,"问答不存在",'');
+        }
+        $article_user_id=$article['user_id'];
+        if ($parent_id>0){
+            $parent_reply=ArticlesReply::findOne($parent_id);
+            if (empty($parent_reply)
+                || $parent_reply['status']!=ArticlesReply::STATUS_NORMAL
+                || $parent_reply['article_id']!=$article_id){
+                return $this->formatJson(200,"无效回复",'');
+            }
+            if ($parent_reply['user_id']==$user_id){
+                return $this->formatJson(200,"无法回复自己",'');
+            }
+        }
+        $article->updateCounters(['reply_number'=>1]);
+        $article->save();
+        $replyModel=new ArticlesReply();
+        $replyModel->user_id=$user_id;
+        $replyModel->article_id=$article_id;
+        $replyModel->parent_id=$parent_id;
+        $replyModel->markdown_content=$markdown_content;
+        $replyModel->html_content=$html_content;
+        $replyModel->status=ArticlesReply::STATUS_NORMAL;
+        $replyModel->article_user_id=$article_user_id;
+        $replyModel->created_at=time();
+        $replyModel->updated_at=time();
+        if ($replyModel->save()){
+            return $this->formatJson(100,"回复成功",'');
+        }
+        return $this->formatJson(200,"系统异常请稍后重试".$replyModel->getErrorSummary(false)[0],'');
 
     }
 
 
+    public function actionReplyPraise()
+    {
+
+        $req=Yii::$app->request->post();
+        $article_id=$req['article_id'];
+        $article_reply_id=$req['article_reply_id'];
+        $user_id=Yii::$app->user->identity->getId();
+
+        if (empty($article_id) || !($article=Articles::findOne($article_id))){
+            return $this->formatJson(200,"问答不存在",'');
+        }
+        if (empty($article_reply_id)
+            || !($reply=ArticlesReply::findOne($article_reply_id))
+            || $reply['article_id']!=$article_id
+        ){
+            return $this->formatJson(200,"无效回复",'');
+        }
+        $replyPraise=ArticleReplyPraise::getRow($reply['id'],$user_id);
+        if (!empty($replyPraise)){
+            $reply->updateCounters(['praise_nums'=>-1]);
+            $reply->save();
+            $replyPraise->delete();
+            return $this->formatJson(100,"取消点赞成功",'');
+
+        } else{
+
+            $replyPraiseModel=new ArticleReplyPraise();
+            $replyPraiseModel->user_id=$user_id;
+            $replyPraiseModel->reply_id=$reply['id'];
+            $replyPraiseModel->created_at=time();
+
+            if( $replyPraiseModel->save()){
+                $reply->updateCounters(['praise_nums'=>1]);
+                $reply->save();
+                return $this->formatJson(100,"点赞成功",'');
+            }else{
+                return $this->formatJson(200,"点赞失败",'');
+            }
+        }
+
+    }
 
 
 }

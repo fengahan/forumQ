@@ -51,10 +51,8 @@ use common\models\CommunityQuestion;
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">发布新内容</h4>
-                    <a href="<?=Url::to(['question/create'])?>" class="badge badge-warning"><i class="zmdi zmdi-help"></i>新问答</a>
-                    <a href="<?=Url::to(['article/create'])?>" class="badge badge-success"><i class="zmdi zmdi-windows"></i>新技术</a>
-                    <a href="<?=Url::to(['question/create'])?>" class="badge badge-info"><i class="zmdi zmdi-share"></i>新专题</a>
-
+                    <button href="<?=Url::to(['question/create'])?>" class="btn btn-warning btn--icon-text float-left"><i class="zmdi zmdi-help"></i>新问答</button>
+                    <button href="<?=Url::to(['article/create'])?>" class="btn btn-success btn--icon-text float-right"><i class="zmdi zmdi-windows"></i>新技术</button>
                 </div>
             </div>
         </div>
@@ -73,9 +71,7 @@ use common\models\CommunityQuestion;
                             <li class="nav-item">
                                 <a class="nav-link<?php if ($tab=='technology'):?> show active<?php endif;?>"   href="<?=Url::to(['/user/center','tab'=>'technology'])?>" aria-selected="false">技术分享</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link<?php if ($tab=='subject'):?> show active<?php endif;?>" aria-selected="true">专题分享</a>
-                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link<?php if ($tab=='message'):?> show active<?php endif;?>" data-toggle="tab"role="tab" aria-selected="true">系统消息</a>
                             </li>
@@ -294,9 +290,6 @@ use common\models\CommunityQuestion;
                                 </div>
                                 <?php endforeach;?>
                                 <?= $this->render('@app/views/common/paginator.php',['pagination'=>$article_pagination]);?>
-                            </div>
-                            <div class="tab-pane fade<?php if ($tab=='subject'):?> show active<?php endif;?>" >
-
                             </div>
                             <div class="tab-pane fade<?php if ($tab=='message'):?> show active<?php endif;?>" >
 

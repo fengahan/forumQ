@@ -27,7 +27,7 @@ use common\models\CommunityUsers;
                     <div class="flot-chart-legends hidden-sm-down">
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count?>次" class="badge badge-secondary">问(<?=$question_count?>)</a>
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答6次" class="badge badge-success">答(6)</a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享50次" class="badge badge-dark">分享(50)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享<?=$article_count?>次" class="badge badge-dark">技术分享(<?=$article_count?>)</a>
                     </div>
                     <div class="tags flot-chart-legends" >
                         <?php foreach ($question_user_tag as $key=>$value):?>
@@ -54,10 +54,8 @@ use common\models\CommunityUsers;
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">发布新内容</h4>
-                    <a href="<?=Url::to(['question/create'])?>" class="badge badge-warning"><i class="zmdi zmdi-help"></i>新问答</a>
-                    <a href="<?=Url::to(['question/create'])?>" class="badge badge-success"><i class="zmdi zmdi-windows"></i>新技术</a>
-                    <a href="<?=Url::to(['question/create'])?>" class="badge badge-info"><i class="zmdi zmdi-share"></i>新专题</a>
-
+                    <button href="<?=Url::to(['question/create'])?>" class="btn btn-warning btn--icon-text float-left"><i class="zmdi zmdi-help"></i>新问答</button>
+                    <button href="<?=Url::to(['article/create'])?>" class="btn btn-success btn--icon-text float-right"><i class="zmdi zmdi-windows"></i>新技术</button>
                 </div>
             </div>
         </div>

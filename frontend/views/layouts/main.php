@@ -42,9 +42,6 @@ AppAsset::register($this);
             <li class="nav-item">
                 <a class="nav-link nav-text " href="<?= Url::to(['public/login']); ?>">技术分享</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link nav-text " href="">名人专题</a>
-            </li>
         </ul>
 
         <ul class="top-nav">

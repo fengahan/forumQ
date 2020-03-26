@@ -15,6 +15,7 @@ use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
 use common\models\QuesSubscribe;
 use common\models\UploadImgForm;
+use common\models\UserMessage;
 use Yii;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
@@ -262,6 +263,7 @@ class ArticleController extends BaseController
         if (empty( $article_id) || !($article=Articles::findOne($article_id))){
             return $this->formatJson(200,"问答不存在",'');
         }
+        $artUser=CommunityUsers::findOne($article['user_id']);
         $article_user_id=$article['user_id'];
         if ($parent_id>0){
             $parent_reply=ArticlesReply::findOne($parent_id);
@@ -287,6 +289,12 @@ class ArticleController extends BaseController
         $replyModel->created_at=time();
         $replyModel->updated_at=time();
         if ($replyModel->save()){
+
+            $messageModel=new UserMessage();
+            $messageModel->user_id=$article->user_id;
+            $messageModel->created_at=time();
+            $messageModel->content=$artUser->nickname.'回复了您的文章['.$article->title.']';
+            $messageModel->save();
             return $this->formatJson(100,"回复成功",'');
         }
         return $this->formatJson(200,"系统异常请稍后重试".$replyModel->getErrorSummary(false)[0],'');

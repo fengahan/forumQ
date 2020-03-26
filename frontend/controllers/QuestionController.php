@@ -11,7 +11,9 @@ use common\models\CommunityUserTag;
 use common\models\QuesReplyEmoji;
 use common\models\QuesSubscribe;
 use common\models\UploadImgForm;
+use common\models\UserMessage;
 use mysql_xdevapi\Warning;
+use Symfony\Component\Console\Question\Question;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -332,6 +334,7 @@ class QuestionController extends BaseController
         ){
             return $this->formatJson(200,"无效操作",'');
         }
+        $question_user=CommunityUsers::findOne($question->user_id);
         $transaction =Yii::$app->db->beginTransaction();
         $success=false;
         try {
@@ -369,8 +372,30 @@ class QuestionController extends BaseController
                $user_grade=new CommunityGradeLog();
                $user_grade->UpUserGrade($technical+$reply_user['technical'],$user_id);
 
+                $messageModel=new UserMessage();
+                $messageModel->user_id=$reply['user_id'];
+                $messageModel->created_at=time();
+                $messageModel->content= $question_user->nickname."在问答 [".$question->title."]中采取了您的回复";
+                $messageModel->save();
 
-               //TODO 消息
+                if ($question->is_public==CommunityQuestion::PUBLIC_YES){
+                    $subUsers=QuesSubscribe::find()->select('user_id')->where(['ques_id'=>$question->id])->all();
+                    $msg_data=[];
+                    foreach ($subUsers as $key=>$val){
+                        $msg_data[]= [
+                            'user_id'=>$val,
+                            'content'=>"您订阅的问答".'['.$question->title.']'."有了最佳回复",
+                            'created_at'=>time(),
+                        ];
+                    }
+                    if (count($msg_data)>0){
+                        Yii::$app->db->createCommand()
+                            ->batchInsert(CommunityUserTag::tableName(),array_keys($msg_data[0]),$msg_data)
+                            ->execute();
+                    }
+
+                }
+
             }
             if (!$q_bool || !$r_bool ){
                 $transaction->rollBack();

@@ -5,9 +5,11 @@ use common\models\ArticleReplyPraise;
 use common\models\Articles;
 use common\models\ArticlesPraise;
 use common\models\ArticlesReply;
+use common\models\CommunityGradeLog;
 use common\models\CommunityQuesReply;
 use common\models\CommunityQuestion;
 use common\models\CommunityTag;
+use common\models\CommunityTechnicalLog;
 use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
@@ -108,6 +110,10 @@ class ArticleController extends BaseController
                 $is_heart=1;
             }
         }
+        $ArtUpModel=Articles::findOne($article_id);
+        $ArtUpModel->updateCounters(['view_number'=>1]);
+        $ArtUpModel->save();
+
         $ArticleReply=new ArticlesReply();
         $reply_list=$ArticleReply->getReplyList($article_id);
 
@@ -160,6 +166,9 @@ class ArticleController extends BaseController
 
     }
 
+    /**
+     *限制单个用户针对当前文章每日点击次数为6次
+     */
 
     public function actionHeart()
     {
@@ -175,6 +184,8 @@ class ArticleController extends BaseController
         if ( $artModel->user_id==Yii::$app->user->identity->getId() || $artModel->status!=Articles::STATUS_NORMAL){
             return $this->formatJson(200,"无法给自己点赞",[]);
         }
+
+
 
         $user=CommunityUsers::findOne($user_id);
         $artUser=CommunityUsers::findOne($artModel->user_id);
@@ -207,6 +218,31 @@ class ArticleController extends BaseController
                 $user->save();
                 $artUser->updateCounters(['get_heart_count'=>1]);
                 $artUser->save();
+
+                if (!Yii::$app->cache->get('check_heart_record'.$artModel->id.$user_id)){
+                    $tag_integral_num=120;
+                    $tag_integral=CommunityUserTag::findOne(['user_id'=>$artModel->user_id,'tag_id'=>$artModel->tag_id]);
+                    if (!empty($tag_integral)){
+                        $tag_integral->updateCounters(['integral'=>$tag_integral_num]);
+                        $tag_integral->upTagLevel($tag_integral_num,$tag_integral['id']);
+                        $tag_integral->save();
+                    }
+                    $technical=120;
+                    $artUser->updateCounters(['integral'=>120,'technical'=>$technical]);
+                    $artUser->save();
+                    //技能点log
+
+                    $user_tech_log=new CommunityTechnicalLog();
+                    $user_tech_log->user_id=$artUser->id;
+                    $user_tech_log->created_at=time();
+                    $user_tech_log->from=CommunityTechnicalLog::FROM_TECH;
+                    $user_tech_log->technical=$technical;
+                    $user_tech_log->save();
+                    //更改等级
+                    $user_grade=new CommunityGradeLog();
+                    $user_grade->UpUserGrade($technical+$artUser->technical,$user_id);
+                    Yii::$app->cache->set('check_heart_record'.$artModel->id.$user_id,time());
+                }
 
                 return  $this->formatJson(100,'点赞成功',['action'=>"create"]);
             }

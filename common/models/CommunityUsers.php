@@ -31,6 +31,7 @@ use Yii;
  * @property int $status 状态【0：正常用户，1 黑名单，2 用户被删除】
  * @property int $last_time 最后登陆时间
  * @property int $update_time 修改时间
+ * @property int $technical 技能点
  * @property int $add_time 注册时间
  */
 class CommunityUsers extends \yii\db\ActiveRecord

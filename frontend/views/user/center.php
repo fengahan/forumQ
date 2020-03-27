@@ -22,9 +22,9 @@ use common\models\CommunityQuestion;
                     </div>
                     <p class="card-text"><?=Yii::$app->user->identity->self_signature?></p>
                     <div class="flot-chart-legends hidden-sm-down">
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count?>次" class="badge badge-secondary">问(<?=$question_count?>)</a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答6次" class="badge badge-success">答(6)</a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享<?=$article_count?>次" class="badge badge-dark">技术分享(<?=$article_count?>)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count??0?>次" class="badge badge-secondary">问(<?=$question_count??0?>)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答<?=$best_reply_count??0?>次" class="badge badge-success">答(<?=$best_reply_count??0?>)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享<?=$article_count??0?>次" class="badge badge-dark">技术分享(<?=$article_count??0?>)</a>
                     </div>
                     <div class="tags flot-chart-legends" >
                         <?php foreach ($question_user_tag as $key=>$value):?>
@@ -51,8 +51,8 @@ use common\models\CommunityQuestion;
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">发布新内容</h4>
-                    <button href="<?=Url::to(['question/create'])?>" class="btn btn-warning btn--icon-text float-left"><i class="zmdi zmdi-help"></i>新问答</button>
-                    <button href="<?=Url::to(['article/create'])?>" class="btn btn-success btn--icon-text float-right"><i class="zmdi zmdi-windows"></i>新技术</button>
+                    <a href="<?=Url::to(['question/create'])?>" class="btn btn-warning btn--icon-text float-left"><i class="zmdi zmdi-help"></i>新问答</a>
+                    <a href="<?=Url::to(['article/create'])?>" class="btn btn-success btn--icon-text float-right"><i class="zmdi zmdi-windows"></i>新技术</a>
                 </div>
             </div>
         </div>
@@ -69,11 +69,11 @@ use common\models\CommunityQuestion;
                                 <a class="nav-link<?php if ($tab=='question'):?> show active<?php endif;?>"   href="<?=Url::to(['/user/center','tab'=>'question'])?>" aria-selected="false">我的问答</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link<?php if ($tab=='technology'):?> show active<?php endif;?>"   href="<?=Url::to(['/user/center','tab'=>'technology'])?>" aria-selected="false">技术分享</a>
+                                <a class="nav-link<?php if ($tab=='technology'):?> show active<?php endif;?>" href="<?=Url::to(['/user/center','tab'=>'technology'])?>" aria-selected="false">技术分享</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link<?php if ($tab=='message'):?> show active<?php endif;?>" data-toggle="tab"role="tab" aria-selected="true">系统消息</a>
+                                <a class="nav-link<?php if ($tab=='message'):?> show active<?php endif;?>" href="<?=Url::to(['/user/center','tab'=>'message'])?>" role="tab" aria-selected="true">系统消息</a>
                             </li>
                         </ul>
 
@@ -289,11 +289,48 @@ use common\models\CommunityQuestion;
                                     <div class="clearfix m-4"></div>
                                 </div>
                                 <?php endforeach;?>
+                                <div class="clearfix m-4"></div>
                                 <?= $this->render('@app/views/common/paginator.php',['pagination'=>$article_pagination]);?>
                             </div>
                             <div class="tab-pane fade<?php if ($tab=='message'):?> show active<?php endif;?>" >
+                                <div class="listview listview--bordered issue-tracker">
+                                <?php foreach ($message as $key=>$value):?>
+                                    <div class="modal fade" id="modal-centered<?=$value['id']?>" tabindex="-1" style="display: none;" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title pull-left">消息内容</h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <?=$value['content']?>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="listview__item">
+                                        <div class="listview__content text-truncate text-truncate">
+                                            <a class="listview__heading" data-toggle="modal" data-target="#modal-centered<?=$value['id']?>">
+                                                <?=\yii\helpers\StringHelper::truncate($value['content'],32)?>
+                                            </a>
+                                        </div>
+
+                                        <div class="issue-tracker__item hidden-md-down">
+                                            <i class="zmdi zmdi-time"></i>
+                                            <?=Yii::$app->formatter->asRelativeTime($value['created_at']);?>
+                                        </div>
+
+                                    </div>
+                                    <?php endforeach;?>
+                                    <div class="clearfix m-4"></div>
+                                    <?= $this->render('@app/views/common/paginator.php',['pagination'=>$message_pagination]);?>
+                                </div>
 
                             </div>
+
                         </div>
                     </div>
                 </div>

@@ -50,70 +50,54 @@ AppAsset::register($this);
 
             <li class="dropdown top-nav__notifications">
 
-                <!-- 铃铛 红点-->
-
-                <a href="" data-toggle="dropdown" class="top-nav__notify">
+                <!-- 铃铛 红点class="top-nav__notify"-->
+                <?php
+                $message_un_read=[];
+                if (Yii::$app->user->isGuest==false){
+                    $message_un_read=\common\models\UserMessage::getUnRead(Yii::$app->user->identity->getId());
+                }
+                ?>
+                <a href="" data-toggle="dropdown" <?php if (count($message_un_read)>0):?>class="top-nav__notify"<?php endif;?>>
 
                     <i class="zmdi zmdi-notifications"></i>
 
                 </a>
-
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu--block">
-
                     <!-- 通知栏标题-->
-
                     <div class="listview listview--hover">
 
                         <div class="listview__header">
-
                             通知消息
-
-                            <div class="actions">
-
-                                <a href="" class="actions__item zmdi zmdi-check-all" data-ma-action="notifications-clear"></a>
-
-                            </div>
-
+<!--                            <div class="actions">-->
+<!---->
+<!--                                <a href="" class="actions__item zmdi zmdi-check-all" data-ma-action="notifications-clear"></a>-->
+<!---->
+<!--                            </div>-->
                         </div>
 
                         <!-- 通知列表内容-->
 
                         <div class="listview__scroll scrollbar-inner">
-
+                            <?php foreach ($message_un_read as $key=>$value):?>
                             <a href="" class="listview__item">
-
-                                <img src="mutui/demo/img/profile-pics/5.jpg" class="listview__img" alt="">
-
                                 <div class="listview__content">
-
-                                    <div class="listview__heading">Bill Phillips</div>
-
-                                    <p>Proin laoreet commodo eros id faucibus. Donec ligula quam, imperdiet vel ante placerat</p>
-
+                                    <p><?=\yii\helpers\StringHelper::truncate($value['content'],22)?></p>
                                 </div>
 
                             </a>
-
-                            <a href="" class="listview__item">
-
-                                <img src="mutui/demo/img/profile-pics/1.jpg" class="listview__img" alt="">
-
-                                <div class="listview__content">
-
-                                    <div class="listview__heading">David Belle</div>
-
-                                    <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
-
+                            <?php endforeach;?>
+                            <a href="<?=Url::to(['user/center','tab'=>'message'])?>" class="listview__item">
+                                <div class="listview__content text-center">
+                                    <div class="listview__content text-center btn tn-success">
+                                     <p class="text-blue">查看全部</p>
+                                    </div>
                                 </div>
-
                             </a>
 
                         </div>
-
                         <div class="p-1"></div>
 
                     </div>
-
                 </div>
 
             </li>

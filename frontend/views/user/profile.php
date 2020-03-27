@@ -25,9 +25,9 @@ use common\models\CommunityUsers;
                     </div>
                     <p class="card-text"><?=Yii::$app->user->identity->self_signature?></p>
                     <div class="flot-chart-legends hidden-sm-down">
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count?>次" class="badge badge-secondary">问(<?=$question_count?>)</a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答6次" class="badge badge-success">答(6)</a>
-                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享<?=$article_count?>次" class="badge badge-dark">技术分享(<?=$article_count?>)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count??0?>次" class="badge badge-secondary">问(<?=$question_count??0?>)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答<?=$best_reply_count??0?>次" class="badge badge-success">答(<?=$best_reply_count??0?>)</a>
+                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享<?=$article_count??0?>次" class="badge badge-dark">技术分享(<?=$article_count??0?>)</a>
                     </div>
                     <div class="tags flot-chart-legends" >
                         <?php foreach ($question_user_tag as $key=>$value):?>
@@ -54,8 +54,8 @@ use common\models\CommunityUsers;
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">发布新内容</h4>
-                    <button href="<?=Url::to(['question/create'])?>" class="btn btn-warning btn--icon-text float-left"><i class="zmdi zmdi-help"></i>新问答</button>
-                    <button href="<?=Url::to(['article/create'])?>" class="btn btn-success btn--icon-text float-right"><i class="zmdi zmdi-windows"></i>新技术</button>
+                    <a href="<?=Url::to(['question/create'])?>" class="btn btn-warning btn--icon-text float-left"><i class="zmdi zmdi-help"></i>新问答</a>
+                    <a href="<?=Url::to(['article/create'])?>" class="btn btn-success btn--icon-text float-right"><i class="zmdi zmdi-windows"></i>新技术</a>
                 </div>
             </div>
         </div>

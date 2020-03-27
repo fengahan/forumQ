@@ -4,6 +4,7 @@ namespace frontend\controllers;
 use common\models\Articles;
 use common\models\BaseModel;
 use common\models\CommunityGradeLog;
+use common\models\CommunityQuesReply;
 use common\models\CommunityQuestion;
 use common\models\CommunityTag;
 use common\models\CommunityTechnicalLog;
@@ -11,6 +12,7 @@ use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
 use common\models\UploadAvatarForm;
+use common\models\UserMessage;
 use Yii;
 use yii\data\Pagination;
 use yii\helpers\Url;
@@ -44,6 +46,22 @@ class UserController extends BaseController
                'pageParam'=>'t_page',
                'pageSize' => BaseModel::PAGE_SIZE
            ]);
+       $messageModel=new UserMessage();
+       if ($tab=='message')
+       {
+           UserMessage::updateAll(['status' =>UserMessage::STATUS_READ],['status'=>UserMessage::STATUS_NORMAL]);
+       }
+       $message_count=UserMessage::find()->where(['in','status',[UserMessage::STATUS_NORMAL,UserMessage::STATUS_READ]])->count();
+       $message_pagination= new Pagination(
+           [
+               'params'=>array_merge($req,['tab'=>'message']),
+               'totalCount' =>$message_count,
+               'pageParam'=>'m_page',
+               'pageSize' => BaseModel::PAGE_SIZE
+           ]);
+
+       $message=$messageModel->getUserMessage($user_id,['in',UserMessage::STATUS_NORMAL,UserMessage::STATUS_READ],$message_pagination);
+
 
        $user_article=$ArticleModel->getUserArticle($user_id,['in',Articles::STATUS_NORMAL,Articles::STATUS_CLOSE], $article_pagination);
 
@@ -58,17 +76,20 @@ class UserController extends BaseController
            ]);
        $user_question=$QuestionModel->getUserQues($user_id,['in',CommunityQuestion::STATUS_NORMAL,CommunityQuestion::STATUS_CLOSE], $question_pagination);
 
+       $best_reply_count=CommunityQuesReply::find()->where('user_id='.$user_id)->andWhere('is_best='.CommunityQuesReply::BEST_YES)->count();
        return $this->render("center",
           [
               'tab'=>$tab,
               'user_article'=>$user_article,
               'article_count'=>$article_count,
               'article_pagination'=> $article_pagination,
-
+              'message'=>$message,
+              'message_pagination'=>$message_pagination,
               'grade_progress'=>$user_grade_progress,
               'user_question'=>$user_question,
               'question_pagination'=> $question_pagination,
               'question_count'=>$question_count,
+              'best_reply_count'=>$best_reply_count,
               'question_user_tag'=>$question_user_tag,
               'user_link'=>$user_link
           ]
@@ -121,8 +142,13 @@ class UserController extends BaseController
        $tagModel=new CommunityTag();
        $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
        $tag_list=$tagModel->getList($tagWhere);
+       $best_reply_count=CommunityQuesReply::find()->where('user_id='.$user_id)->andWhere('is_best='.CommunityQuesReply::BEST_YES)->count();
+       $ArticleModel=new Articles();
+       $article_count=$ArticleModel->getUserArtCount($user_id,['in',Articles::STATUS_NORMAL,Articles::STATUS_CLOSE]);
 
        return $this->render("profile",[
+           'best_reply_count'=>$best_reply_count,
+           'article_count'=>$article_count,
            'tab'=>$tab,
            'tag_list'=>$tag_list,
            'user_info'=>$user_info,

@@ -14,11 +14,15 @@ use Yii;
  * @property int $created_at
  * @property int $read_time
  */
-class UserMessage extends \yii\db\ActiveRecord
+class UserMessage extends BaseModel
 {
     /**
      * {@inheritdoc}
      */
+    const STATUS_NORMAL=10;
+    const STATUS_READ=20;
+    const STATUS_DELETE=30;
+
     public static function tableName()
     {
         return '{{%user_message}}';
@@ -49,5 +53,32 @@ class UserMessage extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'read_time' => 'Read Time',
         ];
+    }
+
+    public function getUserMessage($user_id,$status,$pagination)
+    {
+        $where['status']=$status;
+        return self::find()
+            ->where('user_id='.$user_id)
+            ->andWhere($where)
+           ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->orderBy('id desc')
+            ->asArray()
+            ->all();
+
+    }
+
+
+    public static function getUnRead($user_id)
+    {
+        $where['status']=self::STATUS_NORMAL;
+        return self::find()
+            ->where('user_id='.$user_id)
+            ->andWhere($where)
+            ->limit("5")
+            ->orderBy('id desc')
+            ->asArray()
+            ->all();
     }
 }

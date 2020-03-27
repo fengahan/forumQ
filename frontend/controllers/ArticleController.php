@@ -5,18 +5,18 @@ use common\models\ArticleReplyPraise;
 use common\models\Articles;
 use common\models\ArticlesPraise;
 use common\models\ArticlesReply;
+use common\models\BaseModel;
 use common\models\CommunityGradeLog;
-use common\models\CommunityQuesReply;
 use common\models\CommunityQuestion;
 use common\models\CommunityTag;
 use common\models\CommunityTechnicalLog;
 use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
-use common\models\QuesSubscribe;
 use common\models\UploadImgForm;
 use common\models\UserMessage;
 use Yii;
+use yii\data\Pagination;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
@@ -28,6 +28,44 @@ use yii\web\NotFoundHttpException;
 class ArticleController extends BaseController
 {
 
+
+
+
+    public function actionIndex()
+    {
+
+        $req=Yii::$app->request->get();
+        $req['tag_id']=isset($req['tag_id'])?(int)$req['tag_id']:0;
+        $req['sort']=isset($req['sort'])?$req['sort']:"created_at";//'new_created'
+        $req['search_word']=isset($req['search_word'])?$req['search_word']:"";
+        $list_where['tag_id']=$req['tag_id'];
+        $list_where['is_public']=$req['is_public'];
+        $list_where["search_word"]=$req['search_word'];
+        $sort=$req['sort'];
+        $tagModel=new CommunityTag();
+        $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
+        $tag_list=$tagModel->getList($tagWhere);
+        $ArticleModel=new Articles();
+        $article_list=[];
+        $article_count=$ArticleModel->getIndexCount($list_where);
+        $pagination = new Pagination(['totalCount' =>$article_count, 'pageSize' => BaseModel::PAGE_SIZE]);
+        if ($article_count>0){
+            $article_list=$ArticleModel->getIndexList($list_where,$pagination);
+        }
+
+        $hot_list=$ArticleModel->getHot();
+        $main_count=[];
+        return $this->render('index',[
+            'article_list'=>$article_list,
+            'tag_list'=>$tag_list,
+            'pagination' => $pagination,
+            'main_count'=>$main_count,
+            'hot_list'=>$hot_list,
+            'req'=>$req,
+        ]);
+
+
+    }
 
 
     public function actionCreate()

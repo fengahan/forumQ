@@ -4,6 +4,7 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'name'=>"Formatting 实验室",
     'defaultRoute' => 'index',
     'language' => "zh-CN",
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',

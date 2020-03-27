@@ -30,7 +30,7 @@ AppAsset::register($this);
 
         <div class="header__logo hidden-sm-down">
 
-            <h1><a href="<?= Url::to(['index/index']); ?>">赵日天实验室</a></h1>
+            <h1><a href="<?= Url::to(['index/index']); ?>"><?=Yii::$app->name?></a></h1>
 
         </div>
 
@@ -40,7 +40,7 @@ AppAsset::register($this);
                 <a class="nav-link nav-text active" href="<?= Url::to(['index/index']); ?>">问答</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link nav-text " href="<?= Url::to(['public/login']); ?>">技术分享</a>
+                <a class="nav-link nav-text " href="<?= Url::to(['article/index']); ?>">技术分享</a>
             </li>
         </ul>
 

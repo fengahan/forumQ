@@ -110,4 +110,57 @@ class Articles extends \yii\db\ActiveRecord
     }
 
 
+    public function getIndexList($list_where,$pagination)
+    {
+        $where['a.status']=self::STATUS_NORMAL;
+        if (!empty($tag_id)){
+            $where['a.tag_id']=$tag_id;
+        }
+        $order_by='created_at desc';
+
+        $query= self::find()->select("a.id,a.title,a.reply_number,a.view_number,a.created_at,a.get_heart,a.tag_id,
+        u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(self::tableName(). "as a")
+            ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=a.user_id')
+            ->leftJoin(CommunityTag::tableName() . "as t",'t.id=a.tag_id')
+            ->where($where);
+        if (!empty($list_where['search_word'])){
+            $query->andFilterWhere(['like','a.title',$list_where['search_word']]);
+        }
+        return $query->offset($pagination->offset)
+            ->limit($pagination->limit)->orderBy($order_by)->asArray()->all();
+    }
+
+    public function getIndexCount($list_where)
+    {
+        $where['a.status']=self::STATUS_NORMAL;
+        if (!empty($list_where['tag_id'])){
+            $where['a.tag_id']=$list_where['tag_id'];
+        }
+        $query= self::find()->select("a.id,a.title,a.reply_number,a.view_number,a.created_at,a.get_heart,a.tag_id,
+        u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(self::tableName(). "as a")
+            ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=a.user_id')
+            ->leftJoin(CommunityTag::tableName() . "as t",'t.id=a.tag_id')
+            ->where($where);
+        if (!empty($list_where['search_word'])){
+            $query->andFilterWhere(['like','a.title',$list_where['search_word']]);
+        }
+        return $query->asArray()->count();
+
+    }
+
+
+    public function getHot()
+    {
+        $where['a.status']=self::STATUS_NORMAL;
+        $query= self::find()->select("a.id,a.title,a.reply_number,a.view_number,a.created_at,a.get_heart,a.tag_id,
+        u.avatar,u.nickname,u.email,u.type,u.self_signature")->from(self::tableName(). "as a")
+            ->leftJoin(CommunityUsers::tableName(). "as u",'u.id=a.user_id')
+            ->leftJoin(CommunityTag::tableName() . "as t",'t.id=a.tag_id')
+            ->where($where)->andWhere(['>','a.created_at',strtotime(date('Y-m-01', strtotime(date("Y-m-d"))))]);
+        if (!empty($list_where['search_word'])){
+            $query->andFilterWhere(['like','a.title',$list_where['search_word']]);
+        }
+        return $query->orderBy('get_heart desc,created_at desc')->asArray()->all();
+    }
+
 }

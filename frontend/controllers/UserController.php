@@ -15,6 +15,7 @@ use common\models\UploadAvatarForm;
 use common\models\UserMessage;
 use Yii;
 use yii\data\Pagination;
+use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 
@@ -23,7 +24,29 @@ use yii\web\UploadedFile;
  */
 class UserController extends BaseController
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only'=>['center','pie-data','profile','update-avatar','update-profile','user-tag','link-create','link-delete','link-update'],
+                'rules' => [
 
+                    [
+                        'actions' => ['center','pie-data','profile','update-avatar','update-profile','user-tag','link-create','link-delete','link-update'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    if (Yii::$app->request->isAjax){
+                        return $this->formatJson(200,"请先登陆",[]);
+                    }
+                }
+            ],
+        ];
+    }
    public function actionCenter()
    {
        $req=Yii::$app->request->get();

@@ -14,16 +14,38 @@ use common\models\UploadImgForm;
 use common\models\User;
 use common\models\UserMessage;
 use mysql_xdevapi\Warning;
-use Symfony\Component\Console\Question\Question;
 use Yii;
-use yii\helpers\Html;
+use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
-use yii\web\NotAcceptableHttpException;
 use yii\web\NotFoundHttpException;
 
 class QuestionController extends BaseController
 {
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only'=>['action','create','reply','reply-accept','reply-emj','update','subscribe'],
+                'rules' => [
+
+                    [
+                        'actions' =>['action','create','reply','reply-accept','reply-emj','update','subscribe'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    if (Yii::$app->request->isAjax){
+                        return $this->formatJson(200,"请先登陆",[]);
+                    }
+                }
+            ],
+        ];
+    }
 
     /**
      * @throws NotFoundHttpException

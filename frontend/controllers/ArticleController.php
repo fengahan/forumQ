@@ -7,7 +7,6 @@ use common\models\ArticlesPraise;
 use common\models\ArticlesReply;
 use common\models\BaseModel;
 use common\models\CommunityGradeLog;
-use common\models\CommunityQuestion;
 use common\models\CommunityTag;
 use common\models\CommunityTechnicalLog;
 use common\models\CommunityUserLink;
@@ -17,6 +16,8 @@ use common\models\UploadImgForm;
 use common\models\UserMessage;
 use Yii;
 use yii\data\Pagination;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
@@ -28,7 +29,29 @@ use yii\web\NotFoundHttpException;
 class ArticleController extends BaseController
 {
 
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only'=>['action','create','heart','reply','reply-praise','update'],
+                'rules' => [
 
+                    [
+                        'actions' => ['action','create','heart','reply','reply-praise','update'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    if (Yii::$app->request->isAjax){
+                        return $this->formatJson(200,"请先登陆",[]);
+                    }
+                }
+            ],
+        ];
+    }
 
 
     public function actionIndex()

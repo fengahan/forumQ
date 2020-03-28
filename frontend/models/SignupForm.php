@@ -30,19 +30,19 @@ class SignupForm extends Model
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => '邮箱已经注册过会员,无法重复使用.'],
             ['confirm_password','required'],
             ['nickname', 'trim'],
             ['nickname', 'required'],
             ['nickname', 'string', 'max' => 6],
-            ['nickname', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+            ['nickname', 'unique', 'targetClass' => '\common\models\User', 'message' => '昵称已经被占用'],
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['verify_code','required'],
-            ['verify_code','captcha'],
+            ['verify_code','captcha','captchaAction'=>'public/captcha'],
         ];
     }
 

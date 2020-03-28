@@ -74,7 +74,7 @@ class CommunityUserLink extends \common\models\BaseModel
     public function getUserLink($where)
     {
         return self::find()->where(['user_id'=>$where['user_id']])
-            ->where(['in','status',$where['status']])->all();
+            ->andWhere(['in','status',$where['status']])->all();
 
 
     }

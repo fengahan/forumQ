@@ -99,7 +99,7 @@ $this->title = 'My Yii Application';
             </div>
 
             <div >
-                <img onclick="changeCatptcha(this)" src="<?=Url::to(["/site/captcha"])?>" data-src="<?=Url::to(["/site/captcha"])?>" id="captcha">
+                <img onclick="changeCatptcha(this)" src="<?=Url::to(["/public/captcha"])?>" data-src="<?=Url::to(["/public/captcha"])?>" id="captcha">
             </div>
 
             <button onclick="register()"  class="btn btn--icon login__block__btn"><i class="zmdi zmdi-check"></i></button>

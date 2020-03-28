@@ -46,7 +46,7 @@ AppAsset::register($this);
 
         <ul class="top-nav">
 
-            <!-- 搜索图标-->
+            <?php if (Yii::$app->user->isGuest==false):?>
 
             <li class="dropdown top-nav__notifications">
 
@@ -99,8 +99,8 @@ AppAsset::register($this);
 
                     </div>
                 </div>
-
             </li>
+            <?php endif;?>
 
             <?php if (Yii::$app->user->isGuest):?>
 

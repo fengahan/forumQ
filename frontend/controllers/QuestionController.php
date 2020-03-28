@@ -11,6 +11,7 @@ use common\models\CommunityUserTag;
 use common\models\QuesReplyEmoji;
 use common\models\QuesSubscribe;
 use common\models\UploadImgForm;
+use common\models\User;
 use common\models\UserMessage;
 use mysql_xdevapi\Warning;
 use Symfony\Component\Console\Question\Question;
@@ -233,6 +234,8 @@ class QuestionController extends BaseController
             return $this->formatJson(200,"问答不存在",'');
         }
         $ques_user_id=$ques['user_id'];
+        $quesUser=User::findOne($ques_user_id);
+
         if ($parent_id>0){
             $parent_reply=CommunityQuesReply::findOne($parent_id);
             if (empty($parent_reply)
@@ -258,6 +261,11 @@ class QuestionController extends BaseController
         $replyModel->ques_user_id=$ques_user_id;
         $replyModel->created_at=time();
         if ($replyModel->save()){
+            $messageModel=new UserMessage();
+            $messageModel->user_id=$ques_user_id;
+            $messageModel->created_at=time();
+            $messageModel->content=$quesUser->nickname.'回复了您的问答['.$ques->title.']';
+            $messageModel->save();
             return $this->formatJson(100,"回复成功",'');
         }
         return $this->formatJson(200,"系统异常请稍后重试".$replyModel->getErrorSummary(false)[0],'');

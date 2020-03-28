@@ -25,7 +25,6 @@ use yii\web\UploadedFile;
  */
 class PublicController extends BaseController
 {
-    public $layout = 'layout';
     /**
      * {@inheritdoc}
      */
@@ -87,6 +86,8 @@ class PublicController extends BaseController
      */
     public function actionLogin()
     {
+        $this->layout = 'layout';
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -122,6 +123,7 @@ class PublicController extends BaseController
      */
     public function actionSignup()
     {
+        $this->layout = 'layout';
         if (!Yii::$app->request->isAjax){
             throw new NotAcceptableHttpException();
         }
@@ -257,6 +259,10 @@ class PublicController extends BaseController
       return  $this->render('icons');
     }
 
+    /**
+     * @return \yii\web\Response
+     * @throws BadRequestHttpException
+     */
     public function actionUserLinkJump()
     {
         $link_id=(int)Yii::$app->request->get("id");

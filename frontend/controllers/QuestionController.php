@@ -19,6 +19,7 @@ use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\UnauthorizedHttpException;
 
 class QuestionController extends BaseController
 {
@@ -41,6 +42,8 @@ class QuestionController extends BaseController
                 'denyCallback' => function ($rule, $action) {
                     if (Yii::$app->request->isAjax){
                         return $this->formatJson(200,"请先登陆",[]);
+                    }else{
+                        throw new UnauthorizedHttpException("请先登录");
                     }
                 }
             ],

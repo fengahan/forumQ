@@ -63,11 +63,11 @@ class SignupForm extends Model
         $user->email = $this->email;
         $user->nickname=$this->nickname;
         $user->setPassword($this->password);
-        $user->status=User::STATUS_ACTIVE;
+        $user->status=User::STATUS_INACTIVE;
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
+        $this->sendEmail($user);
         return $user->save() ;
-        //&& $this->sendEmail($user);
 
     }
 
@@ -84,9 +84,9 @@ class SignupForm extends Model
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                 ['user' => $user]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
             ->setTo($this->email)
-            ->setSubject('Account registration at ' . Yii::$app->name)
+            ->setSubject('账号注册' . Yii::$app->name)
             ->send();
 
     }

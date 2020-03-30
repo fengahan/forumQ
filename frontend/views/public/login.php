@@ -20,6 +20,7 @@ $this->title = 'My Yii Application';
                     <i data-toggle="dropdown" class="zmdi zmdi-more-vert actions__item"></i>
 
                     <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="<?=Url::to(['public/resend-verification-email'])?>">重新发送验证链接?</a>
                         <a class="dropdown-item" data-ma-action="login-switch" data-ma-target="#l-register" href="">注册新账号</a>
                         <a class="dropdown-item" data-ma-action="login-switch" data-ma-target="#l-forget-password" href="">忘记密码?</a>
                     </div>

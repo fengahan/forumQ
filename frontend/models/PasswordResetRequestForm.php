@@ -25,7 +25,7 @@ class PasswordResetRequestForm extends Model
             ['email', 'exist',
                 'targetClass' => '\common\models\User',
                 'filter' => ['status' => User::STATUS_ACTIVE],
-                'message' => 'There is no user with this email address.'
+                'message' => '没有使用此电子邮箱地址的用户.'
             ],
         ];
     }

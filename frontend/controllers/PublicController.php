@@ -233,13 +233,14 @@ class PublicController extends BaseController
      */
     public function actionResendVerificationEmail()
     {
+        $this->layout='layout';
         $model = new ResendVerificationEmailForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($model->load(Yii::$app->request->post(),'') && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                Yii::$app->session->setFlash('resend_email_success', '请查收邮件进行下一步操作.');
                 return $this->goHome();
             }
-            Yii::$app->session->setFlash('error', 'Sorry, we are unable to resend verification email for the provided email address.');
+            Yii::$app->session->setFlash('resend_email_error', '对不起，我们无法为所提供的电子邮件地址重新发送验证邮件.');
         }
 
         return $this->render('resendVerificationEmail', [

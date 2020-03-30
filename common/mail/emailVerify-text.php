@@ -3,10 +3,10 @@
 /* @var $this yii\web\View */
 /* @var $user common\models\User */
 
-$verifyLink = Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $user->verification_token]);
+$verifyLink = Yii::$app->urlManager->createAbsoluteUrl(['public/verify-email', 'token' => $user->verification_token]);
 ?>
-Hello <?= $user->username ?>,
+嗨,您好 <?= $user->nickname ?>,
 
-Follow the link below to verify your email:
+点击下面的连接找回激活账号:
 
 <?= $verifyLink ?>

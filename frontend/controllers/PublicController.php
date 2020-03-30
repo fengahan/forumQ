@@ -129,7 +129,7 @@ class PublicController extends BaseController
         }
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post(),'') && $model->signup()) {
-            return $this->formatJson(100,"注册成功请登录",['url'=>Url::to(["public/login"])]);
+            return $this->formatJson(100,"注册成功请到邮箱内激活",['url'=>Url::to(["public/login"])]);
         }else{
             $error=$model->getErrorSummary(false)[0]??"非法错误";
             return $this->formatJson(200,$error,['url'=>Url::to(["public/login"])]);
@@ -217,12 +217,12 @@ class PublicController extends BaseController
         }
         if ($user = $model->verifyEmail()) {
             if (Yii::$app->user->login($user)) {
-                Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
+                Yii::$app->session->setFlash('success', '邮箱已经激活!');
                 return $this->goHome();
             }
         }
 
-        Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
+        Yii::$app->session->setFlash('error', '对不起，我们无法验证您的帐户与提供的令牌.');
         return $this->goHome();
     }
 

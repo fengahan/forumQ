@@ -234,10 +234,15 @@ class PublicController extends BaseController
     public function actionResendVerificationEmail()
     {
         $this->layout='layout';
+        $send_count=Yii::$app->cache->get("send_resend_verify_count".date("Ymd"));
+        if ($send_count>3){
+            return $this->formatJson(200,"今天无法再次使用找回密码功能,请明天再试",[]);
+        }
         $model = new ResendVerificationEmailForm();
         if ($model->load(Yii::$app->request->post(),'') && $model->validate()) {
             if ($model->sendEmail()) {
                 Yii::$app->session->setFlash('resend_email_success', '请查收邮件进行下一步操作.');
+                Yii::$app->cache->set("send_resend_verify_count".date("Ymd"),$send_count+1);
                 return $this->goHome();
             }
             Yii::$app->session->setFlash('resend_email_error', '对不起，我们无法为所提供的电子邮件地址重新发送验证邮件.');

@@ -349,7 +349,7 @@ $this->title = '个人资料' .'-'.Yii::$app->name;
             </div>
             <div class="note-view__field">
                 <div class="alert alert-success" role="alert">
-                    <a href="<?=Url::to(['public/show-icons'])?>" class="alert-link">  点击此处显示所有图标. </a>
+                    <a target="_blank" href="<?=Url::to(['public/show-icons'])?>" class="alert-link">  点击此处显示所有图标. </a>
                 </div>
             </div>
 

@@ -129,10 +129,10 @@ class PublicController extends BaseController
         }
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post(),'') && $model->signup()) {
-            return $this->formatJson("100","注册成功请登录",['url'=>Url::to("public/login")]);
+            return $this->formatJson(100,"注册成功请登录",['url'=>Url::to("public/login")]);
         }else{
             $error=$model->getErrorSummary(false)[0]??"非法错误";
-            return $this->formatJson("400",$error,['url'=>Url::to("public/login")]);
+            return $this->formatJson(200,$error,['url'=>Url::to("public/login")]);
         }
 
 
@@ -145,20 +145,23 @@ class PublicController extends BaseController
      */
     public function actionRequestPasswordReset()
     {
-        $model = new PasswordResetRequestForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
 
-                return $this->goHome();
+
+        $send_count=Yii::$app->cache->get("send_reset_password_token_count".date("Ymd"));
+        if ($send_count>3){
+            return $this->formatJson(200,"今天无法再次使用找回密码功能,请明天再试",[]);
+        }
+
+        $model = new PasswordResetRequestForm();
+        if ($model->load(Yii::$app->request->post(),'') && $model->validate()) {
+            if ($model->sendEmail()) {
+                Yii::$app->cache->set("send_reset_password_token_count".date("Ymd"),$send_count+1);
+                return $this->formatJson(100,"邮件发送成功",[]);
             } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
+                return $this->formatJson(200,"邮件发送失败",[]);
             }
         }
 
-        return $this->render('requestPasswordResetToken', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -170,21 +173,29 @@ class PublicController extends BaseController
      */
     public function actionResetPassword($token)
     {
+        $this->layout = 'layout';
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidArgumentException $e) {
-            throw new BadRequestHttpException($e->getMessage());
+            if (Yii::$app->request->isAjax){
+                throw new BadRequestHttpException($e->getMessage());
+            }
+            else{
+                return $this->formatJson(200,"token已过期,请重新进行邮箱验证",[]);
+            }
         }
-
-        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-            Yii::$app->session->setFlash('success', 'New password saved.');
-
-            return $this->goHome();
+        if (Yii::$app->request->isAjax){
+            if ($model->load(Yii::$app->request->post(),'') && $model->validate() && $model->resetPassword()) {
+                return $this->formatJson(100,"重置密码成功",['url'=>Url::to(['/public/login'])]);
+            }else{
+                return $this->formatJson(200,"重置密码失败",[]);
+            }
         }
-
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
+
+
     }
 
     /**

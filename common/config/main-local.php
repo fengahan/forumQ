@@ -12,6 +12,15 @@ return [
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'encryption' => 'ssl',
+                'host' => 'smtp.qq.com',
+                'port' => '465',
+                'username' => 'studyiris@vip.qq.com',
+                'password' => 'jwmscjnjkzdgebac',
+            ],
+
         ],
     ],
 ];

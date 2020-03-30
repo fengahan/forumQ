@@ -124,15 +124,36 @@ $this->title = 'My Yii Application';
         <div class="login__block__body">
             <p class="mt-4">请输入需要找回的账号</p>
             <div class="form-group form-group--float form-group--centered">
-                <input type="text" class="form-control">
+                <input name="email" id="send_email" type="text" class="form-control">
                 <label>邮箱地址</label>
                 <i class="form-group__bar"></i>
             </div>
-            <button class="btn btn--icon login__block__btn"><i class="zmdi zmdi-check"></i></button>
+            <button class="btn btn--icon login__block__btn" onclick="sendEmail()"><i class="zmdi zmdi-check"></i></button>
         </div>
     </div>
 </div>
 <script type="text/javascript">
+
+
+    function sendEmail() {
+       var email=document.getElementById("send_email").value
+
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url:"<?=Url::to(['public/request-password-reset'])?>",
+            data:{"email":email},
+            success: function (res) {
+                if (res.code==100){
+                    notify("","","","success","","",res.msg);
+                }else {
+                    notify("","","","danger","","",res.msg);
+                    window.location.href=res.url
+                }
+            }
+        });
+
+    }
     /***
      * 切换验证码
      */

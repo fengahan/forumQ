@@ -6,7 +6,7 @@
  */
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+$this->title ='用户中心' .'-'.Yii::$app->name;
 ?>
 <div class="content__inner">
     <div class="row">

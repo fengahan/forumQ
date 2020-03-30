@@ -9,7 +9,7 @@ use yii\web\View;
  */
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+$this->title = '验证'.'-'.Yii::$app->name;
 ?>
 <div class="login">
     <!-- Forgot Password -->

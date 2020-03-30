@@ -8,7 +8,7 @@ use yii\web\View;
 /* @var $main_count array*/
 /* @var $question_list array */
 /* @var $pagination */
-$this->title = 'My Yii Application';
+$this->title = '技术分享首页'.'-'.Yii::$app->name;
 ?>
 <div class="content__inner">
     <div class="row">

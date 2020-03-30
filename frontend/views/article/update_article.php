@@ -5,6 +5,7 @@ use common\models\CommunityQuestion;
 /**
  * @var $Article \common\models\Articles;
  */
+$this->title = '创建新技术分享'.'-'.Yii::$app->name;
 ?>
 <div class="content__inner">
     <div class="row ">

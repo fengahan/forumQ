@@ -1,4 +1,7 @@
+<?php
 
+$this->title = '图标'.'-'.Yii::$app->name;
+?>
 <div class="content__inner">
     <header class="content__title">
         <small>请复制图标后的名称 如.3d-rotation.</small>

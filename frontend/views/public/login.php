@@ -7,7 +7,7 @@ use yii\helpers\Url;
  */
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+$this->title = '登陆'.'-'.Yii::$app->name;
 ?>
 <div class="login">
     <!-- Login -->

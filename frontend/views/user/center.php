@@ -3,6 +3,7 @@ use common\models\CommunityUserTag;
 use frontend\assets\AppAsset;
 use yii\helpers\Url;
 use common\models\CommunityQuestion;
+$this->title ='用户中心' .'-'.Yii::$app->name;
 ?>
 <div class="content__inner">
     <div class="row">

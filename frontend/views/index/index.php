@@ -6,7 +6,7 @@ use yii\helpers\Url;
 /* @var $main_count array*/
 /* @var $question_list array */
 /* @var $pagination */
-$this->title = 'My Yii Application';
+$this->title = '首页'.'-'.Yii::$app->name;
 ?>
 <div class="content__inner">
     <div class="row">

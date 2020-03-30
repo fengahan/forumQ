@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Url;
 use common\models\CommunityQuestion;
+$this->title = '创建新问答'.'-'.Yii::$app->name;
 ?>
 <div class="content__inner">
     <div class="row ">

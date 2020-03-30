@@ -1,9 +1,9 @@
 <?php
 use common\models\CommunityUsers;
-use common\models\CommunityQuestion;
+
 use common\models\CommunityUserTag;
 use yii\helpers\Url;
-use common\models\CommunityQuesReply;
+$this->title = $article['title'].'-'.Yii::$app->name;
 ?>
 <div class="content__inner">
     <div class="row">

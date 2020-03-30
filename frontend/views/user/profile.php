@@ -1,10 +1,11 @@
 <?php
 
-use common\models\CommunityQuestion;
+
 use common\models\CommunityUserTag;
 
 use yii\helpers\Url;
 use common\models\CommunityUsers;
+$this->title = '个人资料' .'-'.Yii::$app->name;
 
 ?>
 <div class="content__inner">

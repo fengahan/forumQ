@@ -4,6 +4,7 @@ use common\models\CommunityQuestion;
 use common\models\CommunityUserTag;
 use yii\helpers\Url;
 use common\models\CommunityQuesReply;
+$this->title = $question['title'] .'-'.Yii::$app->name;
 ?>
 <div class="content__inner">
         <div class="row">

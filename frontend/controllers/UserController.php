@@ -12,6 +12,7 @@ use common\models\CommunityUserLink;
 use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
 use common\models\UploadAvatarForm;
+use common\models\User;
 use common\models\UserMessage;
 use Yii;
 use yii\data\Pagination;
@@ -286,8 +287,36 @@ class UserController extends BaseController
 
     }
 
+    public function actionResetPassword()
+    {
+        $req=Yii::$app->request->post();
+        $old_password=$req['old_password']??'';
+        $new_password=$req['new_password']??'';
+        if ($old_password == $new_password){
+            return $this->formatJson(200,"原密码和新密码相同",[]);
+        }
+        if (empty(trim($old_password)) || empty(trim($new_password))){
+            return $this->formatJson(200,"原密码或者新密码格式错误",[]);
+        }
+        if (mb_strlen($new_password)<6){
+            return $this->formatJson(200,"新密码最少为6位字符",[]);
+        }
+        $user=User::findOne(Yii::$app->user->identity->getId());
+        if (!$user->validatePassword($old_password)){
+            return $this->formatJson(200,"原密码错误",[]);
+        }else{
+            if (! $user->resetPassword($new_password)){
+                return $this->formatJson(200,"原密码错误",[]);
+            }else{
+                Yii::$app->user->logout();
+                return $this->formatJson(100,"修改成功",['url'=>Yii::$app->getHomeUrl()]);
+            }
+        }
 
-   public function actionUserLinkDelete()
+
+    }
+
+    public function actionUserLinkDelete()
    {
 
        $id=(int)Yii::$app->request->post('id');

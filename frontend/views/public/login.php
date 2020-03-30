@@ -148,7 +148,7 @@ $this->title = 'My Yii Application';
                     notify("","","","success","","",res.msg);
                 }else {
                     notify("","","","danger","","",res.msg);
-                    window.location.href=res.url
+                    window.location.href=res.data.url
                 }
             }
         });
@@ -165,7 +165,7 @@ $this->title = 'My Yii Application';
             dataType: 'json',
             url: capt.getAttribute("data-src") + "?refresh=1",
             success: function (res) {
-                capt.src= res.url
+                capt.src= res.data.url
             }
         });
     }
@@ -212,7 +212,7 @@ $this->title = 'My Yii Application';
                     notify("","","","success","","",res.msg);
                 }else {
                     notify("","","","danger","","",res.msg);
-                    window.location.href=res.url
+                    window.location.href=res.data.url
                 }
             }
         });

@@ -69,7 +69,12 @@ class User extends ActiveRecord implements IdentityInterface
             [['password'], 'string', 'min' =>6],
         ];
     }
+    public function resetPassword($password)
+    {
 
+        $this->setPassword($password);
+        return $this->save();
+    }
     /**
      * {@inheritdoc}
      */

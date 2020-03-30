@@ -185,6 +185,9 @@ class PublicController extends BaseController
             }
         }
         if (Yii::$app->request->isAjax){
+            if (mb_strlen(Yii::$app->request->post("password"))<6){
+                return $this->formatJson(200,"新密码最少为6位字符",[]);
+            }
             if ($model->load(Yii::$app->request->post(),'') && $model->validate() && $model->resetPassword()) {
                 return $this->formatJson(100,"重置密码成功",['url'=>Url::to(['/public/login'])]);
             }else{

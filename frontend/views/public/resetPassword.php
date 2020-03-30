@@ -43,7 +43,7 @@ $this->title = 'My Yii Application';
             success: function (res) {
                 if (res.code==100){
                     notify("","","","success","","",res.msg);
-                    window.location.href=res.url
+                    window.location.href=res.data.url
                 }else {
                     notify("","","","danger","","",res.msg);
                 }

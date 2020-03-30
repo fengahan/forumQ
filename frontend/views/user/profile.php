@@ -28,6 +28,7 @@ use common\models\CommunityUsers;
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="发布提问<?=$question_count??0?>次" class="badge badge-secondary">问(<?=$question_count??0?>)</a>
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="最佳回答<?=$best_reply_count??0?>次" class="badge badge-success">答(<?=$best_reply_count??0?>)</a>
                         <a href="" data-toggle="tooltip" data-placement="top" data-original-title="技术分享<?=$article_count??0?>次" class="badge badge-dark">技术分享(<?=$article_count??0?>)</a>
+
                     </div>
                     <div class="tags flot-chart-legends" >
                         <?php foreach ($question_user_tag as $key=>$value):?>
@@ -73,7 +74,9 @@ use common\models\CommunityUsers;
                             <li class="nav-item">
                                 <a class="nav-link<?php if ($tab=='user_link'):?> show active<?php endif;?>" href="<?=Url::to(['/user/profile','tab'=>'user_link'])?>" aria-selected="false">个人链接</a>
                             </li>
-
+                            <li class="nav-item">
+                                <a class="nav-link<?php if ($tab=='reset_password'):?> show active<?php endif;?>" href="<?=Url::to(['/user/profile','tab'=>'reset_password'])?>" aria-selected="false">重置密码</a>
+                            </li>
                         </ul>
 
                         <div class="tab-content">
@@ -275,7 +278,38 @@ use common\models\CommunityUsers;
 
                                 </div>
                             </div>
+                            <div class="tab-pane fade<?php if ($tab=='reset_password'):?> show active<?php endif;?>" >
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">个人信息</h4>
+                                        <h6 class="card-subtitle">
+                                            <?=Yii::$app->name?> 友情提示您:<span class="text-red">请输入一个安全性较高的密码。</span>
+                                        </h6>
 
+                                        <form class="row" >
+                                            <div class="col-md-6">
+
+                                                <div class="form-group">
+                                                    <label>旧密码</label>
+                                                    <input type="password"  id="old_password" class="form-control" name="old_password" value="" >
+                                                    <i class="form-group__bar"></i>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>新密码</label>
+                                                    <input type="password"  class="form-control"  id="new_password" name="new_password" value="" >
+                                                    <i class="form-group__bar"></i>
+                                                </div>
+                                                <button type="button" onclick="restPassword()" class="btn btn-danger float-right">修改密码</button>
+                                            </div>
+
+                                        </form>
+
+                                        <br>
+                                        <br>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -483,7 +517,26 @@ use common\models\CommunityUsers;
         });
         return  false;
     }
+    function restPassword() {
+        var old_password=document.getElementById("old_password").value
+        var new_password=document.getElementById("new_password").value
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url:"<?=Url::to(['/user/reset-password'])?>",
+            data:{"old_password":old_password,"new_password":new_password},
+            success: function (res) {
+                if (res.code==100){
+                    notify("","","","success","","",res.msg);
+                    window.location.href=res.data.url
+                }else {
+                    notify("","","","danger","","",res.msg);
+                }
+            }
+        });
 
+        return false
+    }
 
 </script>
 

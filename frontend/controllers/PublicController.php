@@ -129,10 +129,10 @@ class PublicController extends BaseController
         }
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post(),'') && $model->signup()) {
-            return $this->formatJson(100,"注册成功请登录",['url'=>Url::to("public/login")]);
+            return $this->formatJson(100,"注册成功请登录",['url'=>Url::to(["public/login"])]);
         }else{
             $error=$model->getErrorSummary(false)[0]??"非法错误";
-            return $this->formatJson(200,$error,['url'=>Url::to("public/login")]);
+            return $this->formatJson(200,$error,['url'=>Url::to(["public/login"])]);
         }
 
 

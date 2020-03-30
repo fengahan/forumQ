@@ -166,7 +166,7 @@ $this->title = 'My Yii Application';
             dataType: 'json',
             url: capt.getAttribute("data-src") + "?refresh=1",
             success: function (res) {
-                capt.src= res.data.url
+                capt.src= res.url
             }
         });
     }

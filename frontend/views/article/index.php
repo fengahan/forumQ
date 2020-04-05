@@ -103,11 +103,10 @@ $this->title = '技术分享首页'.'-'.Yii::$app->name;
      */
     var search = window.location.search;
     var SearchParam=getSearchParams(search)
-    var sortEle = document.getElementById("check_sort").getElementsByTagName("a");
 
 
     var tagEle = document.getElementById("check_tag").getElementsByTagName("a");
-    var tag_click_func=function (i) {
+    function tag_click_func=function (i) {
         SearchParam['tag_id']=i
         window.location.href=createURL(SearchParam)
     }

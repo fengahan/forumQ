@@ -190,14 +190,15 @@ AppAsset::register($this);
 <footer class="footer">
     <div class="container">
         <p>&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p><?= Yii::powered() ?></p>
+        <p>问题反馈544976880@qq.com</p>
+
     </div>
 </footer>
 <!-- Older IE warning message -->
 <!--[if IE]>
 <div class="ie-warning">
-    <h1>Warning!!</h1>
-    <p>You are using an outdated version of Internet Explorer, please upgrade to any of the following web browsers to access this website.</p>
+    <h1>注意!!</h1>
+    <p>为了您能够最佳浏览该站点，请升级至下列任何一种浏览器.</p>
     <div class="ie-warning__downloads">
         <a href="http://www.google.com/chrome">
             <img src="img/browsers/chrome.png" alt="">

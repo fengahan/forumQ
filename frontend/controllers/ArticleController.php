@@ -62,9 +62,7 @@ class ArticleController extends BaseController
         $req['sort']=isset($req['sort'])?$req['sort']:"created_at";//'new_created'
         $req['search_word']=isset($req['search_word'])?$req['search_word']:"";
         $list_where['tag_id']=$req['tag_id'];
-        $list_where['is_public']=$req['is_public'];
         $list_where["search_word"]=$req['search_word'];
-        $sort=$req['sort'];
         $tagModel=new CommunityTag();
         $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
         $tag_list=$tagModel->getList($tagWhere);

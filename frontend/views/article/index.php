@@ -106,7 +106,7 @@ $this->title = '技术分享首页'.'-'.Yii::$app->name;
 
 
     var tagEle = document.getElementById("check_tag").getElementsByTagName("a");
-    function tag_click_func=function (i) {
+    function tag_click_func(i) {
         SearchParam['tag_id']=i
         window.location.href=createURL(SearchParam)
     }

@@ -190,7 +190,7 @@ AppAsset::register($this);
 <footer class="footer">
     <div class="container">
         <p>&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p>问题反馈发邮件到studyiris@vip.qq.com</p>
+        <p>站点Bug反馈请发邮件到studyiris@vip.qq.com</p>
     </div>
 </footer>
 <!-- Older IE warning message -->

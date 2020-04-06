@@ -40,7 +40,7 @@ $this->title = '更新问答' .'-'.Yii::$app->name;
                                         <select  name="tag_id" class="form-control">
                                             <?php foreach ($tag_list as $key=>$value):?>
                                                 <option <?php if ($value['id']==$ques_info['tag_id']):?>selected="selected"<?php endif;?> value="<?=$value['id']?>"> <?=$value['title']?></option>
-                                            <?php endforeach;、?>
+                                            <?php endforeach;?>
                                         </select>
                                         <i class="form-group__bar"></i>
                                     </div>

@@ -142,7 +142,7 @@ $this->title = '创建新问答'.'-'.Yii::$app->name;
     function createQues() {
         var form=document.getElementById("create_ques");
         var title=document.getElementsByName("title")[0].value;
-        var money=document.getElementsByName("integral")[0].value;
+        var integral=document.getElementsByName("integral")[0].value;
         var is_public=$("input[name='is_public']:checked").val();
 
         document.getElementsByName("html_content")[0].value=editor.getPreviewedHTML();
@@ -151,7 +151,7 @@ $this->title = '创建新问答'.'-'.Yii::$app->name;
             notify("","","","danger","", "","标题不能为空");
             return false;
         }
-        if (money===""){
+        if (integral===""){
             notify("","","","danger","", "","赏金不能为空");
             return false;
         }

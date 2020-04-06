@@ -114,18 +114,18 @@ class QuestionController extends BaseController
                 $user->updateCounters(['integral'=>(int)$req['integral']]);
                 return $this->redirect(Url::to(['/user/center', 'tab' => 'question']));
             }
-        }else{
-            $Tag=new CommunityTag();
-            $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
-            $tag_list=$Tag->getList($tagWhere);
-            return  $this->render('create_ques',
-                [
-                    'model' => $model,
-                    'ques_model'=>$Question,
-                    'tag_list'=>$tag_list,
-                ]
-            );
         }
+
+        $Tag=new CommunityTag();
+        $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
+        $tag_list=$Tag->getList($tagWhere);
+        return  $this->render('create_ques',
+            [
+                'model' => $model,
+                'ques_model'=>$Question,
+                'tag_list'=>$tag_list,
+            ]
+        );
 
     }
 
@@ -164,20 +164,17 @@ class QuestionController extends BaseController
                  $user->updateCounters(['integral'=> $sub_money]);
                 return $this->redirect(Url::to(['/user/center','tab'=>'question']));
             }
-        } else{
-
-            $Tag=new CommunityTag();
-            $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
-            $tag_list=$Tag->getList($tagWhere);
-            return  $this->render('update_ques',
-                [
-                    'ques_model'=>$Question,
-                    'ques_info'=>$question,
-                    'tag_list'=>$tag_list,
-                ]
-            );
         }
-
+        $Tag=new CommunityTag();
+        $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
+        $tag_list=$Tag->getList($tagWhere);
+        return  $this->render('update_ques',
+            [
+                'ques_model'=>$Question,
+                'ques_info'=>$question,
+                'tag_list'=>$tag_list,
+            ]
+        );
     }
 
     public function actionAction()

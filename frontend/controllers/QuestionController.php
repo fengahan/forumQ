@@ -106,25 +106,26 @@ class QuestionController extends BaseController
         $Question->user_id=Yii::$app->user->identity->getId();
         $Question->user_identity=Yii::$app->user->identity->type;
         $user=User::findOne(Yii::$app->user->identity->getId());
-
-        if ($req['money']>$user->integral ){
-            $model->addError("money",'您的赏金不足');
-        }else{
-            if ($Question->load($req,"") && $Question->save()) {
+        if (Yii::$app->request->isPost) {
+            if ($req['integral'] > $user->integral) {
+                $model->addError("money", '您的赏金不足');
+            } else if ($Question->load($req, "") && $Question->save()) {
                 ///user/center?tab=question
                 return $this->redirect(Url::to(['/user/center', 'tab' => 'question']));
             }
+        }else{
+            $Tag=new CommunityTag();
+            $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
+            $tag_list=$Tag->getList($tagWhere);
+            return  $this->render('create_ques',
+                [
+                    'model' => $model,
+                    'ques_model'=>$Question,
+                    'tag_list'=>$tag_list,
+                ]
+            );
         }
-          $Tag=new CommunityTag();
-          $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
-          $tag_list=$Tag->getList($tagWhere);
-          return  $this->render('create_ques',
-              [
-                 'model' => $model,
-                  'ques_model'=>$Question,
-                  'tag_list'=>$tag_list,
-              ]
-          );
+
     }
 
     /**
@@ -151,10 +152,11 @@ class QuestionController extends BaseController
         $Question->user_id=$user_id;
         $Question->user_identity=Yii::$app->user->identity->type;
          $user=User::findOne(Yii::$app->user->identity->getId());
-
-        if ($req['money']>$user->integral ) {
-            $Question->addError("money", '您的赏金不足');
-            if ($Question->load($req,"") && $Question->save()){
+        if (Yii::$app->request->isPost  ) {
+            if ($req['integral']>$user->integral){
+                $question->addError("money",'您的赏金不足');
+            }
+            else if ($Question->load($req,"") && $Question->save()){
                 ///user/center?tab=question
                 return $this->redirect(Url::to(['/user/center','tab'=>'question']));
             }

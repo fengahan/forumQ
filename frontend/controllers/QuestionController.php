@@ -18,6 +18,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\UnauthorizedHttpException;
 
@@ -104,11 +105,16 @@ class QuestionController extends BaseController
         $Question->scenario=CommunityQuestion::SCENARIO_QUES_CREATE;
         $Question->user_id=Yii::$app->user->identity->getId();
         $Question->user_identity=Yii::$app->user->identity->type;
-        if ($Question->load($req,"") && $Question->save()){
-            ///user/center?tab=question
-            return $this->redirect(Url::to(['/user/center','tab'=>'question']));
-        }else{
+        $user=User::findOne(Yii::$app->user->identity->getId());
 
+        if ($req['money']>$user->integral ){
+            $model->addError("money",'您的赏金不足');
+        }else{
+            if ($Question->load($req,"") && $Question->save()) {
+                ///user/center?tab=question
+                return $this->redirect(Url::to(['/user/center', 'tab' => 'question']));
+            }
+        }
           $Tag=new CommunityTag();
           $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];
           $tag_list=$Tag->getList($tagWhere);
@@ -119,8 +125,6 @@ class QuestionController extends BaseController
                   'tag_list'=>$tag_list,
               ]
           );
-        }
-
     }
 
     /**
@@ -146,10 +150,15 @@ class QuestionController extends BaseController
         $Question->isNewRecord=false;
         $Question->user_id=$user_id;
         $Question->user_identity=Yii::$app->user->identity->type;
-        if ($Question->load($req,"") && $Question->save()){
-            ///user/center?tab=question
-            return $this->redirect(Url::to(['/user/center','tab'=>'question']));
-        }else{
+         $user=User::findOne(Yii::$app->user->identity->getId());
+
+        if ($req['money']>$user->integral ) {
+            $Question->addError("money", '您的赏金不足');
+            if ($Question->load($req,"") && $Question->save()){
+                ///user/center?tab=question
+                return $this->redirect(Url::to(['/user/center','tab'=>'question']));
+            }
+        } else{
 
             $Tag=new CommunityTag();
             $tagWhere=['status'=>CommunityTag::STATUS_NORMAL,'type'=>CommunityTag::TYPE_SKILLS];

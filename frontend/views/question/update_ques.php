@@ -152,7 +152,7 @@ $this->title = '更新问答' .'-'.Yii::$app->name;
             notify("","","","danger","", "","标题不能为空");
             return false;
         }
-        if (money===""){
+        if (integral===""){
             notify("","","","danger","", "","赏金不能为空");
             return false;
         }

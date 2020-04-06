@@ -107,10 +107,11 @@ class QuestionController extends BaseController
         $Question->user_identity=Yii::$app->user->identity->type;
         $user=User::findOne(Yii::$app->user->identity->getId());
         if (Yii::$app->request->isPost) {
-            if ($req['integral'] > $user->integral) {
+            if ((int)$req['integral'] > $user->integral) {
                 $Question->addError("money", '您的赏金不足');
             } else if ($Question->load($req, "") && $Question->save()) {
                 ///user/center?tab=question
+                $user->updateCounters(['integral'=>(int)$req['integral']]);
                 return $this->redirect(Url::to(['/user/center', 'tab' => 'question']));
             }
         }else{
@@ -152,12 +153,15 @@ class QuestionController extends BaseController
         $Question->user_id=$user_id;
         $Question->user_identity=Yii::$app->user->identity->type;
          $user=User::findOne(Yii::$app->user->identity->getId());
+         $sub_money=(int)$req['integral']-$question['money'];
+
         if (Yii::$app->request->isPost  ) {
-            if ($req['integral']>$user->integral){
+            if ($sub_money>$user->integral){
                 $Question->addError("integral",'您的赏金不足');
             }
             else if ($Question->load($req,"") && $Question->save()){
                 ///user/center?tab=question
+                 $user->updateCounters(['integral'=> $sub_money]);
                 return $this->redirect(Url::to(['/user/center','tab'=>'question']));
             }
         } else{

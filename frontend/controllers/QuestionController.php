@@ -108,7 +108,7 @@ class QuestionController extends BaseController
         $user=User::findOne(Yii::$app->user->identity->getId());
         if (Yii::$app->request->isPost) {
             if ($req['integral'] > $user->integral) {
-                $model->addError("money", '您的赏金不足');
+                $Question->addError("money", '您的赏金不足');
             } else if ($Question->load($req, "") && $Question->save()) {
                 ///user/center?tab=question
                 return $this->redirect(Url::to(['/user/center', 'tab' => 'question']));
@@ -154,7 +154,7 @@ class QuestionController extends BaseController
          $user=User::findOne(Yii::$app->user->identity->getId());
         if (Yii::$app->request->isPost  ) {
             if ($req['integral']>$user->integral){
-                $question->addError("integral",'您的赏金不足');
+                $Question->addError("integral",'您的赏金不足');
             }
             else if ($Question->load($req,"") && $Question->save()){
                 ///user/center?tab=question

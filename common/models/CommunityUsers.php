@@ -62,7 +62,7 @@ class CommunityUsers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['qq', 'birthday', 'gender', 'integral', 'type', 'origin', 'status', 'last_time', 'updated_at', 'created_at'], 'integer'],
+            [['qq', 'birthday', 'gender', 'integral', 'type', 'origin', 'status', 'last_time', 'updated_at', 'created_at','invite_code',], 'integer'],
             [['balance'], 'number'],
             [['email'], 'string', 'max' => 40],
             [['password'], 'string', 'max' => 65],

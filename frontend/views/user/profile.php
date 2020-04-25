@@ -2,7 +2,7 @@
 
 
 use common\models\CommunityUserTag;
-
+use \common\models\UserInviteMap;
 use yii\helpers\Url;
 use common\models\CommunityUsers;
 $this->title = '个人资料' .'-'.Yii::$app->name;
@@ -77,6 +77,9 @@ $this->title = '个人资料' .'-'.Yii::$app->name;
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link<?php if ($tab=='reset_password'):?> show active<?php endif;?>" href="<?=Url::to(['/user/profile','tab'=>'reset_password'])?>" aria-selected="false">重置密码</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link<?php if ($tab=='invite_code'):?> show active<?php endif;?>" href="<?=Url::to(['/user/profile','tab'=>'invite_code'])?>" aria-selected="false">邀请人</a>
                             </li>
                         </ul>
 
@@ -193,7 +196,13 @@ $this->title = '个人资料' .'-'.Yii::$app->name;
 
                             </div>
                             <div class="tab-pane fade<?php if ($tab=='user_link'):?> show active<?php endif;?>" >
-                                <div class="row notes">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">个人链接</h4>
+                                        <h6 class="card-subtitle">
+                                            <?=Yii::$app->name?> 友情提示您:<span class="text-red">请填写让更多爱好者了解的个人链接。</span>
+                                        </h6>
+                                         <div class="row notes">
                                     <?php foreach ($user_link as $key=>$value):?>
                                         <div class="col-xl-2 col-lg-3 col-sm-4 col-6 " >
                                             <div class="groups__item notes__item">
@@ -278,6 +287,9 @@ $this->title = '个人资料' .'-'.Yii::$app->name;
                                     </div>
 
                                 </div>
+
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade<?php if ($tab=='reset_password'):?> show active<?php endif;?>" >
                                 <div class="card">
@@ -301,6 +313,34 @@ $this->title = '个人资料' .'-'.Yii::$app->name;
                                                     <i class="form-group__bar"></i>
                                                 </div>
                                                 <button type="button" onclick="restPassword()" class="btn btn-danger float-right">修改密码</button>
+                                            </div>
+
+                                        </form>
+
+                                        <br>
+                                        <br>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade<?php if ($tab=='invite_code'):?> show active<?php endif;?>" >
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">个人信息</h4>
+                                        <h6 class="card-subtitle">
+                                            <?=Yii::$app->name?> 友情提示您:填写有效邀请人可获得<span class="text-red"><?=UserInviteMap::BIND_GIVEN_MONEY?></span>赏金。
+                                        </h6>
+
+                                        <form class="row" >
+                                            <div class="col-md-6">
+
+                                                <div class="form-group">
+                                                    <label>邀请码</label>
+                                                    <input type="text"  id="invite_code" class="form-control" name="invite_code" value="<?=$parent_user_info['invite_code']??''?>" readonly= <?= $parent_user_info['invite_code']?'readonly':''?>">
+                                                    <i class="form-group__bar"></i>
+                                                </div>
+
+                                                <button type="button" onclick="inviteCode()" class="btn btn-success float-right <?= $parent_user_info['invite_code']?'disabled':''?>">填写邀请人</button>
                                             </div>
 
                                         </form>
@@ -538,6 +578,34 @@ $this->title = '个人资料' .'-'.Yii::$app->name;
 
         return false
     }
+    function inviteCode() {
 
+        var inviteCode=document.getElementById("invite_code").value
+        var parent_code="<?=$parent_user_info['invite_coed']??'' ?>";
+        if(parent_code){
+            return false
+        }
+        if (inviteCode ==""){
+            notify("","","","danger","","","请输入邀请码");
+            return false
+        }
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url:"<?=Url::to(['/user/invite-code'])?>",
+            data:{"invite_code":inviteCode},
+            success: function (res) {
+                if (res.code==100){
+                    notify("","","","success","","",res.msg);
+                   window.location.href=res.data.url
+                }else {
+                    notify("","","","danger","","",res.msg);
+                    return
+                }
+            }
+        });
+
+        return false
+    }
 </script>
 

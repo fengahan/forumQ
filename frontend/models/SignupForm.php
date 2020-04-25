@@ -60,6 +60,7 @@ class SignupForm extends Model
         }
         
         $user = new User();
+        $user->invite_code=(string)rand(1000,9999).(string)rand(1000,9999);
         $user->email = $this->email;
         $user->nickname=$this->nickname;
         $user->setPassword($this->password);

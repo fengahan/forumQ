@@ -13,6 +13,7 @@ use common\models\CommunityUsers;
 use common\models\CommunityUserTag;
 use common\models\UploadAvatarForm;
 use common\models\User;
+use common\models\UserInviteMap;
 use common\models\UserMessage;
 use Yii;
 use yii\data\Pagination;
@@ -30,11 +31,11 @@ class UserController extends BaseController
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only'=>['center','pie-data','profile','update-avatar','update-profile','user-tag','link-create','link-delete','link-update'],
+                'only'=>['center','pie-data','profile','update-avatar','update-profile','user-tag','link-create','link-delete','link-update','invite_code'],
                 'rules' => [
 
                     [
-                        'actions' => ['center','pie-data','profile','update-avatar','update-profile','user-tag','link-create','link-delete','link-update'],
+                        'actions' => ['center','pie-data','profile','update-avatar','update-profile','user-tag','link-create','link-delete','invite_code','link-update'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -169,6 +170,11 @@ class UserController extends BaseController
        $best_reply_count=CommunityQuesReply::find()->where('user_id='.$user_id)->andWhere('is_best='.CommunityQuesReply::BEST_YES)->count();
        $ArticleModel=new Articles();
        $article_count=$ArticleModel->getUserArtCount($user_id,['in',Articles::STATUS_NORMAL,Articles::STATUS_CLOSE]);
+       $invite_map=UserInviteMap::findOne(['user_id'=>$user_id]);
+       $parent_user_info=[];
+       if (!empty($invite_map)){
+           $parent_user_info=User::find()->select('nickname,avatar,invite_code')->where(['id'=>$invite_map->parent_id])->asArray()->one();
+       }
 
        return $this->render("profile",[
            'best_reply_count'=>$best_reply_count,
@@ -179,6 +185,7 @@ class UserController extends BaseController
            'question_count'=>  $question_count,
            'question_user_tag'=>$question_user_tag,
            'user_link'=>$user_link,
+           'parent_user_info'=>$parent_user_info,
        ]);
 
    }
@@ -281,7 +288,6 @@ class UserController extends BaseController
         if ($model->load(Yii::$app->request->post(),'') && $model->save()){
             return $this->formatJson(100,"更新成功",[]);
         }else{
-            Yii::error($model->parseIcon());
             return $this->formatJson(200,"更新失败".$model->getErrorSummary(false)[0],[]);
         }
 
@@ -331,6 +337,46 @@ class UserController extends BaseController
           }
        }
        return $this->formatJson(200,"删除失败",[]);
+
+   }
+
+   public function actionInviteCode()
+   {
+       $invite_code=Yii::$app->request->post('invite_code');
+       $user_id=Yii::$app->user->identity->getId();
+       if (empty($invite_code) || strlen($invite_code)!=8 ){
+           return $this->formatJson(200,"填写邀请码失败",[]);
+       }
+       $parent_user=User::find()->where(['invite_code'=>(int)$invite_code])->one();
+       if (empty($parent_user) || $parent_user['status']!=User::STATUS_ACTIVE){
+           return $this->formatJson(200,"该邀请码不存在或者邀请着账户未经过邮箱验证",[]);
+       }
+
+       $invite_map=UserInviteMap::findOne(['parent_invite_code'=>$invite_code]);
+       if (!empty($invite_map)){
+           return $this->formatJson(200,"填写邀请码失败",[]);
+       }
+       $trans=Yii::$app->db->beginTransaction();
+       try{
+           $inviteModel=new UserInviteMap();
+           $inviteModel->user_id=$user_id;
+           $inviteModel->parent_id=$parent_user->id;
+           $inviteModel->parent_invite_code=(int)$invite_code;
+           $check_pr= $parent_user->updateCounters(['integral'=>UserInviteMap::BIND_GIVEN_MONEY]);
+           $check_u= Yii::$app->user->identity->updateCounters(['integral'=>UserInviteMap::BIND_GIVEN_MONEY]);
+           if ($inviteModel->save()==true && $check_pr && $check_u){
+               $trans->commit();
+               return $this->formatJson(100,"邀请码填写成功",['url'=>Url::to(['/user/invite-code','tab'=>'invite_code'])]);
+           }else{
+               $trans->rollBack();
+               return $this->formatJson(200,"邀请码失败",[]);
+           }
+
+
+       }catch (\Exception $e){
+           $trans->rollBack();
+           return $this->formatJson(200,"邀请码失败".$e->getMessage(),[]);
+       }
 
    }
 }

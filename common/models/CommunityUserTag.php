@@ -16,7 +16,7 @@ use Yii;
  * @property int $updated_time 修改时间
  * @property int $created_time 创建时间
  */
-class CommunityUserTag extends \common\models\BaseModel
+class CommunityUserTag extends BaseModel
 {
     const STATUS_NORMAL=10;
     const STATUS_DELETE=20;

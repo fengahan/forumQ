@@ -435,7 +435,7 @@ class QuestionController extends BaseController
                     }
                     if (count($msg_data)>0){
                         Yii::$app->db->createCommand()
-                            ->batchInsert(CommunityUserTag::tableName(),array_keys($msg_data[0]),$msg_data)
+                            ->batchInsert(UserMessage::tableName(),array_keys($msg_data[0]),$msg_data)
                             ->execute();
                     }
 

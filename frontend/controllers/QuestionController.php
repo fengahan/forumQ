@@ -154,9 +154,9 @@ class QuestionController extends BaseController
         $Question->user_id=$user_id;
         $Question->user_identity=Yii::$app->user->identity->type;
          $user=User::findOne(Yii::$app->user->identity->getId());
-         $sub_money=(int)$req['money']-$question['money'];
-
+       
         if (Yii::$app->request->isPost  ) {
+           $sub_money=(int)$req['money']-$question['money'];
             if ($sub_money>$user->integral){
                 $Question->addError("integral",'您的赏金不足');
             }

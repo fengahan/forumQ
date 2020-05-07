@@ -144,7 +144,7 @@ $this->title = '更新问答' .'-'.Yii::$app->name;
     function createQues() {
         var form=document.getElementById("create_ques");
         var title=document.getElementsByName("title")[0].value;
-        var integral=document.getElementsByName("integral")[0].value;
+        var integral=document.getElementsByName("money")[0].value;
 
         document.getElementsByName("html_content")[0].value=editor.getPreviewedHTML();
 

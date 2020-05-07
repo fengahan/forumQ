@@ -27,7 +27,7 @@ $this->title = '更新问答' .'-'.Yii::$app->name;
                             <label class="col-sm-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">赏金</font></font></label>
                             <div class="col-sm-10">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" name="integral" value="<?=$ques_info['money']?>" placeholder="赏金">
+                                    <input type="text" class="form-control" name="money" value="<?=$ques_info['money']?>" placeholder="赏金">
                                     <i class="form-group__bar"></i>
                                 </div>
                             </div>

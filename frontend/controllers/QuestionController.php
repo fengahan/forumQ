@@ -111,7 +111,7 @@ class QuestionController extends BaseController
                 $Question->addError("money", '您的赏金不足');
             } else if ($Question->load($req, "") && $Question->save()) {
                 ///user/center?tab=question
-                $user->updateCounters(['integral'=>(int)$req['integral']]);
+                $user->updateCounters(['integral'=>(0-(int)$req['integral'])]);
                 return $this->redirect(Url::to(['/user/center', 'tab' => 'question']));
             }
         }

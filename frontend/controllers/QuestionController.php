@@ -154,7 +154,7 @@ class QuestionController extends BaseController
         $Question->user_id=$user_id;
         $Question->user_identity=Yii::$app->user->identity->type;
          $user=User::findOne(Yii::$app->user->identity->getId());
-         $sub_money=(int)$req['integral']-$question['money'];
+         $sub_money=(int)$req['money']-$question['money'];
 
         if (Yii::$app->request->isPost  ) {
             if ($sub_money>$user->integral){

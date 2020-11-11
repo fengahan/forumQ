@@ -1,4 +1,11 @@
 function notify(from, align, icon, type, animIn, animOut,msg){
+    if (animIn===''){
+        animIn='fadeInUp'
+    }
+    if (animOut==='') {
+        animOut='fadeOutUp'
+    }
+    console.log(animIn,animOut)
     $.notify({
         icon: icon,
         title: '',
@@ -9,13 +16,13 @@ function notify(from, align, icon, type, animIn, animOut,msg){
         type: type,
         allow_dismiss: true,
         offset: {
-            x: 15, // Keep this as default
-            y: 15  // Unless there'll be alignment issues as this value is targeted in CSS
+            x:0, // Keep this as default
+            y: 72  // Unless there'll be alignment issues as this value is targeted in CSS
         },
         spacing: 10,
         z_index: 1031,
         delay: 2500,
-        timer: 1000,
+        timer: 2000,
         url_target: '_blank',
         mouse_over: false,
         animate: {

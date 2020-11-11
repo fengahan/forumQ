@@ -268,7 +268,9 @@ class UserController extends BaseController
    {
        $model=new  CommunityUserLink();
        $model->user_id=Yii::$app->user->identity->getId();
-       if ($model->load(Yii::$app->request->post(),'') && $model->save()){
+       $data=Yii::$app->request->post();
+       $data['icon']=trim($data['icon']);
+       if ($model->load($data,'') && $model->save()){
            return $this->formatJson(100,"添加成功",[]);
        }else{
            return $this->formatJson(200,"添加失败".$model->getErrorSummary(false)[0],[]);

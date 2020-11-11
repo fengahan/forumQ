@@ -298,7 +298,7 @@ class QuestionController extends BaseController
         $replyModel->status=CommunityQuesReply::STATUS_NORMAL;
         $replyModel->ques_user_id=$ques_user_id;
         $replyModel->created_at=time();
-        if ($replyModel->save()){
+        if ($replyModel->save() && $user_id!=$ques_user_id){
             $messageModel=new UserMessage();
             $messageModel->user_id=$ques_user_id;
             $messageModel->created_at=time();

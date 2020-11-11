@@ -36,142 +36,142 @@ $this->title = $question['title'] .'-'.Yii::$app->name;
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="toolbar toolbar--inner">
-                        <div class="toolbar__label">总计
-                            <span class="issue-tracker__tag bg-green"><?=$question['reply_number']?></span>
-                            条回复
-                        </div>
-                    </div>
-
-                    <div class="listview listview--bordered listview--block">
-                        <?php foreach ( $reply_list as $key=>$value):?>
-                        <div id="collapseList<?=$value['id']?>" style="display:none; ">
-                            <div class="team__social text-center mt-0 text-white">
-                                <a onclick="replyEmj(<?=$value['id']?>,'thumb-up')" class="zmdi zmdi-thumb-up zmdi-hc-fw bg-info wp-30 hp-30"></a>
-                                <a  onclick="replyEmj(<?=$value['id']?>,'mood')" class="zmdi zmdi-mood zmdi-hc-fw bg-green wp-30 hp-30"></a>
-                                <a onclick="replyEmj(<?=$value['id']?>,'mood-bad')" class="zmdi zmdi-mood-bad zmdi-hc-fw bg-blue wp-30 hp-30"></a>
-                                <a  onclick="replyEmj(<?=$value['id']?>,'favorite')" class="zmdi zmdi-favorite zmdi-hc-fw bg-red wp-30 hp-30"></a>
+                <div class="q-a__question">
+                    <div class="card">
+                        <div class="toolbar toolbar--inner">
+                            <div class="toolbar__label">总计
+                                <span class="issue-tracker__tag bg-green"><?=$question['reply_number']?></span>
+                                条回复
                             </div>
                         </div>
-                        <div class="listview__item" id="<?='reply-content'.$value['id']?>">
 
-                            <div class="q-a__info">
-                                <div class="q-a__op">
-                                    <a href="" data-toggle="tooltip" data-placement="top" data-original-title="<?=$value['nickname']?>"><img src="<?=$value['avatar']?>" alt=""></a>
-                                    <span>发布于<?=Yii::$app->formatter->asRelativeTime($value['created_at'])?></span>
+                        <div class="listview listview--bordered listview--block">
+                            <?php foreach ( $reply_list as $key=>$value):?>
+                            <div id="collapseList<?=$value['id']?>" style="display:none; ">
+                                <div class="team__social text-center mt-0 text-white">
+                                    <a onclick="replyEmj(<?=$value['id']?>,'thumb-up')" class="zmdi zmdi-thumb-up zmdi-hc-fw bg-info wp-30 hp-30"></a>
+                                    <a  onclick="replyEmj(<?=$value['id']?>,'mood')" class="zmdi zmdi-mood zmdi-hc-fw bg-green wp-30 hp-30"></a>
+                                    <a onclick="replyEmj(<?=$value['id']?>,'mood-bad')" class="zmdi zmdi-mood-bad zmdi-hc-fw bg-blue wp-30 hp-30"></a>
+                                    <a  onclick="replyEmj(<?=$value['id']?>,'favorite')" class="zmdi zmdi-favorite zmdi-hc-fw bg-red wp-30 hp-30"></a>
                                 </div>
-                                <!--em 评论start-->
-                                <div class="team__social text-center mt-0 ml-4 p-1" >
-                                    <?php $emj=\common\models\QuesReplyEmoji::getEmj($value['id']);?>
-                                    <?php foreach ($emj as $k=>$v):?>
-                                        <a href="#" class="<?=$v['emoji_key']?>"></a> <?=$v['count']?>
-                                    <?php endforeach;?>
-                                </div>
-                                <!--em 评论end-->
-                                <div class="q-a__vote-answer hidden-sm-down">
+                            </div>
+                            <div class="listview__item" id="<?='reply-content-'.$value['id']?>">
 
-                                    <div class="listview__attrs">
+                                <div class="q-a__info">
+                                    <div class="q-a__op">
+                                        <a href="" data-toggle="tooltip" data-placement="top" data-original-title="<?=$value['nickname']?>"><img src="<?=$value['avatar']?>" alt=""></a>
+                                        <span>发布于<?=Yii::$app->formatter->asRelativeTime($value['created_at'])?></span>
+                                    </div>
+                                    <!--em 评论start-->
+                                    <div class="team__social text-center mt-0 ml-4 p-1" >
+                                        <?php $emj=\common\models\QuesReplyEmoji::getEmj($value['id']);?>
+                                        <?php foreach ($emj as $k=>$v):?>
+                                            <a href="#" class="<?=$v['emoji_key']?>"></a> <?=$v['count']?>
+                                        <?php endforeach;?>
+                                    </div>
+                                    <!--em 评论end-->
+                                    <div class="q-a__vote-answer hidden-sm-down">
 
-                                        <?php if ($value['user_id']==$value['ques_user_id']):?>
+                                        <div class="listview__attrs">
+
+                                            <?php if ($value['user_id']==$value['ques_user_id']):?>
+                                                <span title="" data-toggle="tooltip"
+                                                              data-placement="top" data-original-title="该用户是本文章的作者">
+                                                           作者
+                                                        </span>
+                                          <?php endif;?>
+                                            <?php if ($value['type']==CommunityUsers::TYPE_FROM_CODE):?>
                                             <span title="" data-toggle="tooltip"
-                                                          data-placement="top" data-original-title="该用户是本文章的作者">
-                                                       作者
+                                                  data-placement="top" data-original-title="该用户是平台邀请来的大咖.">
+                                                       专家
                                                     </span>
-                                      <?php endif;?>
-                                        <?php if ($value['type']==CommunityUsers::TYPE_FROM_CODE):?>
-                                        <span title="" data-toggle="tooltip"
-                                              data-placement="top" data-original-title="该用户是平台邀请来的大咖.">
-                                                   专家
-                                                </span>
-                                        <?php endif;?>
+                                            <?php endif;?>
 
-                                        <div class="icon-toggle">
-                                            <i class="zmdi zmdi-mood zmdi-hc-fw collapseList" data-template="collapseList<?=$value['id']?>"></i>
-
-                                        </div>
-
-
-                                        <div class="dropdown actions__item">
-
-                                            <i class="zmdi zmdi-more" data-toggle="dropdown" ></i>
-                                            <div class="dropdown-menu dropdown-menu-right">
-
-                                               <?php if (Yii::$app->user->isGuest==false && $value['user_id']!=Yii::$app->user->identity->getId()):?>
-                                                <a class="dropdown-item"  onclick="reply(<?=$value['id']?>)">回复</a>
-                                                <?php endif;?>
-                                                <?php if (Yii::$app->user->isGuest==false
-                                                    && $question['user_id']==Yii::$app->user->identity->getId()
-                                                    && empty($question['best_reply_id'])):?>
-
-                                                    <a class="dropdown-item"  onclick="reply_accept(<?=$value['id']?>)">采纳</a>
-                                                <?php endif;?>
-                                                <a class="dropdown-item" data-toggle="modal" data-target="#modal-share-comment<?=$value['id']?>" >分享</a>
+                                            <div class="icon-toggle">
+                                                <i class="zmdi zmdi-mood zmdi-hc-fw collapseList" data-template="collapseList<?=$value['id']?>"></i>
 
                                             </div>
+
+
+                                            <div class="dropdown actions__item">
+
+                                                <i class="zmdi zmdi-more" data-toggle="dropdown" ></i>
+                                                <div class="dropdown-menu dropdown-menu-right">
+
+                                                   <?php if (Yii::$app->user->isGuest==false && $value['user_id']!=Yii::$app->user->identity->getId()):?>
+                                                    <a class="dropdown-item"  onclick="reply(<?=$value['id']?>)">回复</a>
+                                                    <?php endif;?>
+                                                    <?php if (Yii::$app->user->isGuest==false
+                                                        && $question['user_id']==Yii::$app->user->identity->getId()
+                                                        && empty($question['best_reply_id'])):?>
+
+                                                        <a class="dropdown-item"  onclick="reply_accept(<?=$value['id']?>)">采纳</a>
+                                                    <?php endif;?>
+                                                    <a class="dropdown-item" data-toggle="modal" data-target="#modal-share-comment<?=$value['id']?>" >分享</a>
+
+                                                </div>
+                                            </div>
+
                                         </div>
 
+                                    </div>
+                                </div>
+
+                                <?php if ($value['parent_id']>0):?>
+                                <?php $parent_reply=CommunityQuesReply::getReplyInfo($value['parent_id'])?>
+                                    <div class="reply_block" >
+                                    <div class="q-a__op">
+                                        对
+                                        <a  data-toggle="collapse" href="#collapseReply<?=$value['id']?>" role="button" aria-expanded="false" aria-controls="collapseReply<?=$value['id']?>">
+                                            <img src="<?=$parent_reply['avatar']?>" alt="">
+                                            <?=$parent_reply['nickname']?>#
+                                        </a>
+                                        回复
+                                    </div>
+                                    <div class="mt-2 collapse markdown-body editormd-preview-container" id="collapseReply<?=$value['id']?>" onclick="scrollToRep(<?=$value['parent_id']?>)">
+                                        <?=$parent_reply['reply_html_content']?>
+                                    </div>
+                                </div>
+                                <?php endif;?>
+                                <div class= <?php if ($value['is_best']==CommunityQuesReply::BEST_YES):?>
+                                     "markdown-body editormd-preview-container good_comment"  title="" data-toggle="tooltip"
+                                    data-placement="top" data-original-title="该评论被采纳为最佳答案"
+                                <?php else:?>
+                                    "markdown-body editormd-preview-container"
+                                <?php endif;?>
+                                >
+
+
+                                    <?=$value['reply_html_content']?>
+                                </div>
+                            </div>
+                        <div class="modal fade" id="modal-share-comment<?=$value['id']?>" tabindex="-1" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title pull-left">分享评论</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?=Url::to(['question/detail','question_id'=>$question['id'],'#'=>'reply-content-'.$value['id']],true)?>
                                     </div>
 
                                 </div>
                             </div>
-
-                            <?php if ($value['parent_id']>0):?>
-                            <?php $parent_reply=CommunityQuesReply::getReplyInfo($value['parent_id'])?>
-                                <div class="reply_block" >
-                                <div class="q-a__op">
-                                    对
-                                    <a  data-toggle="collapse" href="#collapseReply<?=$value['id']?>" role="button" aria-expanded="false" aria-controls="collapseReply<?=$value['id']?>">
-                                        <img src="<?=$parent_reply['avatar']?>" alt="">
-                                        <?=$parent_reply['nickname']?>#
-                                    </a>
-                                    回复
-                                </div>
-                                <div class="mt-2 collapse markdown-body editormd-preview-container" id="collapseReply<?=$value['id']?>">
-                                    <?=$parent_reply['reply_html_content']?>
-                                </div>
-                            </div>
-                            <?php endif;?>
-                            <div class= <?php if ($value['is_best']==CommunityQuesReply::BEST_YES):?>
-                                 "markdown-body editormd-preview-container good_comment"  title="" data-toggle="tooltip"
-                                data-placement="top" data-original-title="该评论被采纳为最佳答案"
-                            <?php else:?>
-                                "markdown-body editormd-preview-container"
-                            <?php endif;?>
-                            >
-
-
-                                <?=$value['reply_html_content']?>
-                            </div>
-                        </div>
-                    <div class="modal fade" id="modal-share-comment<?=$value['id']?>" tabindex="-1" style="display: none;" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title pull-left">分享评论</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <?=Url::to(['question/detail','question_id'=>$question['id'],'#'=>'reply-content'.$value['id']],true)?>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                        <?php endforeach;?>
-                    </div>
-
-                    <div class="listview__item">
-                        <div class="form-group">
-                            <input type="hidden" id="reply_input" name="reply_id" value="">
-                            <div id="ques-editormd">
-                                <textarea name="markdown_content" style="display:none;"></textarea>
-                            </div>
                         </div>
 
-                        <button onclick="replyDo()" class="btn btn-primary">回复</button>
+                            <?php endforeach;?>
+                        </div>
+                        <div class="listview__item">
+                            <div class="form-group">
+                                <input type="hidden" id="reply_input" name="reply_id" value="">
+                                <div id="ques-editormd">
+                                    <textarea name="markdown_content" style="display:none;"></textarea>
+                                </div>
+                            </div>
+                            <button onclick="replyDo()" class="btn btn-primary" style="float: right">回复</button>
+                        </div>
                     </div>
-                </div>
+                 </div>
             </div>
 
             <div class="col-lg-3 col-md-3">
@@ -252,7 +252,11 @@ $this->title = $question['title'] .'-'.Yii::$app->name;
         return false;
 
     }
-
+    function scrollToRep(id){
+        var ele="reply-content-"+id;
+        jQuery("html, body").animate({
+            scrollTop: jQuery("#"+ele).offset().top }, {duration: 500,easing: "swing"});
+    }
     function subscribe(id) {
        subEle= document.getElementById('subscribe');
        subNumEle=document.getElementById('subscribe_number');

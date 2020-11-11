@@ -36,7 +36,7 @@ $this->title = '创建新技术分享'.'-'.Yii::$app->name;
                                         <select  name="tag_id" class="form-control">
                                             <?php foreach ($tag_list as $key=>$value):?>
                                                 <option <?php if ($value['id']==$Article->tag_id):?>selected="selected"<?php endif;?> value="<?=$value['id']?>"> <?=$value['title']?></option>
-                                            <?php endforeach;、?>
+                                            <?php endforeach;?>
                                         </select>
                                         <i class="form-group__bar"></i>
                                     </div>

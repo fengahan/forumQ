@@ -15,12 +15,15 @@ $this->title = '技术分享首页'.'-'.Yii::$app->name;
         <div class="col-lg-8 col-md-7">
             <div class="card issue-tracker">
                 <div class="toolbar toolbar--inner">
+                    <div class="toolbar__nav">
+                        <span>来这里一展风采吧!</span>
+                    </div>
                     <div class="actions">
                         <i class="actions__item zmdi zmdi-search" data-ma-action="toolbar-search-open" data-toggle="tooltip" data-title="内容搜索" data-original-title="" title=""></i>
                         <div class="dropdown actions__item hidden-sm-down" data-toggle="tooltip" data-title="标签" data-original-title="" title="">
                             <i class="zmdi zmdi-label-alt-outline" data-toggle="dropdown"></i>
                             <div  id="check_tag" class="dropdown-menu dropdown-menu-right dropdown-menu--active dropdown-menu--sort">
-                                <a href="#" onclick="tag_click_func(0)"  class="dropdown-item <?php if ($req['tag_id']==0):?>bg-green text-white<?php endif;?>>">全部</a>
+                                <a href="#" onclick="tag_click_func(0)"  class="dropdown-item <?php if ($req['tag_id']===0):?>bg-green text-white<?php endif;?>>">全部</a>
                                 <!--选择样式 bg-green text-white!-->
                                 <?php foreach ($tag_list as $key=>$val):?>
                                     <a href="#" onclick="tag_click_func(<?=$val['id']?>)" class="dropdown-item <?php if ($req['tag_id']==$val['id']):?>bg-green text-white<?php endif;?>"><?=$val['title']?></a>

@@ -320,10 +320,11 @@ class ArticleController extends BaseController
         $user_id=Yii::$app->user->identity->getId();
         $article_id=$req['article_id']??0;
         if (empty( $article_id) || !($article=Articles::findOne($article_id))){
-            return $this->formatJson(200,"问答不存在",'');
+            return $this->formatJson(200,"分享不存在",'');
         }
         $artUser=CommunityUsers::findOne($article['user_id']);
         $article_user_id=$article['user_id'];
+        $parent_reply=[];
         if ($parent_id>0){
             $parent_reply=ArticlesReply::findOne($parent_id);
             if (empty($parent_reply)
@@ -347,16 +348,27 @@ class ArticleController extends BaseController
         $replyModel->article_user_id=$article_user_id;
         $replyModel->created_at=time();
         $replyModel->updated_at=time();
-        if ($replyModel->save()){
-
+        $bool=$replyModel->save();
+        if ($bool!=true){
+            return $this->formatJson(200,"系统异常请稍后重试".$replyModel->getErrorSummary(false)[0],'');
+        }
+        if ($user_id==$article_user_id){
+            return $this->formatJson(100,"回复成功",'');
+        }
+        else{
             $messageModel=new UserMessage();
-            $messageModel->user_id=$article->user_id;
+            $uid=$article->user_id;
+            $messageModel->content=Yii::$app->user->identity->nickname.'在['.$article->title.']中回复了您';
+            if ($parent_id>0) {
+                $uid = $parent_reply['user_id'];
+                $messageModel->content=Yii::$app->user->identity->nickname.'在['.$article->title.']中回复了您';
+            }
+            $messageModel->user_id=$uid;
             $messageModel->created_at=time();
-            $messageModel->content=$artUser->nickname.'回复了您的文章['.$article->title.']';
+
             $messageModel->save();
             return $this->formatJson(100,"回复成功",'');
         }
-        return $this->formatJson(200,"系统异常请稍后重试".$replyModel->getErrorSummary(false)[0],'');
 
     }
 

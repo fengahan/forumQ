@@ -17,7 +17,7 @@ function notify(from, align, icon, type, animIn, animOut,msg){
         allow_dismiss: true,
         offset: {
             x:0, // Keep this as default
-            y: 72  // Unless there'll be alignment issues as this value is targeted in CSS
+            y: 87  // Unless there'll be alignment issues as this value is targeted in CSS
         },
         spacing: 10,
         z_index: 1031,

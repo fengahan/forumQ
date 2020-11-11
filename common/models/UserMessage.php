@@ -13,6 +13,7 @@ use Yii;
  * @property int $status 10未读20已读30已删除
  * @property int $created_at
  * @property int $read_time
+ * @property string url
  */
 class UserMessage extends BaseModel
 {
@@ -36,7 +37,7 @@ class UserMessage extends BaseModel
         return [
             [['user_id'], 'required'],
             [['user_id', 'status', 'created_at', 'read_time'], 'integer'],
-            [['content'], 'string', 'max' => 255],
+            [['content','url'], 'string', 'max' => 255],
         ];
     }
 

@@ -303,7 +303,11 @@ $this->title ='用户中心' .'-'.Yii::$app->name;
                                                     <h5 class="modal-title pull-left">消息内容</h5>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <?=$value['content']?>
+                                                    <?php if ($value['url']!==""):?>
+                                                       <a href=" <?=$value['url']?>"> <?=$value['content']?></a>
+                                                    <?php else:?>
+                                                        <?=$value['content']?>
+                                                    <?endif;?>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
@@ -315,7 +319,7 @@ $this->title ='用户中心' .'-'.Yii::$app->name;
                                     <div class="listview__item">
                                         <div class="listview__content text-truncate text-truncate">
                                             <a class="listview__heading" data-toggle="modal" data-target="#modal-centered<?=$value['id']?>">
-                                                <?=\yii\helpers\StringHelper::truncate($value['content'],32)?>
+                                                <?=\yii\helpers\StringHelper::truncate($value['content'],66)?>
                                             </a>
                                         </div>
 

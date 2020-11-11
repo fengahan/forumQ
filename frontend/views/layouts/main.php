@@ -79,7 +79,7 @@ AppAsset::register($this);
 
                         <div class="listview__scroll scrollbar-inner">
                             <?php foreach ($message_un_read as $key=>$value):?>
-                            <a href="" class="listview__item">
+                            <a href="<?=$value['url']?>" class="listview__item">
                                 <div class="listview__content">
                                     <p><?=\yii\helpers\StringHelper::truncate($value['content'],22)?></p>
                                 </div>

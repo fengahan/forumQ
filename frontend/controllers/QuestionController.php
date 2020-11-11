@@ -427,11 +427,13 @@ class QuestionController extends BaseController
                 if ($question->is_public==CommunityQuestion::PUBLIC_YES){
                     $subUsers=QuesSubscribe::find()->select('user_id')->where(['ques_id'=>$question->id])->all();
                     $msg_data=[];
+                    $url=Url::to(['question/detail','question_id'=>$question->id,'#'=>'reply-content-'.$ques_reply_id],true);
                     foreach ($subUsers as $key=>$val){
                         $msg_data[]= [
-                            'user_id'=>$val,
+                            'user_id'=>$val['user_id'],
                             'content'=>"您订阅的问答".'['.$question->title.']'."有了最佳回复",
                             'created_at'=>time(),
+                            'url'=>$url,
                         ];
                     }
                     if (count($msg_data)>0){

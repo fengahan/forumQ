@@ -322,7 +322,7 @@ class ArticleController extends BaseController
         if (empty( $article_id) || !($article=Articles::findOne($article_id))){
             return $this->formatJson(200,"分享不存在",'');
         }
-        $artUser=CommunityUsers::findOne($article['user_id']);
+        //$artUser=CommunityUsers::findOne($article['user_id']);
         $article_user_id=$article['user_id'];
         $parent_reply=[];
         if ($parent_id>0){
@@ -352,16 +352,17 @@ class ArticleController extends BaseController
         if ($bool!=true){
             return $this->formatJson(200,"系统异常请稍后重试".$replyModel->getErrorSummary(false)[0],'');
         }
-        if ($user_id==$article_user_id){
+        if ($user_id==$article_user_id && $parent_id==0){
             return $this->formatJson(100,"回复成功",'');
         }
         else{
+            $url=Url::to(['article/detail','article_id'=>$article_id,'#'=>'reply-content-'.$replyModel->id],true);
             $messageModel=new UserMessage();
             $uid=$article->user_id;
+            $messageModel->url=$url;
             $messageModel->content=Yii::$app->user->identity->nickname.'在['.$article->title.']中回复了您';
             if ($parent_id>0) {
                 $uid = $parent_reply['user_id'];
-                $messageModel->content=Yii::$app->user->identity->nickname.'在['.$article->title.']中回复了您';
             }
             $messageModel->user_id=$uid;
             $messageModel->created_at=time();

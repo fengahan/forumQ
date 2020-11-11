@@ -92,7 +92,7 @@ $this->title = $article['title'].'-'.Yii::$app->name;
                                             <div class="dropdown-menu dropdown-menu-right">
 
                                                 <?php if (Yii::$app->user->isGuest==false && $value['user_id']!=Yii::$app->user->identity->getId()):?>
-                                                    <a class="dropdown-item"  onclick="reply(<?=$value['id']?>)">回复</a>
+                                                    <a class="dropdown-item"  onclick="reply(<?=$value['id']?>,'<?=$value["nickname"]?>')">回复</a>
                                                 <?php endif;?>
                                                 <a class="dropdown-item" data-toggle="modal" data-target="#modal-share-comment<?=$value['id']?>" >分享</a>
                                             </div>
@@ -140,13 +140,17 @@ $this->title = $article['title'].'-'.Yii::$app->name;
 
                     <?php endforeach;?>
                 </div>
+
                     <div class="listview__item">
-                    <div class="form-group">
-                        <input type="hidden" id="reply_input" name="reply_id" value="">
-                        <div id="article-editormd">
-                            <textarea name="markdown_content" style="display:none;"></textarea>
+                        <div class="q-a__op">
+                            对<a id="reply_to_name" href="#" style="color: #2196F3">#当前文章#</a>回复
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <input type="hidden" id="reply_input" name="reply_id" value="">
+                            <div id="article-editormd">
+                                <textarea name="markdown_content" style="display:none;"></textarea>
+                            </div>
+                        </div>
 
                     <button onclick="replyDo()" class="btn btn-primary" style="float: right">回复</button>
                 </div>
@@ -223,9 +227,11 @@ $this->title = $article['title'].'-'.Yii::$app->name;
             document.getElementsByClassName("header")[0].style.display='flex';
         },
     });
-    function reply(id) {
+    function reply(id,reply_to_name) {
+        var url= document.getElementById("modal-share-comment"+id).getElementsByClassName("modal-body")[0].innerText
+        document.getElementById('reply_to_name').setAttribute("href",url.replace(/^\s*|\s*$/g,""))
         document.getElementById("article-editormd").scrollIntoView();
-
+        document.getElementById('reply_to_name').innerText=reply_to_name
         document.getElementById('reply_input').value=id
         return false;
 

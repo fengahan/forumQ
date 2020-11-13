@@ -93,7 +93,7 @@ $this->title = $article['title'].'-'.Yii::$app->name;
                                             <div class="dropdown-menu dropdown-menu-right">
 
                                                 <?php if (Yii::$app->user->isGuest==false && $value['user_id']!=Yii::$app->user->identity->getId()):?>
-                                                    <a class="dropdown-item"  onclick="reply(<?=$value['id']?>,'<?=$value["nickname"]?>')">回复</a>
+                                                    <a class="dropdown-item" href="javascript:void(0);"  onclick="reply(<?=$value['id']?>,'<?=$value["nickname"]?>')">回复</a>
                                                 <?php endif;?>
                                                 <a class="dropdown-item" data-toggle="modal" data-target="#modal-share-comment<?=$value['id']?>" >分享</a>
                                             </div>
@@ -145,6 +145,7 @@ $this->title = $article['title'].'-'.Yii::$app->name;
                     <div class="listview__item">
                         <div class="q-a__op">
                             对<a id="reply_to_name" href="#" style="color: #2196F3">#当前文章#</a>回复
+                            <a id="resetRepBtn" onclick="resetReplyObj()" href="javascript:void(0);" class="text-red" >撤销</a>
                         </div>
                         <div class="form-group">
                             <input type="hidden" id="reply_input" name="reply_id" value="">
@@ -260,10 +261,18 @@ $this->title = $article['title'].'-'.Yii::$app->name;
         document.getElementById("article-editormd").scrollIntoView();
         document.getElementById('reply_to_name').innerText=reply_to_name
         document.getElementById('reply_input').value=id
+        document.getElementById("resetRepBtn").style.display="inline-block"
         return false;
 
     }
+    //手动重置回复对象，如先点击了对A的回复后面想改为对文章对回复
+    function resetReplyObj() {
+        document.getElementById('reply_to_name').innerText="#当前文章#"
+        document.getElementById('reply_input').value=0
+        document.getElementById("resetRepBtn").style.display="none"
+        return false;
 
+    }
     function heart(id) {
         let  subEle= document.getElementById('to_heart');
         let subNumEle=document.getElementById('heart_number');

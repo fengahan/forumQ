@@ -66,7 +66,8 @@ $this->title = $question['title'] .'-'.Yii::$app->name;
                                     <div class="team__social text-center mt-0 ml-4 p-1" >
                                         <?php $emj=\common\models\QuesReplyEmoji::getEmj($value['id']);?>
                                         <?php foreach ($emj as $k=>$v):?>
-                                            <a href="#" class="<?=$v['emoji_key']?>"></a> <?=$v['count']?>
+                                                <a href="javascript:void(0);" class="<?=$v['emoji_key']?>"></a>
+                                                <span><?=$v['count']?></span>
                                         <?php endforeach;?>
                                     </div>
                                     <!--em 评论end-->
@@ -99,7 +100,7 @@ $this->title = $question['title'] .'-'.Yii::$app->name;
                                                 <div class="dropdown-menu dropdown-menu-right">
 
                                                    <?php if (Yii::$app->user->isGuest==false && $value['user_id']!=Yii::$app->user->identity->getId()):?>
-                                                    <a class="dropdown-item"  onclick="reply(<?=$value['id']?>)">回复</a>
+                                                       <a href="javascript:void(0);" class="dropdown-item"  onclick="reply(<?=$value['id']?>,'<?=$value["nickname"]?>')">回复</a>
                                                     <?php endif;?>
                                                     <?php if (Yii::$app->user->isGuest==false
                                                         && $question['user_id']==Yii::$app->user->identity->getId()
@@ -162,6 +163,11 @@ $this->title = $question['title'] .'-'.Yii::$app->name;
                             <?php endforeach;?>
                         </div>
                         <div class="listview__item">
+                            <div class="q-a__op">
+                                对<a id="reply_to_name" href="#" style="color: #2196F3">#当前文章#</a>回复
+                                <a id="resetRepBtn" style="display: none" onclick="resetReplyObj()" href="javascript:void(0);" class="text-red" >撤销</a>
+                            </div>
+
                             <div class="form-group">
                                 <input type="hidden" id="reply_input" name="reply_id" value="">
                                 <div id="ques-editormd">
@@ -171,9 +177,8 @@ $this->title = $question['title'] .'-'.Yii::$app->name;
                             <button onclick="replyDo()" class="btn btn-primary" style="float: right">回复</button>
                         </div>
                     </div>
-                 </div>
+                </div>
             </div>
-
             <div class="col-lg-3 col-md-3">
                 <div class="card">
                     <div class="card-body">
@@ -215,16 +220,40 @@ $this->title = $question['title'] .'-'.Yii::$app->name;
                     </div>
                 </div>
             </div>
-
         </div>
-
-    </div>
+        <button id="to-top" class="btn btn-danger btn--action zmdi zmdi-chevron-up zmdi-hc-fw" onclick="GoTop()"></button>
+</div>
 
 <script src="/editor/editormd.js"></script>
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
 <script type="text/javascript">
-
+    window.onscroll = function(){
+        var t = document.documentElement.scrollTop || document.body.scrollTop;
+        var top_div = document.getElementById( "to-top" );
+        if( t >= 800 ) {
+            top_div.style.display = "inline";
+        } else {
+            top_div.style.display = "none";
+        }
+    }
+    var currentPosition,timer;
+    var speed=10;
+    function GoTop(){
+        timer=setInterval(function () {
+            currentPosition=document.documentElement.scrollTop || document.body.scrollTop;
+            currentPosition-=speed; //speed变量
+            if(currentPosition>0)
+            {
+                window.scrollTo(0,currentPosition);
+            }
+            else
+            {
+                window.scrollTo(0,0);
+                clearInterval(timer);
+            }
+        },1);
+    }
     var editor = editormd("ques-editormd", {
         width  : "100%",
         height:240,
@@ -245,13 +274,25 @@ $this->title = $question['title'] .'-'.Yii::$app->name;
             document.getElementsByClassName("header")[0].style.display='flex';
         },
     });
-    function reply(id) {
-       document.getElementById("ques-editormd").scrollIntoView();
-
+    function reply(id,reply_to_name) {
+        var url= document.getElementById("modal-share-comment"+id).getElementsByClassName("modal-body")[0].innerText
+        document.getElementById('reply_to_name').setAttribute("href",url.replace(/^\s*|\s*$/g,""))
+        document.getElementById("ques-editormd").scrollIntoView();
+        document.getElementById('reply_to_name').innerText=reply_to_name
         document.getElementById('reply_input').value=id
+        document.getElementById("resetRepBtn").style.display="inline-block"
         return false;
 
     }
+    //手动重置回复对象，如先点击了对A的回复后面想改为对文章对回复
+    function resetReplyObj() {
+        document.getElementById('reply_to_name').innerText="#当前文章#"
+        document.getElementById('reply_input').value=0
+        document.getElementById("resetRepBtn").style.display="none"
+        return false;
+
+    }
+
     function scrollToRep(id){
         var ele="reply-content-"+id;
         jQuery("html, body").animate({

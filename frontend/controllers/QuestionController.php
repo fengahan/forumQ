@@ -272,8 +272,7 @@ class QuestionController extends BaseController
             return $this->formatJson(200,"问答不存在",'');
         }
         $ques_user_id=$ques['user_id'];
-        $quesUser=User::findOne($ques_user_id);
-
+        $parent_reply=[];
         if ($parent_id>0){
             $parent_reply=CommunityQuesReply::findOne($parent_id);
             if (empty($parent_reply)
@@ -298,15 +297,27 @@ class QuestionController extends BaseController
         $replyModel->status=CommunityQuesReply::STATUS_NORMAL;
         $replyModel->ques_user_id=$ques_user_id;
         $replyModel->created_at=time();
-        if ($replyModel->save() && $user_id!=$ques_user_id){
+        $bool=$replyModel->save();
+        if ($bool!=true){
+            return $this->formatJson(200,"系统异常请稍后重试".$replyModel->getErrorSummary(false)[0],'');
+        }
+        if ($user_id==$ques_user_id && $parent_id==0){
+            return $this->formatJson(100,"回复成功",'');
+        }else{
+            $url=Url::to(['question/detail','question_id'=>$ques_id,'#'=>'reply-content-'.$replyModel->id],true);
             $messageModel=new UserMessage();
-            $messageModel->user_id=$ques_user_id;
+            $uid=$ques_user_id;
+            $messageModel->url=$url;
+            $messageModel->content=Yii::$app->user->identity->nickname.'在['.$ques->title.']中回复了您';
+            if ($parent_id>0) {
+                $uid = $parent_reply['user_id'];
+            }
+            $messageModel->user_id=$uid;
             $messageModel->created_at=time();
-            $messageModel->content=$quesUser->nickname.'回复了您的问答['.$ques->title.']';
+
             $messageModel->save();
             return $this->formatJson(100,"回复成功",'');
         }
-        return $this->formatJson(200,"系统异常请稍后重试".$replyModel->getErrorSummary(false)[0],'');
 
     }
 
@@ -327,19 +338,9 @@ class QuestionController extends BaseController
         ){
             return $this->formatJson(200,"无效回复",'');
         }
-        $emjReply=QuesReplyEmoji::findOne(['ques_reply_id'=>$ques_reply_id,'key'=>$emj_key]);
-        if ($emjReply['user_id']==$user_id){
-            $emjReply->updateCounters(['count'=>-1]);
-            $emjReply->save();
-            if ($emjReply->count==0){
-                $emjReply->delete();
-            }
-            return $this->formatJson(100,"回复成功",'');
-        }
-
+        $emjReply=QuesReplyEmoji::findOne(['ques_reply_id'=>$ques_reply_id,'key'=>$emj_key,'user_id'=>$user_id]);
         if ($emjReply){
-            $emjReply->updateCounters(['count'=>1]);
-            $emjReply->save();
+            $emjReply->delete();
             return $this->formatJson(100,"回复成功",'');
         }else{
             $emjReplyNew=new QuesReplyEmoji();

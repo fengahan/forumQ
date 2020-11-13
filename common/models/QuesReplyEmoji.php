@@ -80,7 +80,14 @@ class QuesReplyEmoji extends \yii\db\ActiveRecord
     public static function getEmj($rep_id)
     {
 
-        return self::find()->where(['ques_reply_id'=>$rep_id])->all();
-
+        $data=self::find()->where(['ques_reply_id'=>$rep_id])->all();
+        $arr=[];
+        if (!empty($data)){
+           $_data=array_count_values(array_column($data,'emoji_key'));
+           foreach ($_data as $key=>$val){
+               $arr[]=['emoji_key'=>$key,'count'=>$val];
+           }
+        }
+        return $arr;
     }
 }

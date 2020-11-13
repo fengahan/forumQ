@@ -74,12 +74,13 @@ $this->title = $article['title'].'-'.Yii::$app->name;
 
 
                                         <?php if (Yii::$app->user->isGuest==false):?>
-                                            <div class="icon-toggle <?php if (!empty(\common\models\ArticleReplyPraise::getRow($value['id'],Yii::$app->user->identity->getId()))):?>icon-toggle--green<?php endif;?>">
+                                            <div id="reply-praise-id-<?=$value['id']?>" class="icon-toggle  <?php if (!empty(\common\models\ArticleReplyPraise::getRow($value['id'],Yii::$app->user->identity->getId()))):?>icon-toggle--green<?php endif;?>">
                                                 <input type="checkbox" onclick="replyPraise(<?=$value['id']?>)" <?php if (!empty(\common\models\ArticleReplyPraise::getRow($value['id'],Yii::$app->user->identity->getId()))):?> checked<?php endif;?>>
-                                                <i class="zmdi zmdi-thumb-up zmdi-hc-fw " ></i><?=$value['praise_nums']?>
+                                                <i class="zmdi zmdi-thumb-up zmdi-hc-fw " ></i>
+                                                <span id="reply-praise-num-<?=$value['id']?>"><?=$value['praise_nums']?></span>
                                             </div>
                                         <?php else:?>
-                                            <div class="icon-toggle"  onclick="replyPraise(<?=$value['id']?>)">
+                                            <div class="icon-toggle"  onclick="replyPraise(<?=$value['id']?>)" id="reply-praise-id-<?=$value['id']?>">
                                                 <input type="checkbox" checked="">
                                                 <i class="zmdi zmdi-thumb-up zmdi-hc-fw  "></i><?=$value['praise_nums']?>
                                             </div>
@@ -201,11 +202,37 @@ $this->title = $article['title'].'-'.Yii::$app->name;
         </div>
 
     </div>
-
+    <button id="to-top" class="btn btn-danger btn--action zmdi zmdi-chevron-up zmdi-hc-fw" onclick="GoTop()"></button>
 </div>
 
 <script src="/editor/editormd.js"></script>
 <script type="text/javascript">
+    window.onscroll = function(){
+        var t = document.documentElement.scrollTop || document.body.scrollTop;
+        var top_div = document.getElementById( "to-top" );
+        if( t >= 800 ) {
+            top_div.style.display = "inline";
+        } else {
+            top_div.style.display = "none";
+        }
+    }
+    var currentPosition,timer;
+    var speed=10;
+    function GoTop(){
+        timer=setInterval(function () {
+            currentPosition=document.documentElement.scrollTop || document.body.scrollTop;
+            currentPosition-=speed; //speed变量
+            if(currentPosition>0)
+            {
+                window.scrollTo(0,currentPosition);
+            }
+            else
+            {
+                window.scrollTo(0,0);
+                clearInterval(timer);
+            }
+        },1);
+    }
 
     var editor = editormd("article-editormd", {
         width  : "100%",
@@ -238,22 +265,22 @@ $this->title = $article['title'].'-'.Yii::$app->name;
     }
 
     function heart(id) {
-        subEle= document.getElementById('to_heart');
-        subNumEle=document.getElementById('heart_number');
-        subNum=parseInt(subNumEle.innerText);
+        let  subEle= document.getElementById('to_heart');
+        let subNumEle=document.getElementById('heart_number');
+        let subNum=parseInt(subNumEle.innerText);
         $.ajax({
             type: "POST",
             dataType: 'json',
             data:{"id":id},
             url:"<?=Url::to(['/article/heart'])?>",
             success: function (res) {
-                if (res.code==100){
-                    if(res.data.action=="cancel"){
-                        subNumEle.innerText=subNum-1;
+                if (res.code===100){
+                    if(res.data.action==="cancel"){
+                        subNumEle.innerText=(subNum-1).toString();
                         subEle.classList.replace("bg-green","bg-dark")
-                        notify("","","","warning","","",res.msg);
+                        notify("","","","success","","",res.msg);
                     }else {
-                        subNumEle.innerText=subNum+1;
+                        subNumEle.innerText=(subNum+1).toString();
                         subEle.classList.replace("bg-dark","bg-green")
                         notify("","","","success","","",res.msg);
                     }
@@ -304,9 +331,19 @@ $this->title = $article['title'].'-'.Yii::$app->name;
             data:{"article_id":article_id,'article_reply_id':article_reply_id},
             url:"<?=Url::to(['/article/reply-praise'])?>",
             success: function (res) {
-                if (res.code==100){
+                if (res.code===100){
+                    var eleBotInp=document.querySelector('#reply-praise-id-'+article_reply_id+'>input');
+                  //  点赞数
+                    var eleBotSpa=document.querySelector('#reply-praise-id-'+article_reply_id+'>span');
+                   // 原来的点赞数
+                    var p=parseInt(eleBotSpa.innerHTML)
+                    //代表取消点赞
+                    if ( eleBotInp.checked===false){
+                        eleBotSpa.innerHTML=p-1;
+                    }else {
+                        eleBotSpa.innerHTML=p+1;
+                    }
                     notify("","","","success","","",res.msg);
-                    window.location.reload();
                 }else {
                     notify("","","","danger","","",res.msg);
                 }

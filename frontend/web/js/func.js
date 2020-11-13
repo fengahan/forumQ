@@ -5,7 +5,6 @@ function notify(from, align, icon, type, animIn, animOut,msg){
     if (animOut==='') {
         animOut='fadeOutUp'
     }
-    console.log(animIn,animOut)
     $.notify({
         icon: icon,
         title: '',
